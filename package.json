@@ -1,0 +1,45 @@
+{
+  "name": "card-drop",
+  "version": "0.1.0",
+  "main": "./dist/bot.js",
+  "typings": "./dist",
+  "scripts": {
+    "clean": "rm -rf node_modules/ dist/",
+    "build": "tsc",
+    "start": "node ./dist/bot.js",
+    "test": "jest",
+    "db:up": "typeorm migration:run -d dist/database/dataSources/appDataSource.js",
+    "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js",
+    "release": "np --no-publish"
+  },
+  "repository": "https://gitea.vylpes.xyz/External/card-drop.git",
+  "author": "Ethan Lane <ethan@vylpes.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https//gitea.vylpes.xyz/External/card-drop/issues",
+    "email": "helpdesk@vylpes.com"
+  },
+  "homepage": "https://gitea.vylpes.xyz/External/card-drop",
+  "funding": "https://ko-fi.com/vylpes",
+  "dependencies": {
+    "@discordjs/rest": "^1.1.0",
+    "@types/jest": "^29.0.0",
+    "@types/uuid": "^9.0.0",
+    "discord.js": "^14.3.0",
+    "dotenv": "^16.0.0",
+    "jest": "^29.0.0",
+    "jest-mock-extended": "^3.0.0",
+    "minimatch": "9.0.2",
+    "mysql": "^2.18.1",
+    "ts-jest": "^29.0.0",
+    "typeorm": "0.3.17"
+  },
+  "resolutions": {
+    "**/semver": "^7.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "np": "^8.0.4",
+    "typescript": "^5.0.0"
+  }
+}

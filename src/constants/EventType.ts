@@ -1,0 +1,15 @@
+export enum EventType {
+    ChannelCreate,
+    ChannelDelete,
+    ChannelUpdate,
+    GuildBanAdd,
+    GuildBanRemove,
+    GuildCreate,
+    GuildMemberAdd,
+    GuildMemberRemove,
+    GuildMemberUpdate,
+    MessageCreate,
+    MessageDelete,
+    MessageUpdate,
+    Ready,
+}
