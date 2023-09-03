@@ -6,7 +6,7 @@ dotenv.config();
 const CardDataSource = new DataSource({
     type: "sqlite",
     database: process.env.DB_CARD_FILE!,
-    synchronize: process.env.DB_SYNC == "true",
+    synchronize: true,
     logging: process.env.DB_LOGGING == "true",
     entities: [
         "dist/database/entities/card/**/*.js",

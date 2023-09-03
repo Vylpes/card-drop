@@ -1,0 +1,71 @@
+---
+
+kind: pipeline
+name: deployment
+
+steps:
+- name: deploy
+  image: appleboy/drone-ssh
+  settings:
+    host: 192.168.68.121
+    username: vylpes
+    password:
+      from_secret: ssh_password
+    port: 22
+    script:
+      - sh /home/vylpes/scripts/card-drop/deploy_prod.sh
+
+trigger:
+  event:
+  - tag
+
+---
+
+kind: pipeline
+name: staging
+
+steps:
+- name: stage
+  image: appleboy/drone-ssh
+  settings:
+    host: 192.168.68.121
+    username: vylpes
+    password:
+      from_secret: ssh_password
+    port: 22
+    script:
+      - sh /home/vylpes/scripts/card-drop/deploy_stage.sh
+
+trigger:
+  branch:
+  - develop
+  event:
+  - push
+
+---
+
+kind: pipeline
+name: integration
+
+steps:
+- name: build
+  image: node
+  commands:
+  - yarn install --frozen-lockfile
+  - yarn build
+
+- name: test
+  image: node
+  commands:
+  - yarn install --frozen-lockfile
+  - yarn test
+
+trigger:
+  branch:
+  - main
+  - develop
+  - hotfix/*
+  - feature/*
+  - renovate/*
+  event:
+  - push

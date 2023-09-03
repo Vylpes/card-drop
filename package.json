@@ -7,9 +7,10 @@
     "clean": "rm -rf node_modules/ dist/",
     "build": "tsc",
     "start": "node ./dist/bot.js",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "db:up": "typeorm migration:run -d dist/database/dataSources/appDataSource.js",
     "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js",
+    "db:create": "typeorm migration:create ./src/database/migrations/app/new",
     "release": "np --no-publish"
   },
   "repository": "https://gitea.vylpes.xyz/External/card-drop.git",
