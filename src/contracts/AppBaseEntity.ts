@@ -2,7 +2,7 @@ import { Column, DeepPartial, EntityTarget, PrimaryColumn, ObjectLiteral, FindOp
 import { v4 } from "uuid";
 import AppDataSource from "../database/dataSources/appDataSource";
 
-export default class BaseEntity {
+export default class AppBaseEntity {
     constructor() {
         this.Id = v4();
 
@@ -19,7 +19,7 @@ export default class BaseEntity {
     @Column()
     WhenUpdated: Date;
 
-    public async Save<T extends BaseEntity>(target: EntityTarget<T>, entity: DeepPartial<T>): Promise<void> {
+    public async Save<T extends AppBaseEntity>(target: EntityTarget<T>, entity: DeepPartial<T>): Promise<void> {
         this.WhenUpdated = new Date();
 
         const repository = AppDataSource.getRepository<T>(target);
@@ -27,13 +27,13 @@ export default class BaseEntity {
         await repository.save(entity);
     }
 
-    public static async Remove<T extends BaseEntity>(target: EntityTarget<T>, entity: T): Promise<void> {
+    public static async Remove<T extends AppBaseEntity>(target: EntityTarget<T>, entity: T): Promise<void> {
         const repository = AppDataSource.getRepository<T>(target);
 
         await repository.remove(entity);
     }
 
-    public static async FetchAll<T extends BaseEntity>(target: EntityTarget<T>, relations?: string[]): Promise<T[]> {
+    public static async FetchAll<T extends AppBaseEntity>(target: EntityTarget<T>, relations?: string[]): Promise<T[]> {
         const repository = AppDataSource.getRepository<T>(target);
 
         const all = await repository.find({ relations: relations || [] });
@@ -41,7 +41,7 @@ export default class BaseEntity {
         return all;
     }
 
-    public static async FetchOneById<T extends BaseEntity>(target: EntityTarget<T>, id: string, relations?: string[]): Promise<T | null> {
+    public static async FetchOneById<T extends AppBaseEntity>(target: EntityTarget<T>, id: string, relations?: string[]): Promise<T | null> {
         const repository = AppDataSource.getRepository<T>(target);
 
         const single = await repository.findOne({ where: ({ Id: id } as FindOptionsWhere<T>), relations: relations || {} });

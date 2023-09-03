@@ -107,3 +107,4 @@ config.json
 .DS_Store
 ormconfig.json
 gdrive-credentials.json
+cards/
