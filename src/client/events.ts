@@ -1,29 +1,18 @@
 import { Interaction } from "discord.js";
-import ICommandItem from "../contracts/ICommandItem";
-import { CoreClient } from "./client";
+import ChatInputCommand from "./interactionCreate/ChatInputCommand";
+import Button from "./interactionCreate/Button";
 
 export class Events {
     public async onInteractionCreate(interaction: Interaction) {
-        if (!interaction.isChatInputCommand()) return;
         if (!interaction.guildId) return;
 
-        const item = CoreClient.commandItems.find(x => x.Name == interaction.commandName && !x.ServerId);
-        const itemForServer = CoreClient.commandItems.find(x => x.Name == interaction.commandName && x.ServerId == interaction.guildId);
-
-        let itemToUse: ICommandItem;
-
-        if (!itemForServer) {
-            if (!item) {
-                await interaction.reply('Command not found');
-                return;
-            }
-
-            itemToUse = item;
-        } else {
-            itemToUse = itemForServer;
+        if (interaction.isChatInputCommand()) {
+            ChatInputCommand.onChatInput(interaction);
         }
 
-        itemToUse.Command.execute(interaction);
+        if (interaction.isButton()) {
+            Button.onButtonClicked(interaction);
+        }
     }
 
     // Emit when bot is logged in and ready to use

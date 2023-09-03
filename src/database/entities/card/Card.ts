@@ -1,17 +1,18 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 import CardBaseEntity from "../../../contracts/CardBaseEntity";
 import { CardRarity } from "../../../constants/CardRarity";
 import Series from "./Series";
-import CardDataSource from "../../dataSources/cardDataSource";
 
 @Entity()
 export default class Card extends CardBaseEntity {
-    constructor(cardNumber: string, name: string, rarity: CardRarity) {
+    constructor(cardNumber: string, name: string, rarity: CardRarity, path: string, series: Series) {
         super();
 
         this.CardNumber = cardNumber;
         this.Name = name;
         this.Rarity = rarity;
+        this.Path = path;
+        this.Series = series;
     }
 
     @Column()
@@ -23,14 +24,9 @@ export default class Card extends CardBaseEntity {
     @Column()
     Rarity: CardRarity;
 
-    @OneToMany(() => Series, x => x.Cards)
+    @Column()
+    Path: string
+
+    @ManyToOne(() => Series, x => x.Cards)
     Series: Series;
-
-    public static async FetchAllByRarity(rarity: CardRarity): Promise<Card[]> {
-        const repository = CardDataSource.getRepository(Card);
-
-        const all = await repository.find({ where: { Rarity: rarity }});
-
-        return all;
-    }
 }

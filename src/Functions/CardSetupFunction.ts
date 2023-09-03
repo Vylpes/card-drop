@@ -5,7 +5,7 @@ import Series from "../database/entities/card/Series";
 import path from "path";
 import { CardRarity } from "../constants/CardRarity";
 
-export default class CardSetupFunctions {
+export default class CardSetupFunction {
     public async Execute() {
         await this.ClearDatabase();
         await this.ReadSeries();
@@ -42,7 +42,7 @@ export default class CardSetupFunctions {
     }
 
     private async ReadCards() {
-        const loadedSeries = await Series.FetchAll(Series);
+        const loadedSeries = await Series.FetchAll(Series, [ "Cards", "Cards.Series" ]);
 
         const cardRepository = CardDataSource.getRepository(Card);
 
@@ -65,7 +65,7 @@ export default class CardSetupFunctions {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Bronze);
+                const card = new Card(cardId, cardName, CardRarity.Bronze, path.join(path.join(process.cwd(), 'cards', series.Path, 'BRONZE', file)), series);
 
                 cardsToSave.push(card);
             }
@@ -76,7 +76,7 @@ export default class CardSetupFunctions {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Gold);
+                const card = new Card(cardId, cardName, CardRarity.Gold, path.join(path.join(process.cwd(), 'cards', series.Path, 'GOLD', file)), series);
 
                 cardsToSave.push(card);
             }
@@ -87,7 +87,7 @@ export default class CardSetupFunctions {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Legendary);
+                const card = new Card(cardId, cardName, CardRarity.Legendary, path.join(path.join(process.cwd(), 'cards', series.Path, 'LEGENDARY', file)), series);
 
                 cardsToSave.push(card);
             }
@@ -98,7 +98,7 @@ export default class CardSetupFunctions {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Silver);
+                const card = new Card(cardId, cardName, CardRarity.Silver, path.join(path.join(process.cwd(), 'cards', series.Path, 'SILVER', file)), series);
 
                 cardsToSave.push(card);
             }

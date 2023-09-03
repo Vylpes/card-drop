@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import CardBaseEntity from "../../../contracts/CardBaseEntity";
 import Card from "./Card";
 
@@ -18,12 +18,6 @@ export default class Series extends CardBaseEntity {
     @Column()
     Path: string;
 
-    @ManyToOne(() => Card, x => x.Series)
+    @OneToMany(() => Card, x => x.Series)
     Cards: Card[];
-
-    public async AddCard(card: Card) {
-        if (!this.Cards) return;
-
-        this.Cards.push(card);
-    }
 }

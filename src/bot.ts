@@ -32,5 +32,6 @@ const client = new CoreClient([
 
 Registry.RegisterCommands();
 Registry.RegisterEvents();
+Registry.RegisterButtonEvents();
 
 client.start();

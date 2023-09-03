@@ -7,14 +7,23 @@ import { Command } from "../type/command";
 
 import { Events } from "./events";
 import { Util } from "./util";
+import CardSetupFunction from "../Functions/CardSetupFunction";
+import CardDataSource from "../database/dataSources/cardDataSource";
+import CardDropHelper from "../helpers/CardDropHelper";
+import IButtonEventItem from "../contracts/IButtonEventItem";
+import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
     private static _eventItems: IEventItem[];
+    private static _buttonEvents: IButtonEventItem[];
 
     private _events: Events;
     private _util: Util;
+    private _cardSetupFunc: CardSetupFunction;
+
+    public static ClaimId: string;
 
     public static get commandItems(): ICommandItem[] {
         return this._commandItems;
@@ -24,15 +33,21 @@ export class CoreClient extends Client {
         return this._eventItems;
     }
 
+    public static get buttonEvents(): IButtonEventItem[] {
+        return this._buttonEvents;
+    }
+
     constructor(intents: number[]) {
         super({ intents: intents });
         dotenv.config();
 
         CoreClient._commandItems = [];
         CoreClient._eventItems = [];
+        CoreClient._buttonEvents = [];
 
         this._events = new Events();
         this._util = new Util();
+        this._cardSetupFunc = new CardSetupFunction();
     }
 
     public async start() {
@@ -42,11 +57,17 @@ export class CoreClient extends Client {
         }
 
         await AppDataSource.initialize()
-            .then(() => console.log("Data Source Initialized"))
-            .catch((err) => console.error("Error Initialising Data Source", err));
+            .then(() => console.log("App Data Source Initialised"))
+            .catch(err => console.error("Error initialising App Data Source", err));
+
+        await CardDataSource.initialize()
+            .then(() => console.log("Card Data Source Initialised"))
+            .catch(err => console.error("Error initialising Card Data Source", err));
 
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
+
+        await this._cardSetupFunc.Execute();
 
         await super.login(process.env.BOT_TOKEN);
 
@@ -71,5 +92,14 @@ export class CoreClient extends Client {
         };
 
         CoreClient._eventItems.push(item);
+    }
+
+    public static RegisterButtonEvent(buttonId: string, event: ButtonEvent) {
+        const item: IButtonEventItem = {
+            ButtonId: buttonId,
+            Event: event,
+        };
+
+        CoreClient._buttonEvents.push(item);
     }
 }
