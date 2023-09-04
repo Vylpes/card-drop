@@ -65,7 +65,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Bronze, path.join(path.join(process.cwd(), 'cards', series.Path, 'BRONZE', file)), series);
+                const card = new Card(cardId, cardName, CardRarity.Bronze, path.join(path.join(process.cwd(), 'cards', series.Path, 'BRONZE', file)), file, series);
 
                 cardsToSave.push(card);
             }
@@ -76,7 +76,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Gold, path.join(path.join(process.cwd(), 'cards', series.Path, 'GOLD', file)), series);
+                const card = new Card(cardId, cardName, CardRarity.Gold, path.join(path.join(process.cwd(), 'cards', series.Path, 'GOLD', file)), file, series);
 
                 cardsToSave.push(card);
             }
@@ -87,7 +87,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Legendary, path.join(path.join(process.cwd(), 'cards', series.Path, 'LEGENDARY', file)), series);
+                const card = new Card(cardId, cardName, CardRarity.Legendary, path.join(path.join(process.cwd(), 'cards', series.Path, 'LEGENDARY', file)), file, series);
 
                 cardsToSave.push(card);
             }
@@ -98,7 +98,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Silver, path.join(path.join(process.cwd(), 'cards', series.Path, 'SILVER', file)), series);
+                const card = new Card(cardId, cardName, CardRarity.Silver, path.join(path.join(process.cwd(), 'cards', series.Path, 'SILVER', file)), file, series);
 
                 cardsToSave.push(card);
             }
