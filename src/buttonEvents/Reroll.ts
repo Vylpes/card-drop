@@ -14,14 +14,14 @@ export default class Reroll extends ButtonEvent {
 
         const image = readFileSync(randomCard.Path);
 
-        const attachment = new AttachmentBuilder(image, { name: `${randomCard.Id}.png` });
+        const attachment = new AttachmentBuilder(image, { name: randomCard.FileName });
 
         const embed = new EmbedBuilder()
             .setTitle(randomCard.Name)
             .setDescription(randomCard.Series.Name)
             .setFooter({ text: CardRarityToString(randomCard.Rarity) })
             .setColor(CardRarityToColour(randomCard.Rarity))
-            .setImage(`attachment://${randomCard.Id}.png`);
+            .setImage(`attachment://${randomCard.FileName}`);
 
         const row = new ActionRowBuilder<ButtonBuilder>();
 

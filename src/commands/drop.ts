@@ -20,14 +20,16 @@ export default class Drop extends Command {
 
         const image = readFileSync(randomCard.Path);
 
-        const attachment = new AttachmentBuilder(image, { name: `${randomCard.Id}.png` });
+        await interaction.deferReply();
+
+        const attachment = new AttachmentBuilder(image, { name: randomCard.FileName });
 
         const embed = new EmbedBuilder()
             .setTitle(randomCard.Name)
             .setDescription(randomCard.Series.Name)
             .setFooter({ text: CardRarityToString(randomCard.Rarity) })
             .setColor(CardRarityToColour(randomCard.Rarity))
-            .setImage(`attachment://${randomCard.Id}.png`);
+            .setImage(`attachment://${randomCard.FileName}`);
 
         const row = new ActionRowBuilder<ButtonBuilder>();
 
@@ -43,7 +45,7 @@ export default class Drop extends Command {
                 .setLabel("Reroll")
                 .setStyle(ButtonStyle.Secondary));
 
-        await interaction.reply({
+        await interaction.editReply({
             embeds: [ embed ],
             files: [ attachment ],
             components: [ row ],

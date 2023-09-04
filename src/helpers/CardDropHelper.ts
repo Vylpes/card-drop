@@ -1,12 +1,9 @@
 import { CardRarity } from "../constants/CardRarity";
-import CardDataSource from "../database/dataSources/cardDataSource";
 import Card from "../database/entities/card/Card";
 import Series from "../database/entities/card/Series";
 
 export default class CardDropHelper {
     public static async GetRandomCard(): Promise<Card> {
-        const seriesRepository = CardDataSource.getRepository(Series);
-
         const allSeries = await Series.FetchAll(Series, [ "Cards", "Cards.Series" ]);
         const allSeriesWithCards = allSeries.filter(x => x.Cards.length > 0);
 
@@ -27,7 +24,7 @@ export default class CardDropHelper {
         else if (randomRarity < goldChance) cardRarity = CardRarity.Gold;
         else cardRarity = CardRarity.Legendary;
 
-        const allCards = randomSeries.Cards.filter(x => x.Rarity == cardRarity);
+        const allCards = randomSeries.Cards.filter(x => x.Rarity == cardRarity && x.Path && x.FileName);
 
         const randomCardIndex = Math.floor(Math.random() * allCards.length);
 
