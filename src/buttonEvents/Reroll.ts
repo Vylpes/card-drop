@@ -1,4 +1,4 @@
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, DiscordAPIError, EmbedBuilder } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import CardDropHelper from "../helpers/CardDropHelper";
 import { readFileSync } from "fs";
@@ -41,11 +41,22 @@ export default class Reroll extends ButtonEvent {
                 .setLabel("Reroll")
                 .setStyle(ButtonStyle.Secondary));
 
-        await interaction.reply({
-            embeds: [ embed ],
-            files: [ attachment ],
-            components: [ row ],
-        });
+        try {
+            await interaction.editReply({
+                embeds: [ embed ],
+                files: [ attachment ],
+                components: [ row ],
+            });
+        } catch (e) {
+            console.error(e);
+
+
+            if (e instanceof DiscordAPIError) {
+                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}`);
+            } else {
+                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN`);
+            }
+        }
 
         CoreClient.ClaimId = claimId;
     }
