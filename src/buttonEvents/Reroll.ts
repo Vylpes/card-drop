@@ -10,7 +10,11 @@ export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         if (!interaction.guild || !interaction.guildId) return;
 
-        const randomCard = await CardDropHelper.GetRandomCard();
+        let randomCard = await CardDropHelper.GetRandomCard();
+
+        if (process.env.DROP_RARITY && Number(process.env.DROP_RARITY) > 0) {
+            randomCard = await CardDropHelper.GetRandomCardByRarity(Number(process.env.DROP_RARITY));
+        }
 
         const image = readFileSync(randomCard.Path);
 
