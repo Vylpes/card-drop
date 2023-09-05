@@ -24,7 +24,7 @@ export default class CardDropHelper {
         else if (randomRarity < goldChance) cardRarity = CardRarity.Gold;
         else cardRarity = CardRarity.Legendary;
 
-        const allCards = randomSeries.Cards.filter(x => x.Rarity == cardRarity && x.Path && x.FileName);
+        const allCards = randomSeries.Cards.filter(x => x.Rarity == cardRarity && x.Path && x.FileName && x.Rarity == CardRarity.Legendary);
 
         const randomCardIndex = Math.floor(Math.random() * allCards.length);
 
