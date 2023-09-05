@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne } from "typeorm";
 import CardBaseEntity from "../../../contracts/CardBaseEntity";
 import { CardRarity } from "../../../constants/CardRarity";
 import Series from "./Series";
+import CardDataSource from "../../dataSources/cardDataSource";
 
 @Entity()
 export default class Card extends CardBaseEntity {
@@ -33,4 +34,12 @@ export default class Card extends CardBaseEntity {
 
     @ManyToOne(() => Series, x => x.Cards)
     Series: Series;
+
+    public static async FetchAllByRarity(rarity: CardRarity, relations?: string[]): Promise<Card[]> {
+        const repository = CardDataSource.getRepository(Card);
+
+        const all = await repository.find({ where: { Rarity: rarity }, relations: relations || [] });
+
+        return all;
+    }
 }
