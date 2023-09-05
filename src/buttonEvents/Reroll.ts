@@ -5,6 +5,7 @@ import { readFileSync } from "fs";
 import { CardRarityToColour, CardRarityToString } from "../constants/CardRarity";
 import { v4 } from "uuid";
 import { CoreClient } from "../client/client";
+import Card from "../database/entities/card/Card";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -14,6 +15,15 @@ export default class Reroll extends ButtonEvent {
 
         if (process.env.DROP_RARITY && Number(process.env.DROP_RARITY) > 0) {
             randomCard = await CardDropHelper.GetRandomCardByRarity(Number(process.env.DROP_RARITY));
+        } else if (process.env.DROP_CARD && process.env.DROP_CARD != '-1') {
+            let card = await Card.FetchOneByCardNumber(process.env.DROP_CARD, [ "Series" ]);
+
+            if (!card) {
+                await interaction.reply("Card not found");
+                return;
+            }
+
+            randomCard = card;
         }
 
         const image = readFileSync(randomCard.Path);

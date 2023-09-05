@@ -35,6 +35,14 @@ export default class Card extends CardBaseEntity {
     @ManyToOne(() => Series, x => x.Cards)
     Series: Series;
 
+    public static async FetchOneByCardNumber(cardNumber: string, relations?: string[]): Promise<Card | null> {
+        const repository = CardDataSource.getRepository(Card);
+
+        const single = await repository.findOne({ where: { CardNumber: cardNumber }, relations: relations || [] });
+
+        return single;
+    }
+
     public static async FetchAllByRarity(rarity: CardRarity, relations?: string[]): Promise<Card[]> {
         const repository = CardDataSource.getRepository(Card);
 
