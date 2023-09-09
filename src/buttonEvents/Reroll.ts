@@ -28,6 +28,8 @@ export default class Reroll extends ButtonEvent {
 
         const image = readFileSync(randomCard.Path);
 
+        await interaction.deferReply();
+
         const attachment = new AttachmentBuilder(image, { name: randomCard.FileName });
 
         const embed = new EmbedBuilder()
