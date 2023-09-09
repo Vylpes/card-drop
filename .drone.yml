@@ -7,7 +7,7 @@ steps:
 - name: deploy
   image: appleboy/drone-ssh
   settings:
-    host: 192.168.68.121
+    host: 192.168.68.120
     username: vylpes
     password:
       from_secret: ssh_password
@@ -28,7 +28,7 @@ steps:
 - name: stage
   image: appleboy/drone-ssh
   settings:
-    host: 192.168.68.121
+    host: 192.168.68.120
     username: vylpes
     password:
       from_secret: ssh_password
