@@ -9,7 +9,6 @@ import { Events } from "./events";
 import { Util } from "./util";
 import CardSetupFunction from "../Functions/CardSetupFunction";
 import CardDataSource from "../database/dataSources/cardDataSource";
-import CardDropHelper from "../helpers/CardDropHelper";
 import IButtonEventItem from "../contracts/IButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
