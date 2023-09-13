@@ -2,6 +2,7 @@ import { ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
+import { default as eClaim } from "../database/entities/app/Claim";
 
 export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -11,7 +12,7 @@ export default class Claim extends ButtonEvent {
         const claimId = interaction.customId.split(' ')[2];
         const userId = interaction.user.id;
 
-        const claimed = await Inventory.FetchOneByClaimId(claimId);
+        const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
             await interaction.reply('This card has already been claimed');
@@ -26,12 +27,23 @@ export default class Claim extends ButtonEvent {
         let inventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
         if (!inventory) {
-            inventory = new Inventory(userId, cardNumber, 1, claimId);
+            inventory = new Inventory(userId, cardNumber, 1);
         } else {
             inventory.SetQuantity(inventory.Quantity + 1);
         }
 
         await inventory.Save(Inventory, inventory);
+
+        const claim = new eClaim(claimId);
+        await claim.Save(eClaim, claim);
+
+        inventory = await Inventory.FetchOneById(Inventory, inventory.Id, [ "Claims" ]);
+
+        if (inventory) {
+            inventory.AddClaim(claim);
+
+            await inventory.Save(Inventory, inventory);
+        }
 
         await interaction.reply('Card claimed');
     }
