@@ -51,7 +51,7 @@ export default class Drop extends Command {
 
         row.addComponents(
             new ButtonBuilder()
-                .setCustomId(`claim ${randomCard.CardNumber} ${claimId}`)
+                .setCustomId(`claim ${randomCard.CardNumber} ${claimId} ${interaction.user.id}`)
                 .setLabel("Claim")
                 .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
@@ -75,7 +75,6 @@ export default class Drop extends Command {
                 await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN`);
             }
         }
-
 
         CoreClient.ClaimId = claimId;
     }

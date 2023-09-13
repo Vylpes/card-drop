@@ -17,6 +17,10 @@ export default class Claim extends AppBaseEntity {
     @ManyToOne(() => Inventory, x => x.Claims)
     Inventory: Inventory;
 
+    public SetInventory(inventory: Inventory) {
+        this.Inventory = inventory;
+    }
+
     public static async FetchOneByClaimId(claimId: string): Promise<Claim | null> {
         const repository = AppDataSource.getRepository(Claim);
 

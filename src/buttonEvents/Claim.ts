@@ -10,6 +10,7 @@ export default class Claim extends ButtonEvent {
 
         const cardNumber = interaction.customId.split(' ')[1];
         const claimId = interaction.customId.split(' ')[2];
+        const droppedBy = interaction.customId.split(' ')[3];
         const userId = interaction.user.id;
 
         const claimed = await eClaim.FetchOneByClaimId(claimId);
@@ -19,8 +20,8 @@ export default class Claim extends ButtonEvent {
             return;
         }
 
-        if (claimId != CoreClient.ClaimId) {
-            await interaction.reply('This card has expired');
+        if (claimId == CoreClient.ClaimId && userId != droppedBy) {
+            await interaction.reply('The latest dropped card can only be claimed by the user who dropped it');
             return;
         }
 
@@ -35,15 +36,9 @@ export default class Claim extends ButtonEvent {
         await inventory.Save(Inventory, inventory);
 
         const claim = new eClaim(claimId);
+        claim.SetInventory(inventory);
+
         await claim.Save(eClaim, claim);
-
-        inventory = await Inventory.FetchOneById(Inventory, inventory.Id, [ "Claims" ]);
-
-        if (inventory) {
-            inventory.AddClaim(claim);
-
-            await inventory.Save(Inventory, inventory);
-        }
 
         await interaction.reply('Card claimed');
     }

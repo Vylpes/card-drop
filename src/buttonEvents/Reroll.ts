@@ -45,7 +45,7 @@ export default class Reroll extends ButtonEvent {
 
         row.addComponents(
             new ButtonBuilder()
-                .setCustomId(`claim ${randomCard.CardNumber} ${claimId}`)
+                .setCustomId(`claim ${randomCard.CardNumber} ${claimId} ${interaction.user.id}`)
                 .setLabel("Claim")
                 .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
