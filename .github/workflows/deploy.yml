@@ -42,3 +42,4 @@ jobs:
         port: ${{ secrets.SSH_PROD_PORT }}
         script: ${{ secrets.SSH_PROD_COMMAND }}
         envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_ROOT_HOST,BOT_TOKEN
+
