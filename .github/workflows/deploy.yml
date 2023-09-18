@@ -1,0 +1,44 @@
+name: Deploy To Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install --frozen-lockfile
+    - run: yarn build
+    - run: yarn test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: appleboy/ssh-action@v1.0.0
+      env:
+        DB_NAME: ${{ secrets.DB_PROD_NAME }}
+        DB_AUTH_USER: ${{ secrets.DB_PROD_AUTH_USER }}
+        DB_AUTH_PASS: ${{ secrets.DB_PROD_AUTH_PASS }}
+        DB_ROOT_HOST: ${{ secrets.DB_PROD_ROOT_HOST }}
+        BOT_TOKEN: ${{ secrets.BOT_PROD_TOKEN }}
+      with:
+        host: ${{ secrets.SSH_PROD_HOST }}
+        username: ${{ secrets.SSH_PROD_USER }}
+        key: ${{ secrets.SSH_PROD_KEY }}
+        port: ${{ secrets.SSH_PROD_PORT }}
+        script: ${{ secrets.SSH_PROD_COMMAND }}
+        envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_ROOT_HOST,BOT_TOKEN

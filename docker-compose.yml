@@ -12,13 +12,13 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      - MYSQL_DATABASE=carddrop
-      - MYSQL_USER=dev
-      - MYSQL_PASSWORD=dev
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_ROOT_HOST=0.0.0.0
+      - MYSQL_DATABASE=$DB_NAME
+      - MYSQL_USER=$DB_AUTH_USER
+      - MYSQL_PASSWORD=$DB_AUTH_PASS
+      - MYSQL_ROOT_PASSWORD=$DB_AUTH_PASS
+      - MYSQL_ROOT_HOST=$DB_ROOT_HOST
     ports:
-      - "3301:3306"
+      - "3306:3306"
     volumes:
       - dev_database_data:/var/lib/mysql
 
