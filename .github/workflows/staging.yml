@@ -1,0 +1,46 @@
+name: Deploy To Stage
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install --frozen-lockfile
+    - run: yarn build
+    - run: yarn test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: appleboy/ssh-action@v1.0.0
+      env:
+        DB_NAME: ${{ secrets.DB_STAGE_NAME }}
+        DB_AUTH_USER: ${{ secrets.DB_STAGE_AUTH_USER }}
+        DB_AUTH_PASS: ${{ secrets.DB_STAGE_AUTH_PASS }}
+        DB_ROOT_HOST: ${{ secrets.DB_STAGE_ROOT_HOST }}
+        BOT_TOKEN: ${{ secrets.BOT_STAGE_TOKEN }}
+        NODE_OPTIONS: '--max-old-space-size=2048'
+      with:
+        host: ${{ secrets.SSH_STAGE_HOST }}
+        username: ${{ secrets.SSH_STAGE_USER }}
+        key: ${{ secrets.SSH_STAGE_KEY }}
+        port: ${{ secrets.SSH_STAGE_PORT }}
+        script: ${{ secrets.SSH_STAGE_COMMAND }}
+        envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_ROOT_HOST,BOT_TOKEN,NODE_OPTIONS
+
