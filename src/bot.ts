@@ -11,6 +11,7 @@ const requiredConfigs: string[] = [
     "BOT_AUTHOR",
     "BOT_OWNERID",
     "BOT_CLIENTID",
+    "BOT_ENV",
     "DB_HOST",
     "DB_PORT",
     "DB_AUTH_USER",

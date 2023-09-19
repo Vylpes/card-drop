@@ -12,6 +12,7 @@ import CardDataSource from "../database/dataSources/cardDataSource";
 import IButtonEventItem from "../contracts/IButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
+import { Environment } from "../constants/Environment";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -23,6 +24,7 @@ export class CoreClient extends Client {
     private _cardSetupFunc: CardSetupFunction;
 
     public static ClaimId: string;
+    public static Environment: Environment;
 
     public static get commandItems(): ICommandItem[] {
         return this._commandItems;
@@ -54,6 +56,8 @@ export class CoreClient extends Client {
             console.error("BOT_TOKEN is not defined in .env");
             return;
         }
+
+        CoreClient.Environment = Number(process.env.BOT_ENV);
 
         await AppDataSource.initialize()
             .then(() => console.log("App Data Source Initialised"))
