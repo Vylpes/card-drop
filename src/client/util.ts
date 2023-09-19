@@ -10,9 +10,15 @@ export class Util {
         const globalCommands = registeredCommands.filter(x => !x.ServerId);
         const guildCommands = registeredCommands.filter(x => x.ServerId);
 
-        const globalCommandData: SlashCommandBuilder[] = globalCommands
-            .filter(x => x.Command.CommandBuilder)
-            .flatMap(x => x.Command.CommandBuilder);
+        const globalCommandData: SlashCommandBuilder[] = [];
+
+        for (let command of globalCommands) {
+            if (!command.Command.CommandBuilder) continue;
+
+            if ((command.Environment & CoreClient.Environment) == CoreClient.Environment) {
+                globalCommandData.push(command.Command.CommandBuilder);
+            }
+        }
 
         const guildIds: string[] = [];
 
@@ -32,12 +38,18 @@ export class Util {
         );
 
         for (let guild of guildIds) {
-            const guildCommandData = guildCommands.filter(x => x.ServerId == guild)
-                .filter(x => x.Command.CommandBuilder)
-                .flatMap(x => x.Command.CommandBuilder);
+            const guildCommandData: SlashCommandBuilder[] = [];
+
+            for (let command of guildCommands.filter(x => x.ServerId == guild)) {
+                if (!command.Command.CommandBuilder) continue;
+
+                if ((command.Environment & CoreClient.Environment) == CoreClient.Environment) {
+                    guildCommandData.push(command.Command.CommandBuilder);
+                }
+            }
 
             if (!client.guilds.cache.has(guild)) continue;
-            
+
             rest.put(
                 Routes.applicationGuildCommands(process.env.BOT_CLIENTID!, guild),
                 {

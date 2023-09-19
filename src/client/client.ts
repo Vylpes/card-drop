@@ -72,15 +72,16 @@ export class CoreClient extends Client {
 
         await this._cardSetupFunc.Execute();
 
-        await super.login(process.env.BOT_TOKEN);
-
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);
+
+        await super.login(process.env.BOT_TOKEN);
     }
 
-    public static RegisterCommand(name: string, command: Command, serverId?: string) {
+    public static RegisterCommand(name: string, command: Command, environment: Environment = Environment.All, serverId?: string) {
         const item: ICommandItem = {
             Name: name,
+            Environment: environment,
             Command: command,
             ServerId: serverId,
         };
@@ -88,10 +89,11 @@ export class CoreClient extends Client {
         CoreClient._commandItems.push(item);
     }
 
-    public static RegisterEvent(eventType: EventType, func: Function) {
+    public static RegisterEvent(eventType: EventType, func: Function, environment: Environment = Environment.All) {
         const item: IEventItem = {
             EventType: eventType,
             ExecutionFunction: func,
+            Environment: environment,
         };
 
         CoreClient._eventItems.push(item);
