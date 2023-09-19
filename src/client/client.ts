@@ -58,6 +58,7 @@ export class CoreClient extends Client {
         }
 
         CoreClient.Environment = Number(process.env.BOT_ENV);
+        console.log(`Bot Environment: ${CoreClient.Environment}`);
 
         await AppDataSource.initialize()
             .then(() => console.log("App Data Source Initialised"))
