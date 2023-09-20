@@ -1,7 +1,6 @@
 import { Interaction } from "discord.js";
 import ChatInputCommand from "./interactionCreate/ChatInputCommand";
 import Button from "./interactionCreate/Button";
-import { CoreClient } from "./client";
 
 export class Events {
     public async onInteractionCreate(interaction: Interaction) {

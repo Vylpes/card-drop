@@ -49,6 +49,9 @@ export class CoreClient extends Client {
         this._events = new Events();
         this._util = new Util();
         this._cardSetupFunc = new CardSetupFunction();
+
+        CoreClient.Environment = Number(process.env.BOT_ENV);
+        console.log(`Bot Environment: ${CoreClient.Environment}`);
     }
 
     public async start() {
@@ -56,9 +59,6 @@ export class CoreClient extends Client {
             console.error("BOT_TOKEN is not defined in .env");
             return;
         }
-
-        CoreClient.Environment = Number(process.env.BOT_ENV);
-        console.log(`Bot Environment: ${CoreClient.Environment}`);
 
         await AppDataSource.initialize()
             .then(() => console.log("App Data Source Initialised"))
@@ -76,6 +76,10 @@ export class CoreClient extends Client {
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);
 
+        console.log(`Registered Commands: ${CoreClient._commandItems.flatMap(x => x.Name).join(", ")}`);
+        console.log(`Registered Events: ${CoreClient._eventItems.flatMap(x => x.EventType).join(", ")}`);
+        console.log(`Registered Buttons: ${CoreClient._buttonEvents.flatMap(x => x.ButtonId).join(", ")}`);
+
         await super.login(process.env.BOT_TOKEN);
     }
 
@@ -87,7 +91,9 @@ export class CoreClient extends Client {
             ServerId: serverId,
         };
 
-        CoreClient._commandItems.push(item);
+        if (environment &= CoreClient.Environment) {
+            CoreClient._commandItems.push(item);
+        }
     }
 
     public static RegisterEvent(eventType: EventType, func: Function, environment: Environment = Environment.All) {
@@ -97,15 +103,20 @@ export class CoreClient extends Client {
             Environment: environment,
         };
 
-        CoreClient._eventItems.push(item);
+        if (environment &= CoreClient.Environment) {
+            CoreClient._eventItems.push(item);
+        }
     }
 
-    public static RegisterButtonEvent(buttonId: string, event: ButtonEvent) {
+    public static RegisterButtonEvent(buttonId: string, event: ButtonEvent, environment: Environment = Environment.All) {
         const item: IButtonEventItem = {
             ButtonId: buttonId,
             Event: event,
+            Environment: environment,
         };
 
-        CoreClient._buttonEvents.push(item);
+        if (environment &= CoreClient.Environment) {
+            CoreClient._buttonEvents.push(item);
+        }
     }
 }

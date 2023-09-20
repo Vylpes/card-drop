@@ -5,6 +5,7 @@ import Drop from "./commands/drop";
 
 import Claim from "./buttonEvents/Claim";
 import Reroll from "./buttonEvents/Reroll";
+import { Environment } from "./constants/Environment";
 
 export default class Registry {
     public static RegisterCommands() {
