@@ -1,8 +1,5 @@
 version: "3.9"
 
-volumes:
-  database_data:
-
 services:
   database:
     image: mysql/mysql-server
@@ -17,4 +14,4 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - database_data:/var/lib/mysql
+      - $DB_DATA_LOCATION:/var/lib/mysql
