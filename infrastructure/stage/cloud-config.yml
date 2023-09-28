@@ -1,0 +1,37 @@
+#cloud-config
+
+users:
+  - default
+  - name: vylpes
+    primary-group: vylpes
+    shell: /bin/bash
+    groups: users, docker, sudo
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/EDwCD5t3/WpyqDwpGAJMHTfbpPT9W5ffQfVqlMFl4TA8eVzPS+H/czy3PQOMUAgVKtO1Xup8GdFovN6dMVEk4IPNNS8w8OheSUKOCsRq1A1r2vDHZ/h393l4A9jWGq2HRBdUdQhy7SDXC/VBY2Yo5IQuAhI6gaXz/AENQ0Qf5PpMevfGs2jVu+0Ic5J1ccjX+8FWXZtRi0VF84WIixUfdyNgsi0RkywlRKyas7bDAWRtfB556qrxaQd0iTdyL0sCR+XAIx5cGbf5knFUXXeQvsASczgzn6X4Jzzgnv/MB0K/nALZeETxI9IXki4yQuGSomiR9WRYSIRLZsjrWxUTwk5RPMuAofW8hr20HL5QqBLVRzFVf7RipmCug8JAx8EE1uk8SLFOJCQBwzYTTbp1KAsJtVkUL+0YEIsgFuhPcXXIN1DbHCeKu5WHKnPxx9kwW/bx9q+Id1crYFWMm/a+MJPBNhIGmv9+HAWOeSZDeROCYd9Nx3yEdT15+hn5L/GZaMyk5AbCwjFWVwUVIAt5Pcn/AkBngRc5DuA+JE7TbbeWsYyN379gwswl/IYBP6fO13V80iDwwkQdizvBCtnmD3Q200aI1unpydR4lZlpPyP0ug0t7jJSEAn9nzQmsMSw7sI9BJ3uf49Y8Qf7LPd9llQeJl+qFXpvDBcji/qHYQ== vylpes@Ethans-MacBook-Pro.local
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=amd64] https://download.docker.com/linux/debian $RELEASE stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    nodejs.list:
+      source: deb [signed-by=$KEY_FILE] https://deb.nodesource.com/node_18.x $RELEASE main
+      keyid: 9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280
+
+packages:
+  - git
+  - rsync
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+  - nodejs
+  - rsync
+  - rclone
+
+runcmd:
+  - ufw limit ssh
+  - ufw enable
+  - npm install -g yarn pm2

@@ -17,6 +17,7 @@ const requiredConfigs: string[] = [
     "DB_AUTH_PASS",
     "DB_SYNC",
     "DB_LOGGING",
+    "CARD_FOLDER",
 ]
 
 requiredConfigs.forEach(config => {
