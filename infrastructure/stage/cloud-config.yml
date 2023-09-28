@@ -28,7 +28,6 @@ packages:
   - docker-buildx-plugin
   - docker-compose-plugin
   - nodejs
-  - rsync
   - rclone
 
 runcmd:
