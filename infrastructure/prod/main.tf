@@ -3,8 +3,18 @@ variable "VULTR_API_KEY" {
   description = "The Vultr API Key"
 }
 
-variable "INSTANCE_PREFIX" {
-  description = "The prefix to be added before instance labels"
+variable "INSTANCE_NAME" {
+  description = "The name of the project this instance is for"
+}
+
+variable "INSTANCE_ENV" {
+  description = "The environment this project will be running"
+  default = "prod"
+}
+
+variable "INSTANCE_LOCATION" {
+  description = "The location all instances will be generated in"
+  default = "lhr"
 }
 
 # Providers
@@ -25,17 +35,17 @@ provider "vultr" {
 
 # Resources
 resource "vultr_instance" "vps-app" {
-    label = "${var.INSTANCE_PREFIX}-ldn-vps-app"
-    hostname = "${var.INSTANCE_PREFIX}-ldn-vps-app"
+    label = "vps-${var.INSTANCE_NAME}-${var.INSTANCE_ENV}-${var.INSTANCE_LOCATION}-app"
+    hostname = "vps-${var.INSTANCE_NAME}-${var.INSTANCE_ENV}-${var.INSTANCE_LOCATION}-app"
     plan = "vc2-1c-1gb"
-    region = "lhr"
+    region = var.INSTANCE_LOCATION
     os_id = "2136"
     enable_ipv6 = false
     user_data = file("./cloud-config.yml")
 }
 
 resource "vultr_reserved_ip" "ip-app" {
-  region = "lhr"
+  region = var.INSTANCE_LOCATION
   ip_type = "v4"
   instance_id = "${vultr_instance.vps-app.id}"
 }
