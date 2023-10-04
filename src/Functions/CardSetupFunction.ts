@@ -21,7 +21,7 @@ export default class CardSetupFunction {
     }
 
     private async ReadSeries() {
-        const seriesDir = readdirSync(path.join(process.cwd(), 'cards'));
+        const seriesDir = readdirSync(process.env.CARD_FOLDER!);
 
         const seriesRepository = CardDataSource.getRepository(Series);
 
@@ -49,15 +49,15 @@ export default class CardSetupFunction {
         const cardsToSave: Card[] = [];
 
         for (let series of loadedSeries) {
-            const bronzeExists = existsSync(path.join(process.cwd(), 'cards', series.Path, 'BRONZE'));
-            const goldExists = existsSync(path.join(process.cwd(), 'cards', series.Path, 'GOLD'));
-            const legendaryExists = existsSync(path.join(process.cwd(), 'cards', series.Path, 'LEGENDARY'));
-            const silverExists = existsSync(path.join(process.cwd(), 'cards', series.Path, 'SILVER'));
+            const bronzeExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'BRONZE'));
+            const goldExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'GOLD'));
+            const legendaryExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'LEGENDARY'));
+            const silverExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'SILVER'));
 
-            const cardDirBronze =  bronzeExists ? readdirSync(path.join(process.cwd(), 'cards', series.Path, 'BRONZE')) : [];
-            const cardDirGold = goldExists ? readdirSync(path.join(process.cwd(), 'cards', series.Path, 'GOLD')) : [];
-            const cardDirLegendary = legendaryExists ? readdirSync(path.join(process.cwd(), 'cards', series.Path, 'LEGENDARY')) : [];
-            const cardDirSilver = silverExists ? readdirSync(path.join(process.cwd(), 'cards', series.Path, 'SILVER')) : [];
+            const cardDirBronze =  bronzeExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'BRONZE')) : [];
+            const cardDirGold = goldExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'GOLD')) : [];
+            const cardDirLegendary = legendaryExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'LEGENDARY')) : [];
+            const cardDirSilver = silverExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'SILVER')) : [];
 
             for (let file of cardDirBronze) {
                 const filePart = file.split('.');
@@ -65,7 +65,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Bronze, path.join(path.join(process.cwd(), 'cards', series.Path, 'BRONZE', file)), file, series);
+                const card = new Card(cardId, cardName, CardRarity.Bronze, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'BRONZE', file)), file, series);
 
                 cardsToSave.push(card);
             }
@@ -76,7 +76,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Gold, path.join(path.join(process.cwd(), 'cards', series.Path, 'GOLD', file)), file, series);
+                const card = new Card(cardId, cardName, CardRarity.Gold, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'GOLD', file)), file, series);
 
                 cardsToSave.push(card);
             }
@@ -87,7 +87,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Legendary, path.join(path.join(process.cwd(), 'cards', series.Path, 'LEGENDARY', file)), file, series);
+                const card = new Card(cardId, cardName, CardRarity.Legendary, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'LEGENDARY', file)), file, series);
 
                 cardsToSave.push(card);
             }
@@ -98,7 +98,7 @@ export default class CardSetupFunction {
                 const cardId = filePart[0];
                 const cardName = filePart[0];
 
-                const card = new Card(cardId, cardName, CardRarity.Silver, path.join(path.join(process.cwd(), 'cards', series.Path, 'SILVER', file)), file, series);
+                const card = new Card(cardId, cardName, CardRarity.Silver, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'SILVER', file)), file, series);
 
                 cardsToSave.push(card);
             }
