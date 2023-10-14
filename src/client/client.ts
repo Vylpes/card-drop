@@ -12,6 +12,7 @@ import CardDataSource from "../database/dataSources/cardDataSource";
 import IButtonEventItem from "../contracts/IButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
+import { Environment } from "../constants/Environment";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -23,6 +24,7 @@ export class CoreClient extends Client {
     private _cardSetupFunc: CardSetupFunction;
 
     public static ClaimId: string;
+    public static Environment: Environment;
 
     public static get commandItems(): ICommandItem[] {
         return this._commandItems;
@@ -47,6 +49,9 @@ export class CoreClient extends Client {
         this._events = new Events();
         this._util = new Util();
         this._cardSetupFunc = new CardSetupFunction();
+
+        CoreClient.Environment = Number(process.env.BOT_ENV);
+        console.log(`Bot Environment: ${CoreClient.Environment}`);
     }
 
     public async start() {
@@ -68,37 +73,50 @@ export class CoreClient extends Client {
 
         await this._cardSetupFunc.Execute();
 
-        await super.login(process.env.BOT_TOKEN);
-
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);
+
+        console.log(`Registered Commands: ${CoreClient._commandItems.flatMap(x => x.Name).join(", ")}`);
+        console.log(`Registered Events: ${CoreClient._eventItems.flatMap(x => x.EventType).join(", ")}`);
+        console.log(`Registered Buttons: ${CoreClient._buttonEvents.flatMap(x => x.ButtonId).join(", ")}`);
+
+        await super.login(process.env.BOT_TOKEN);
     }
 
-    public static RegisterCommand(name: string, command: Command, serverId?: string) {
+    public static RegisterCommand(name: string, command: Command, environment: Environment = Environment.All, serverId?: string) {
         const item: ICommandItem = {
             Name: name,
+            Environment: environment,
             Command: command,
             ServerId: serverId,
         };
 
-        CoreClient._commandItems.push(item);
+        if (environment &= CoreClient.Environment) {
+            CoreClient._commandItems.push(item);
+        }
     }
 
-    public static RegisterEvent(eventType: EventType, func: Function) {
+    public static RegisterEvent(eventType: EventType, func: Function, environment: Environment = Environment.All) {
         const item: IEventItem = {
             EventType: eventType,
             ExecutionFunction: func,
+            Environment: environment,
         };
 
-        CoreClient._eventItems.push(item);
+        if (environment &= CoreClient.Environment) {
+            CoreClient._eventItems.push(item);
+        }
     }
 
-    public static RegisterButtonEvent(buttonId: string, event: ButtonEvent) {
+    public static RegisterButtonEvent(buttonId: string, event: ButtonEvent, environment: Environment = Environment.All) {
         const item: IButtonEventItem = {
             ButtonId: buttonId,
             Event: event,
+            Environment: environment,
         };
 
-        CoreClient._buttonEvents.push(item);
+        if (environment &= CoreClient.Environment) {
+            CoreClient._buttonEvents.push(item);
+        }
     }
 }
