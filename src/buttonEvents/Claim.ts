@@ -40,6 +40,6 @@ export default class Claim extends ButtonEvent {
 
         await claim.Save(eClaim, claim);
 
-        await interaction.reply('Card claimed');
+        await interaction.reply(`Card claimed by ${interaction.user}`);
     }
 }
