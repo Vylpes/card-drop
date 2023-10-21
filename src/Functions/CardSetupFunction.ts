@@ -59,7 +59,7 @@ export default class CardSetupFunction {
             const cardDirLegendary = legendaryExists ? readdirSync(path.join(process.cwd(), 'cards', series.Path, 'LEGENDARY')) : [];
             const cardDirSilver = silverExists ? readdirSync(path.join(process.cwd(), 'cards', series.Path, 'SILVER')) : [];
 
-            for (let file of cardDirBronze) {
+            for (let file of cardDirBronze.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
                 const filePart = file.split('.');
 
                 const cardId = filePart[0];
@@ -70,7 +70,7 @@ export default class CardSetupFunction {
                 cardsToSave.push(card);
             }
 
-            for (let file of cardDirGold) {
+            for (let file of cardDirGold.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
                 const filePart = file.split('.');
 
                 const cardId = filePart[0];
@@ -81,7 +81,7 @@ export default class CardSetupFunction {
                 cardsToSave.push(card);
             }
 
-            for (let file of cardDirLegendary) {
+            for (let file of cardDirLegendary.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
                 const filePart = file.split('.');
 
                 const cardId = filePart[0];
@@ -92,7 +92,7 @@ export default class CardSetupFunction {
                 cardsToSave.push(card);
             }
 
-            for (let file of cardDirSilver) {
+            for (let file of cardDirSilver.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
                 const filePart = file.split('.');
 
                 const cardId = filePart[0];
