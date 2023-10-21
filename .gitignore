@@ -108,3 +108,4 @@ config.json
 ormconfig.json
 gdrive-credentials.json
 cards/
+*.db
