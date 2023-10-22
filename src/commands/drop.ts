@@ -6,6 +6,7 @@ import { readFileSync } from "fs";
 import { CoreClient } from "../client/client";
 import { v4 } from "uuid";
 import Card from "../database/entities/card/Card";
+import Inventory from "../database/entities/app/Inventory";
 
 export default class Drop extends Command {
     constructor() {
@@ -38,9 +39,16 @@ export default class Drop extends Command {
 
         const attachment = new AttachmentBuilder(image, { name: randomCard.FileName });
 
+        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.CardNumber);
+        const quantityClaimed = inventory ? inventory.Quantity : 0;
+
+        let embedDescription = "";
+        embedDescription += `Series: ${randomCard.Series.Name}\n`;
+        embedDescription += `Claimed: ${quantityClaimed || 0}\n`;
+
         const embed = new EmbedBuilder()
             .setTitle(randomCard.Name)
-            .setDescription(randomCard.Series.Name)
+            .setDescription(embedDescription)
             .setFooter({ text: CardRarityToString(randomCard.Rarity) })
             .setColor(CardRarityToColour(randomCard.Rarity))
             .setImage(`attachment://${randomCard.FileName}`);
