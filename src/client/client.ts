@@ -12,6 +12,7 @@ import CardDataSource from "../database/dataSources/cardDataSource";
 import IButtonEventItem from "../contracts/IButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
+import Webhooks from "../webhooks";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -20,7 +21,7 @@ export class CoreClient extends Client {
 
     private _events: Events;
     private _util: Util;
-    private _cardSetupFunc: CardSetupFunction;
+    private _webhooks: Webhooks;
 
     public static ClaimId: string;
 
@@ -46,7 +47,7 @@ export class CoreClient extends Client {
 
         this._events = new Events();
         this._util = new Util();
-        this._cardSetupFunc = new CardSetupFunction();
+        this._webhooks = new Webhooks();
     }
 
     public async start() {
@@ -66,12 +67,14 @@ export class CoreClient extends Client {
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
 
-        await this._cardSetupFunc.Execute();
+        CardSetupFunction.Execute();
 
         await super.login(process.env.BOT_TOKEN);
 
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);
+
+        await this._webhooks.start();
     }
 
     public static RegisterCommand(name: string, command: Command, serverId?: string) {

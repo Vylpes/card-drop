@@ -6,13 +6,13 @@ import path from "path";
 import { CardRarity } from "../constants/CardRarity";
 
 export default class CardSetupFunction {
-    public async Execute() {
+    public static async Execute() {
         await this.ClearDatabase();
         await this.ReadSeries();
         await this.ReadCards();
     }
 
-    private async ClearDatabase() {
+    private static async ClearDatabase() {
         const cardRepository = CardDataSource.getRepository(Card);
         await cardRepository.clear();
 
@@ -20,7 +20,7 @@ export default class CardSetupFunction {
         await seriesRepository.clear();
     }
 
-    private async ReadSeries() {
+    private static async ReadSeries() {
         const seriesDir = readdirSync(process.env.CARD_FOLDER!);
 
         const seriesRepository = CardDataSource.getRepository(Series);
@@ -41,7 +41,7 @@ export default class CardSetupFunction {
         await seriesRepository.save(seriesToSave);
     }
 
-    private async ReadCards() {
+    private static async ReadCards() {
         const loadedSeries = await Series.FetchAll(Series, [ "Cards", "Cards.Series" ]);
 
         const cardRepository = CardDataSource.getRepository(Card);
