@@ -1,4 +1,5 @@
-import { CardRarity } from "../constants/CardRarity";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import { CardRarity, CardRarityToColour, CardRarityToString } from "../constants/CardRarity";
 import Card from "../database/entities/card/Card";
 
 export default class CardDropHelper {
@@ -29,5 +30,31 @@ export default class CardDropHelper {
         const card = allCards[randomCardIndex];
 
         return card;
+    }
+
+    public static GenerateDropEmbed(card: Card, quantityClaimed: Number): EmbedBuilder {
+        let description = "";
+        description += `Series: ${card.Series.Name}\n`;
+        description += `Claimed: ${quantityClaimed}\n`;
+
+        return new EmbedBuilder()
+            .setTitle(card.Name)
+            .setDescription(description)
+            .setFooter({ text: CardRarityToString(card.Rarity) })
+            .setColor(CardRarityToColour(card.Rarity))
+            .setImage(`attachment://${card.FileName}`);
+    }
+
+    public static GenerateDropButtons(card: Card, claimId: string, userId: string): ActionRowBuilder<ButtonBuilder> {
+        return new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`claim ${card.CardNumber} ${claimId} ${userId}`)
+                    .setLabel("Claim")
+                    .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+                    .setCustomId(`reroll`)
+                    .setLabel("Reroll")
+                    .setStyle(ButtonStyle.Secondary));
     }
 }

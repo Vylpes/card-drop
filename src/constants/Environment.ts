@@ -5,4 +5,5 @@ export enum Environment {
     Local = 1 << 2,
 
     All = Production | Stage | Local,
+    Test = Stage | Local,
 }
