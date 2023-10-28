@@ -3,7 +3,7 @@ import CardDataSource from "../database/dataSources/cardDataSource";
 import Card from "../database/entities/card/Card";
 import Series from "../database/entities/card/Series";
 import path from "path";
-import { CardRarity } from "../constants/CardRarity";
+import { CardRarity, CardRarityToString } from "../constants/CardRarity";
 
 export default class CardSetupFunction {
     public async Execute() {
@@ -21,7 +21,7 @@ export default class CardSetupFunction {
     }
 
     private async ReadSeries() {
-        const seriesDir = readdirSync(process.env.CARD_FOLDER!);
+        const seriesDir = readdirSync(path.join(process.cwd(), 'cards'));
 
         const seriesRepository = CardDataSource.getRepository(Series);
 
@@ -49,63 +49,47 @@ export default class CardSetupFunction {
         const cardsToSave: Card[] = [];
 
         for (let series of loadedSeries) {
-            const bronzeExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'BRONZE'));
-            const goldExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'GOLD'));
-            const legendaryExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'LEGENDARY'));
-            const silverExists = existsSync(path.join(process.env.CARD_FOLDER!, series.Path, 'SILVER'));
+            const cardDirBronze = this.GetCardFiles(CardRarity.Bronze, series);
+            const cardDirGold = this.GetCardFiles(CardRarity.Gold, series);
+            const cardDirLegendary = this.GetCardFiles(CardRarity.Legendary, series);
+            const cardDirSilver = this.GetCardFiles(CardRarity.Silver, series);
+            const cardDirManga = this.GetCardFiles(CardRarity.Manga, series);
 
-            const cardDirBronze =  bronzeExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'BRONZE')) : [];
-            const cardDirGold = goldExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'GOLD')) : [];
-            const cardDirLegendary = legendaryExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'LEGENDARY')) : [];
-            const cardDirSilver = silverExists ? readdirSync(path.join(process.env.CARD_FOLDER!, series.Path, 'SILVER')) : [];
-
-            for (let file of cardDirBronze.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
-                const filePart = file.split('.');
-
-                const cardId = filePart[0];
-                const cardName = filePart[0];
-
-                const card = new Card(cardId, cardName, CardRarity.Bronze, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'BRONZE', file)), file, series);
-
-                cardsToSave.push(card);
-            }
-
-            for (let file of cardDirGold.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
-                const filePart = file.split('.');
-
-                const cardId = filePart[0];
-                const cardName = filePart[0];
-
-                const card = new Card(cardId, cardName, CardRarity.Gold, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'GOLD', file)), file, series);
-
-                cardsToSave.push(card);
-            }
-
-            for (let file of cardDirLegendary.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
-                const filePart = file.split('.');
-
-                const cardId = filePart[0];
-                const cardName = filePart[0];
-
-                const card = new Card(cardId, cardName, CardRarity.Legendary, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'LEGENDARY', file)), file, series);
-
-                cardsToSave.push(card);
-            }
-
-            for (let file of cardDirSilver.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
-                const filePart = file.split('.');
-
-                const cardId = filePart[0];
-                const cardName = filePart[0];
-
-                const card = new Card(cardId, cardName, CardRarity.Silver, path.join(path.join(process.env.CARD_FOLDER!, series.Path, 'SILVER', file)), file, series);
-
-                cardsToSave.push(card);
-            }
+            cardsToSave.push(
+                ...this.GenerateCardData(cardDirBronze, CardRarity.Bronze, series),
+                ...this.GenerateCardData(cardDirGold, CardRarity.Gold, series),
+                ...this.GenerateCardData(cardDirLegendary, CardRarity.Legendary, series),
+                ...this.GenerateCardData(cardDirSilver, CardRarity.Silver, series),
+                ...this.GenerateCardData(cardDirManga, CardRarity.Manga, series)
+            );
         }
 
         await cardRepository.save(cardsToSave);
 
         console.log(`Loaded ${cardsToSave.length} cards to database`);
+    }
+
+    private GenerateCardData(files: string[], rarity: CardRarity, series: Series): Card[] {
+        const result: Card[] = [];
+
+        for (let file of files.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
+            const filePart = file.split('.');
+
+            const cardId = filePart[0];
+            const cardName = filePart[0];
+
+            const card = new Card(cardId, cardName, rarity, path.join(process.cwd(), 'cards', series.Path, CardRarityToString(rarity).toUpperCase(), file), file, series);
+
+            result.push(card);
+        }
+
+        return result;
+    }
+
+    private GetCardFiles(rarity: CardRarity, series: Series): string[] {
+        const folder = path.join(process.cwd(), 'cards', series.Path, CardRarityToString(rarity).toUpperCase());
+        const folderExists = existsSync(folder);
+
+        return folderExists ? readdirSync(folder) : [];
     }
 }
