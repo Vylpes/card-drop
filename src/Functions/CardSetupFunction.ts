@@ -21,7 +21,7 @@ export default class CardSetupFunction {
     }
 
     private async ReadSeries() {
-        const seriesDir = readdirSync(path.join(process.cwd(), 'cards'));
+        const seriesDir = readdirSync(process.env.CARD_FOLDER!);
 
         const seriesRepository = CardDataSource.getRepository(Series);
 
