@@ -78,7 +78,7 @@ export default class CardSetupFunction {
             const cardId = filePart[0];
             const cardName = filePart[0];
 
-            const card = new Card(cardId, cardName, rarity, path.join(process.cwd(), 'cards', series.Path, CardRarityToString(rarity).toUpperCase(), file), file, series);
+            const card = new Card(cardId, cardName, rarity, path.join(process.env.CARD_FOLDER!, series.Path, CardRarityToString(rarity).toUpperCase(), file), file, series);
 
             result.push(card);
         }
@@ -87,7 +87,7 @@ export default class CardSetupFunction {
     }
 
     private GetCardFiles(rarity: CardRarity, series: Series): string[] {
-        const folder = path.join(process.cwd(), 'cards', series.Path, CardRarityToString(rarity).toUpperCase());
+        const folder = path.join(process.env.CARD_FOLDER!, series.Path, CardRarityToString(rarity).toUpperCase());
         const folderExists = existsSync(folder);
 
         return folderExists ? readdirSync(folder) : [];
