@@ -1,4 +1,5 @@
 import { CardRarity } from "../constants/CardRarity";
+import CardRarityChances from "../constants/CardRarityChances";
 import Card from "../database/entities/card/Card";
 import Series from "../database/entities/card/Series";
 
@@ -8,13 +9,15 @@ export default class CardDropHelper {
 
         let cardRarity: CardRarity;
 
-        const bronzeChance = 62;
-        const silverChance = bronzeChance + 31;
-        const goldChance = silverChance + 6.4;
+        const bronzeChance = CardRarityChances.Bronze;
+        const silverChance = bronzeChance + CardRarityChances.Silver;
+        const goldChance = silverChance + CardRarityChances.Gold;
+        const mangaChance = goldChance + CardRarityChances.Manga;
 
         if (randomRarity < bronzeChance) cardRarity = CardRarity.Bronze;
         else if (randomRarity < silverChance) cardRarity = CardRarity.Silver;
         else if (randomRarity < goldChance) cardRarity = CardRarity.Gold;
+        else if (randomRarity < mangaChance) cardRarity = CardRarity.Manga;
         else cardRarity = CardRarity.Legendary;
 
         const allSeries = await Series.FetchAll(Series, [ "Cards", "Cards.Series" ]);

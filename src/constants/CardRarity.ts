@@ -1,14 +1,18 @@
 import EmbedColours from "./EmbedColours";
 
 export enum CardRarity {
+    Unknown,
     Bronze,
     Silver,
     Gold,
+    Manga,
     Legendary,
 }
 
 export function CardRarityToString(rarity: CardRarity): string {
     switch (rarity) {
+        case CardRarity.Unknown:
+            return "Unknown";
         case CardRarity.Bronze:
             return "Bronze";
         case CardRarity.Silver:
@@ -17,11 +21,15 @@ export function CardRarityToString(rarity: CardRarity): string {
             return "Gold";
         case CardRarity.Legendary:
             return "Legendary";
+        case CardRarity.Manga:
+            return "Manga";
     }
 }
 
 export function CardRarityToColour(rarity: CardRarity): number {
     switch (rarity) {
+        case CardRarity.Unknown:
+            return EmbedColours.Grey;
         case CardRarity.Bronze:
             return EmbedColours.BronzeCard;
         case CardRarity.Silver:
@@ -30,5 +38,7 @@ export function CardRarityToColour(rarity: CardRarity): number {
             return EmbedColours.GoldCard;
         case CardRarity.Legendary:
             return EmbedColours.LegendaryCard;
+        case CardRarity.Manga:
+            return EmbedColours.MangaCard;
     }
 }
