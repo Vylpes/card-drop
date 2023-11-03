@@ -13,6 +13,7 @@ import IButtonEventItem from "../contracts/IButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
 import { Environment } from "../constants/Environment";
+import Webhooks from "../webhooks";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -21,7 +22,7 @@ export class CoreClient extends Client {
 
     private _events: Events;
     private _util: Util;
-    private _cardSetupFunc: CardSetupFunction;
+    private _webhooks: Webhooks;
 
     public static ClaimId: string;
     public static Environment: Environment;
@@ -48,7 +49,7 @@ export class CoreClient extends Client {
 
         this._events = new Events();
         this._util = new Util();
-        this._cardSetupFunc = new CardSetupFunction();
+        this._webhooks = new Webhooks();
 
         CoreClient.Environment = Number(process.env.BOT_ENV);
         console.log(`Bot Environment: ${CoreClient.Environment}`);
@@ -71,10 +72,12 @@ export class CoreClient extends Client {
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
 
-        await this._cardSetupFunc.Execute();
+        await CardSetupFunction.Execute();
 
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);
+
+        this._webhooks.start();
 
         console.log(`Registered Commands: ${CoreClient._commandItems.flatMap(x => x.Name).join(", ")}`);
         console.log(`Registered Events: ${CoreClient._eventItems.flatMap(x => x.EventType).join(", ")}`);

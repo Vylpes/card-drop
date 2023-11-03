@@ -18,6 +18,7 @@ const requiredConfigs: string[] = [
     "DB_AUTH_PASS",
     "DB_SYNC",
     "DB_LOGGING",
+    "EXPRESS_PORT",
 ]
 
 requiredConfigs.forEach(config => {
