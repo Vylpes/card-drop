@@ -69,7 +69,7 @@ export default class CardSetupFunction {
         console.log(`Loaded ${cardsToSave.length} cards to database`);
     }
 
-    private GenerateCardData(files: string[], rarity: CardRarity, series: Series): Card[] {
+    private static GenerateCardData(files: string[], rarity: CardRarity, series: Series): Card[] {
         const result: Card[] = [];
 
         for (let file of files.filter(x => !x.startsWith('.') && (x.endsWith('.png') || x.endsWith('.jpg') || x.endsWith('.gif')))) {
@@ -86,7 +86,7 @@ export default class CardSetupFunction {
         return result;
     }
 
-    private GetCardFiles(rarity: CardRarity, series: Series): string[] {
+    private static GetCardFiles(rarity: CardRarity, series: Series): string[] {
         const folder = path.join(process.cwd(), 'cards', series.Path, CardRarityToString(rarity).toUpperCase());
         const folderExists = existsSync(folder);
 
