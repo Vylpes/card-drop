@@ -1,6 +1,6 @@
 {
   "name": "card-drop",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "./dist/bot.js",
   "typings": "./dist",
   "scripts": {
@@ -41,7 +41,8 @@
     "typeorm": "0.3.17"
   },
   "resolutions": {
-    "**/semver": "^7.5.2"
+    "**/@babel/traverse": "^7.23.2",
+    "**/undici": "^5.26.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
