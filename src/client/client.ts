@@ -26,6 +26,7 @@ export class CoreClient extends Client {
 
     public static ClaimId: string;
     public static Environment: Environment;
+    public static AllowDrops: boolean;
 
     public static get commandItems(): ICommandItem[] {
         return this._commandItems;
@@ -53,6 +54,8 @@ export class CoreClient extends Client {
 
         CoreClient.Environment = Number(process.env.BOT_ENV);
         console.log(`Bot Environment: ${CoreClient.Environment}`);
+
+        CoreClient.AllowDrops = true;
     }
 
     public async start() {

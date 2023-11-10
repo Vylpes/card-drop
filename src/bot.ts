@@ -2,6 +2,8 @@ import * as dotenv from "dotenv";
 import { CoreClient } from "./client/client";
 import { IntentsBitField } from "discord.js";
 import Registry from "./registry";
+import { existsSync } from "fs";
+import { ExecException, exec } from "child_process";
 
 dotenv.config();
 
@@ -19,6 +21,7 @@ const requiredConfigs: string[] = [
     "DB_SYNC",
     "DB_LOGGING",
     "EXPRESS_PORT",
+    "GDRIVESYNC_WHITELIST",
 ]
 
 requiredConfigs.forEach(config => {
@@ -35,5 +38,21 @@ const client = new CoreClient([
 Registry.RegisterCommands();
 Registry.RegisterEvents();
 Registry.RegisterButtonEvents();
+
+if (!existsSync(`${process.cwd()}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == 'true') {
+    console.log("Card directory not found, syncing...");
+
+    CoreClient.AllowDrops = false;
+
+    exec(`rclone sync card-drop-gdrive: ${process.cwd()}/cards`, async (error: ExecException | null) => {
+        if (error) {
+            console.error(error.code);
+            throw `Error while running sync command. Code: ${error.code}`;
+        } else {
+            console.log('Synced successfully.');
+            CoreClient.AllowDrops = true;
+        }
+    });
+}
 
 client.start();

@@ -17,6 +17,11 @@ export default class Drop extends Command {
     }
 
     public override async execute(interaction: CommandInteraction) {
+        if (!CoreClient.AllowDrops) {
+            await interaction.reply('Bot is currently syncing, please wait until its done.');
+            return;
+        }
+
         const randomCard = await CardDropHelper.GetRandomCard();
 
         const image = readFileSync(randomCard.Path);

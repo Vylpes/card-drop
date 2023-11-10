@@ -9,6 +9,11 @@ import Inventory from "../database/entities/app/Inventory";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
+        if (!CoreClient.AllowDrops) {
+            await interaction.reply('Bot is currently syncing, please wait until its done.');
+            return;
+        }
+
         if (!interaction.guild || !interaction.guildId) return;
 
         let randomCard = await CardDropHelper.GetRandomCard();
