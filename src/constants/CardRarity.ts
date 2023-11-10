@@ -42,3 +42,20 @@ export function CardRarityToColour(rarity: CardRarity): number {
             return EmbedColours.MangaCard;
     }
 }
+
+export function CardRarityParse(rarity: string): CardRarity {
+    switch (rarity.toLowerCase()) {
+        case "bronze":
+            return CardRarity.Bronze;
+        case "silver":
+            return CardRarity.Silver;
+        case "gold":
+            return CardRarity.Gold;
+        case "legendary":
+            return CardRarity.Legendary;
+        case "manga":
+            return CardRarity.Manga;
+        default:
+            return CardRarity.Unknown;
+    }
+}

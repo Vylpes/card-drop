@@ -6,6 +6,7 @@ import Drop from "./commands/drop";
 
 // Test Command Imports
 import Dropnumber from "./commands/stage/dropnumber";
+import Droprarity from "./commands/stage/droprarity";
 
 // Button Event Imports
 import Claim from "./buttonEvents/Claim";
@@ -20,6 +21,7 @@ export default class Registry {
 
         // Test Commands
         CoreClient.RegisterCommand('dropnumber', new Dropnumber(), Environment.Test);
+        CoreClient.RegisterCommand('droprarity', new Droprarity(), Environment.Test);
     }
 
     public static RegisterEvents() {
