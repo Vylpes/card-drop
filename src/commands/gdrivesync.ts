@@ -3,6 +3,7 @@ import { Command } from "../type/command";
 import { ExecException, exec } from "child_process";
 import CardSetupFunction from "../Functions/CardSetupFunction";
 import { CoreClient } from "../client/client";
+import Config from "../database/entities/app/Config";
 
 export default class Gdrivesync extends Command {
     constructor() {
@@ -30,12 +31,14 @@ export default class Gdrivesync extends Command {
 
         exec(`rclone sync card-drop-gdrive: ${process.cwd()}/cards`, async (error: ExecException | null) => {
             if (error) {
-                await interaction.editReply(`Error while running sync command. Code: ${error.code}`);
+                await interaction.editReply(`Error while running sync command. Safe Mode has been activated. Code: ${error.code}`);
+                await Config.SetValue('safemode', 'true');
             } else {
                 await CardSetupFunction.Execute();
                 await interaction.editReply('Synced successfully.');
 
                 CoreClient.AllowDrops = true;
+                await Config.SetValue('safemode', 'false');
             }
         });
     }

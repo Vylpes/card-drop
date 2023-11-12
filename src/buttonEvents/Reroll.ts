@@ -4,13 +4,19 @@ import CardDropHelper from "../helpers/CardDropHelper";
 import { readFileSync } from "fs";
 import { v4 } from "uuid";
 import { CoreClient } from "../client/client";
-import Card from "../database/entities/card/Card";
 import Inventory from "../database/entities/app/Inventory";
+import Config from "../database/entities/app/Config";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         if (!CoreClient.AllowDrops) {
             await interaction.reply('Bot is currently syncing, please wait until its done.');
+            return;
+        }
+
+        if (await Config.GetValue('safemode') == "true")
+        {
+            await interaction.reply('Safe Mode has been activated, please resync to contunue.');
             return;
         }
 

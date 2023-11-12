@@ -4,8 +4,8 @@ import CardDropHelper from "../helpers/CardDropHelper";
 import { readFileSync } from "fs";
 import { CoreClient } from "../client/client";
 import { v4 } from "uuid";
-import Card from "../database/entities/card/Card";
 import Inventory from "../database/entities/app/Inventory";
+import Config from "../database/entities/app/Config";
 
 export default class Drop extends Command {
     constructor() {
@@ -19,6 +19,12 @@ export default class Drop extends Command {
     public override async execute(interaction: CommandInteraction) {
         if (!CoreClient.AllowDrops) {
             await interaction.reply('Bot is currently syncing, please wait until its done.');
+            return;
+        }
+
+        if (await Config.GetValue('safemode') == "true")
+        {
+            await interaction.reply('Safe Mode has been activated, please resync to contunue.');
             return;
         }
 

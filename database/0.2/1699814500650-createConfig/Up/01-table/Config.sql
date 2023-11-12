@@ -1,0 +1,8 @@
+CREATE TABLE `config` (
+    `Id` VARCHAR(255) NOT NULL,
+    `WhenCreated` DATETIME NOT NULL,
+    `WhenUpdated` DATETIME NOT NULL,
+    `Key` VARCHAR(255) NOT NULL,
+    `Value` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -4,12 +4,19 @@ import Card from "../database/entities/card/Card";
 import Series from "../database/entities/card/Series";
 import path from "path";
 import { CardRarity, CardRarityToString } from "../constants/CardRarity";
+import Config from "../database/entities/app/Config";
 
 export default class CardSetupFunction {
     public static async Execute() {
-        await this.ClearDatabase();
-        await this.ReadSeries();
-        await this.ReadCards();
+        if (await Config.GetValue('safemode') == "true") return;
+
+        try {
+            await this.ClearDatabase();
+            await this.ReadSeries();
+            await this.ReadCards();
+        } catch {
+            await Config.SetValue('safemode', 'true');
+        }
     }
 
     private static async ClearDatabase() {
