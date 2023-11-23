@@ -7,8 +7,8 @@ import { CardRarity, CardRarityToString } from "../constants/CardRarity";
 import Config from "../database/entities/app/Config";
 
 export default class CardSetupFunction {
-    public static async Execute() {
-        if (await Config.GetValue('safemode') == "true") return;
+    public static async Execute(): Promise<boolean> {
+        if (await Config.GetValue('safemode') == "true") return false;
 
         try {
             await this.ClearDatabase();
@@ -16,7 +16,10 @@ export default class CardSetupFunction {
             await this.ReadCards();
         } catch {
             await Config.SetValue('safemode', 'true');
+            return false;
         }
+
+        return true;
     }
 
     private static async ClearDatabase() {
