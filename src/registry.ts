@@ -4,6 +4,7 @@ import { CoreClient } from "./client/client";
 import About from "./commands/about";
 import Drop from "./commands/drop";
 import Gdrivesync from "./commands/gdrivesync";
+import Resync from "./commands/resync";
 
 // Test Command Imports
 import Dropnumber from "./commands/stage/dropnumber";
@@ -20,6 +21,7 @@ export default class Registry {
         CoreClient.RegisterCommand('about', new About());
         CoreClient.RegisterCommand('drop', new Drop());
         CoreClient.RegisterCommand('gdrivesync', new Gdrivesync());
+        CoreClient.RegisterCommand('resync', new Resync());
 
         // Test Commands
         CoreClient.RegisterCommand('dropnumber', new Dropnumber(), Environment.Test);
