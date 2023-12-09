@@ -31,19 +31,17 @@ export default class Dropnumber extends Command {
             return;
         }
 
-        const series = CoreClient.Cards.find(x => x.cards.find(y => y.id == cardNumber.toString()));
-
-        if (!series) {
-            await interaction.reply('Card not found');
-            return;
-        }
-
-        const card = series.cards.find(x => x.id == cardNumber.toString());
+        const card = CoreClient.Cards
+            .flatMap(x => x.cards)
+            .find(x => x.id == cardNumber.value);
 
         if (!card) {
             await interaction.reply('Card not found');
             return;
         }
+
+        const series = CoreClient.Cards
+            .find(x => x.cards.includes(card))!;
 
         let image: Buffer;
         const imageFileName = card.path.split("/").pop()!;
