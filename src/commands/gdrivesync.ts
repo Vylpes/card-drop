@@ -1,9 +1,9 @@
 import { CacheType, CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { ExecException, exec } from "child_process";
-import CardSetupFunction from "../Functions/CardSetupFunction";
 import { CoreClient } from "../client/client";
 import Config from "../database/entities/app/Config";
+import CardMetadataFunction from "../Functions/CardMetadataFunction";
 
 export default class Gdrivesync extends Command {
     constructor() {
@@ -34,7 +34,8 @@ export default class Gdrivesync extends Command {
                 await interaction.editReply(`Error while running sync command. Safe Mode has been activated. Code: ${error.code}`);
                 await Config.SetValue('safemode', 'true');
             } else {
-                await CardSetupFunction.Execute();
+                await CardMetadataFunction.Execute();
+
                 await interaction.editReply('Synced successfully.');
 
                 CoreClient.AllowDrops = true;

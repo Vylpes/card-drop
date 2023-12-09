@@ -1,11 +1,12 @@
 import { AttachmentBuilder, CacheType, CommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
 import { CardRarity, CardRarityParse } from "../../constants/CardRarity";
-import CardDropHelper from "../../helpers/CardDropHelper";
 import { readFileSync } from "fs";
 import Inventory from "../../database/entities/app/Inventory";
 import { v4 } from "uuid";
 import { CoreClient } from "../../client/client";
+import CardDropHelperMetadata from "../../helpers/CardDropHelperMetadata";
+import path from "path";
 
 export default class Droprarity extends Command {
     constructor() {
@@ -38,27 +39,35 @@ export default class Droprarity extends Command {
             return;
         }
 
-        const card = await CardDropHelper.GetRandomCardByRarity(rarityType);
+        const card = await CardDropHelperMetadata.GetRandomCardByRarity(rarityType);
 
         if (!card) {
             await interaction.reply('Card not found');
             return;
         }
 
-        const image = readFileSync(card.Path);
+        let image: Buffer;
+        const imageFileName = card.card.path.split("/").pop()!;
+
+        try {
+            image = readFileSync(path.join(process.cwd(), 'cards', card.card.path));
+        } catch {
+            await interaction.reply(`Unable to fetch image for card ${card.card.id}`);
+            return;
+        }
 
         await interaction.deferReply();
 
-        const attachment = new AttachmentBuilder(image, { name: card.FileName });
+        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
-        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.CardNumber);
+        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelper.GenerateDropEmbed(card, quantityClaimed || 0);
+        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, quantityClaimed, imageFileName);
 
         const claimId = v4();
 
-        const row = CardDropHelper.GenerateDropButtons(card, claimId, interaction.user.id);
+        const row = CardDropHelperMetadata.GenerateDropButtons(card, claimId, interaction.user.id);
 
         try {
             await interaction.editReply({

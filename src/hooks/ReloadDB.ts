@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import CardSetupFunction from "../Functions/CardSetupFunction";
+import CardMetadataFunction from "../Functions/CardMetadataFunction";
 
 export default async function ReloadDB(req: Request, res: Response) {
     console.log('Reloading Card DB...');
 
-    await CardSetupFunction.Execute();
+    await CardMetadataFunction.Execute();
 
     res.sendStatus(200);
 }

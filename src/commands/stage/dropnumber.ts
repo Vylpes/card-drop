@@ -1,11 +1,11 @@
 import { AttachmentBuilder, CacheType, CommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
-import Card from "../../database/entities/card/Card";
 import { readFileSync } from "fs";
 import Inventory from "../../database/entities/app/Inventory";
-import CardDropHelper from "../../helpers/CardDropHelper";
 import { v4 } from "uuid";
 import { CoreClient } from "../../client/client";
+import path from "path";
+import CardDropHelperMetadata from "../../helpers/CardDropHelperMetadata";
 
 export default class Dropnumber extends Command {
     constructor() {
@@ -31,29 +31,42 @@ export default class Dropnumber extends Command {
             return;
         }
 
-        const card = await Card.FetchOneByCardNumber(cardNumber.value.toString(), [
-            "Series"
-        ]);
+        const series = CoreClient.Cards.find(x => x.cards.find(y => y.id == cardNumber.toString()));
+
+        if (!series) {
+            await interaction.reply('Card not found');
+            return;
+        }
+
+        const card = series.cards.find(x => x.id == cardNumber.toString());
 
         if (!card) {
             await interaction.reply('Card not found');
             return;
         }
 
-        const image = readFileSync(card.Path);
+        let image: Buffer;
+        const imageFileName = card.path.split("/").pop()!;
+
+        try {
+            image = readFileSync(path.join(process.cwd(), 'cards', card.path));
+        } catch {
+            await interaction.reply(`Unable to fetch image for card ${card.id}`);
+            return;
+        }
 
         await interaction.deferReply();
 
-        const attachment = new AttachmentBuilder(image, { name: card.FileName });
+        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
-        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.CardNumber);
+        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelper.GenerateDropEmbed(card, quantityClaimed || 0);
+        const embed = CardDropHelperMetadata.GenerateDropEmbed({ card, series }, quantityClaimed, imageFileName);
 
         const claimId = v4();
 
-        const row = CardDropHelper.GenerateDropButtons(card, claimId, interaction.user.id);
+        const row = CardDropHelperMetadata.GenerateDropButtons({ card, series }, claimId, interaction.user.id);
 
         try {
             await interaction.editReply({
@@ -67,7 +80,7 @@ export default class Dropnumber extends Command {
             if (e instanceof DiscordAPIError) {
                 await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}`);
             } else {
-                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening.Code: UNKNOWN`);
+                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN`);
             }
         }
 

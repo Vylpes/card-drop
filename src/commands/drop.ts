@@ -1,11 +1,12 @@
 import { AttachmentBuilder, CommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
-import CardDropHelper from "../helpers/CardDropHelper";
 import { readFileSync } from "fs";
 import { CoreClient } from "../client/client";
 import { v4 } from "uuid";
 import Inventory from "../database/entities/app/Inventory";
 import Config from "../database/entities/app/Config";
+import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
+import path from "path";
 
 export default class Drop extends Command {
     constructor() {
@@ -22,28 +23,40 @@ export default class Drop extends Command {
             return;
         }
 
-        if (await Config.GetValue('safemode') == "true")
-        {
-            await interaction.reply('Safe Mode has been activated, please resync to contunue.');
+        if (await Config.GetValue('safemode') == "true") {
+            await interaction.reply('Safe Mode has been activated, please resync to continue.');
             return;
         }
 
-        const randomCard = await CardDropHelper.GetRandomCard();
+        const randomCard = CardDropHelperMetadata.GetRandomCard();
 
-        const image = readFileSync(randomCard.Path);
+        if (!randomCard) {
+            await interaction.reply('Unable to fetch card, please try again.');
+            return;
+        }
+
+        let image: Buffer;
+        const imageFileName = randomCard.card.path.split("/").pop()!;
+
+        try {
+            image = readFileSync(path.join(process.cwd(), 'cards', randomCard.card.path));
+        } catch {
+            await interaction.reply(`Unable to fetch image for card ${randomCard.card.id}`);
+            return;
+        }
 
         await interaction.deferReply();
 
-        const attachment = new AttachmentBuilder(image, { name: randomCard.FileName });
+        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
-        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.CardNumber);
+        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelper.GenerateDropEmbed(randomCard, quantityClaimed || 0);
+        const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName);
 
         const claimId = v4();
 
-        const row = CardDropHelper.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+        const row = CardDropHelperMetadata.GenerateDropButtons(randomCard, claimId, interaction.user.id);
 
         try {
             await interaction.editReply({

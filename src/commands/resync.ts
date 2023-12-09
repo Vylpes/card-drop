@@ -1,7 +1,7 @@
 import { CacheType, CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
-import CardSetupFunction from "../Functions/CardSetupFunction";
 import Config from "../database/entities/app/Config";
+import CardMetadataFunction from "../Functions/CardMetadataFunction";
 
 export default class Resync extends Command {
     constructor() {
@@ -23,7 +23,9 @@ export default class Resync extends Command {
             return;
         }
 
-        if (await CardSetupFunction.Execute()) {
+        let result = await CardMetadataFunction.Execute(true);
+
+        if (result) {
             if (await Config.GetValue('safemode') == "true") {
                 await Config.SetValue('safemode', 'false');
                 await interaction.reply("Resynced database and disabled safe mode.");

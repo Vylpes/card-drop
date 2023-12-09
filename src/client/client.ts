@@ -7,13 +7,13 @@ import { Command } from "../type/command";
 
 import { Events } from "./events";
 import { Util } from "./util";
-import CardSetupFunction from "../Functions/CardSetupFunction";
-import CardDataSource from "../database/dataSources/cardDataSource";
 import IButtonEventItem from "../contracts/IButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
 import { Environment } from "../constants/Environment";
 import Webhooks from "../webhooks";
+import CardMetadataFunction from "../Functions/CardMetadataFunction";
+import SeriesMetadata from "../contracts/SeriesMetadata";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -27,6 +27,7 @@ export class CoreClient extends Client {
     public static ClaimId: string;
     public static Environment: Environment;
     public static AllowDrops: boolean;
+    public static Cards: SeriesMetadata[];
 
     public static get commandItems(): ICommandItem[] {
         return this._commandItems;
@@ -68,14 +69,10 @@ export class CoreClient extends Client {
             .then(() => console.log("App Data Source Initialised"))
             .catch(err => console.error("Error initialising App Data Source", err));
 
-        await CardDataSource.initialize()
-            .then(() => console.log("Card Data Source Initialised"))
-            .catch(err => console.error("Error initialising Card Data Source", err));
-
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
 
-        await CardSetupFunction.Execute();
+        await CardMetadataFunction.Execute(true);
 
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);

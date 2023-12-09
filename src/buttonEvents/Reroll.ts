@@ -1,11 +1,12 @@
 import { AttachmentBuilder, ButtonInteraction, DiscordAPIError } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
-import CardDropHelper from "../helpers/CardDropHelper";
 import { readFileSync } from "fs";
 import { v4 } from "uuid";
 import { CoreClient } from "../client/client";
 import Inventory from "../database/entities/app/Inventory";
 import Config from "../database/entities/app/Config";
+import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
+import path from "path";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -14,34 +15,40 @@ export default class Reroll extends ButtonEvent {
             return;
         }
 
-        if (await Config.GetValue('safemode') == "true")
-        {
-            await interaction.reply('Safe Mode has been activated, please resync to contunue.');
+        if (await Config.GetValue('safemode') == "true") {
+            await interaction.reply('Safe Mode has been activated, please resync to continue.');
             return;
         }
 
-        if (!interaction.guild || !interaction.guildId) return;
+        const randomCard = CardDropHelperMetadata.GetRandomCard();
 
-        let randomCard = await CardDropHelper.GetRandomCard();
-
-        if (process.env.DROP_RARITY && Number(process.env.DROP_RARITY) > 0) {
-            randomCard = await CardDropHelper.GetRandomCardByRarity(Number(process.env.DROP_RARITY));
+        if (!randomCard) {
+            await interaction.reply('Unable to fetch card, please try again.');
+            return;
         }
 
-        const image = readFileSync(randomCard.Path);
+        let image: Buffer;
+        const imageFileName = randomCard.card.path.split("/").pop()!;
+
+        try {
+            image = readFileSync(path.join(process.cwd(), 'cards', randomCard.card.path));
+        } catch {
+            await interaction.reply(`Unable to fetch image for card ${randomCard.card.id}`);
+            return;
+        }
 
         await interaction.deferReply();
 
-        const attachment = new AttachmentBuilder(image, { name: randomCard.FileName });
+        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
-        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.CardNumber);
+        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelper.GenerateDropEmbed(randomCard, quantityClaimed || 0);
+        const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName);
 
         const claimId = v4();
 
-        const row = CardDropHelper.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+        const row = CardDropHelperMetadata.GenerateDropButtons(randomCard, claimId, interaction.user.id);
 
         try {
             await interaction.editReply({

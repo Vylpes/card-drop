@@ -1,10 +1,11 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { CardRarity, CardRarityToColour, CardRarityToString } from "../constants/CardRarity";
 import CardRarityChances from "../constants/CardRarityChances";
-import Card from "../database/entities/card/Card";
+import { DropResult } from "../contracts/SeriesMetadata";
+import { CoreClient } from "../client/client";
 
-export default class CardDropHelper {
-    public static async GetRandomCard(): Promise<Card> {
+export default class CardDropHelperMetadata {
+    public static GetRandomCard(): DropResult | undefined {
         const randomRarity = Math.random() * 100;
 
         let cardRarity: CardRarity;
@@ -20,39 +21,50 @@ export default class CardDropHelper {
         else if (randomRarity < mangaChance) cardRarity = CardRarity.Manga;
         else cardRarity = CardRarity.Legendary;
 
-        const randomCard = await this.GetRandomCardByRarity(cardRarity);
+        const randomCard = this.GetRandomCardByRarity(cardRarity);
 
         return randomCard;
     }
 
-    public static async GetRandomCardByRarity(rarity: CardRarity): Promise<Card> {
-        const allCards = await Card.FetchAllByRarity(rarity, [ "Series" ]);
+    public static GetRandomCardByRarity(rarity: CardRarity): DropResult | undefined {
+        const allCards = CoreClient.Cards
+            .flatMap(x => x.cards)
+            .filter(x => x.type == rarity);
 
         const randomCardIndex = Math.floor(Math.random() * allCards.length);
 
         const card = allCards[randomCardIndex];
+        const series = CoreClient.Cards
+            .find(x => x.cards.includes(card));
 
-        return card;
+        if (!series) {
+            return undefined;
+        }
+
+        return {
+            series: series,
+            card: card,
+        };
     }
 
-    public static GenerateDropEmbed(card: Card, quantityClaimed: Number): EmbedBuilder {
+    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: Number, imageFileName: string): EmbedBuilder {
         let description = "";
-        description += `Series: ${card.Series.Name}\n`;
+        description += `Series: ${drop.series.name}\n`;
         description += `Claimed: ${quantityClaimed}\n`;
 
         return new EmbedBuilder()
-            .setTitle(card.Name)
+            .setTitle(drop.card.name)
             .setDescription(description)
-            .setFooter({ text: CardRarityToString(card.Rarity) })
-            .setColor(CardRarityToColour(card.Rarity))
-            .setImage(`attachment://${card.FileName}`);
+            .setFooter({ text: CardRarityToString(drop.card.type) })
+            .setColor(CardRarityToColour(drop.card.type))
+            .setImage(`attachment://${imageFileName}`);
     }
 
-    public static GenerateDropButtons(card: Card, claimId: string, userId: string): ActionRowBuilder<ButtonBuilder> {
+    public static GenerateDropButtons(drop: DropResult, claimId: string, userId: string): ActionRowBuilder<ButtonBuilder> {
         return new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`claim ${card.CardNumber} ${claimId} ${userId}`)
+                    .setCustomId(`claim ${drop.card.id} ${claimId} ${userId}`)
                     .setLabel("Claim")
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
