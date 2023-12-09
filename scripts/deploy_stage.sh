@@ -13,11 +13,11 @@ cd ~/apps/card-drop/card-drop_stage \
 && (pm2 stop card-drop_stage || true) \
 && (pm2 delete card-drop_stage || true) \
 && cp .stage.env .env \
-&& yarn clean \
-&& yarn install --frozen-lockfile \
-&& yarn build \
+&& npm run clean \
+&& npm ci \
+&& npm run build \
 && docker compose --file docker-compose.stage.yml up -d \
 && echo "Sleeping for 10 seconds to let database load..." \
 && sleep 10 \
-&& yarn run db:up \
+&& npm run db:up \
 && NODE_ENV=production pm2 start --name card-drop_stage dist/bot.js

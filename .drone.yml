@@ -51,14 +51,14 @@ steps:
 - name: build
   image: node
   commands:
-  - yarn install --frozen-lockfile
-  - yarn build
+  - npm ci
+  - npm run build
 
 - name: test
   image: node
   commands:
-  - yarn install --frozen-lockfile
-  - yarn test
+  - npm ci
+  - npm test
 
 trigger:
   branch:
