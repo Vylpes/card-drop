@@ -27,45 +27,37 @@ export default class Reroll extends ButtonEvent {
             return;
         }
 
-        let image: Buffer;
-        const imageFileName = randomCard.card.path.split("/").pop()!;
-
         try {
+            let image: Buffer;
+            const imageFileName = randomCard.card.path.split("/").pop()!;
+
             image = readFileSync(path.join(process.cwd(), 'cards', randomCard.card.path));
-        } catch {
-            await interaction.reply(`Unable to fetch image for card ${randomCard.card.id}`);
-            return;
-        }
 
-        await interaction.deferReply();
+            await interaction.deferReply();
 
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
+            const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
-        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
-        const quantityClaimed = inventory ? inventory.Quantity : 0;
+            const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
+            const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName);
+            const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName);
 
-        const claimId = v4();
+            const claimId = v4();
 
-        const row = CardDropHelperMetadata.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+            const row = CardDropHelperMetadata.GenerateDropButtons(randomCard, claimId, interaction.user.id);
 
-        try {
             await interaction.editReply({
                 embeds: [ embed ],
                 files: [ attachment ],
                 components: [ row ],
             });
+
+            CoreClient.ClaimId = claimId;
+
         } catch (e) {
             console.error(e);
 
-            if (e instanceof DiscordAPIError) {
-                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}`);
-            } else {
-                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN`);
-            }
+            await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. (${randomCard.card.id})`);
         }
-
-        CoreClient.ClaimId = claimId;
     }
 }
