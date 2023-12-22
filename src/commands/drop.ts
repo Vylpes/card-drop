@@ -1,4 +1,4 @@
-import { AttachmentBuilder, CommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { readFileSync } from "fs";
 import { CoreClient } from "../client/client";

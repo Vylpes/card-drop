@@ -40,4 +40,12 @@ export default class Inventory extends AppBaseEntity {
 
         return single;
     }
+
+    public static async FetchAllByUserId(userId: string): Promise<Inventory[]> {
+        const repository = AppDataSource.getRepository(Inventory);
+
+        const all = await repository.find({ where: { UserId: userId }});
+
+        return all;
+    }
 }

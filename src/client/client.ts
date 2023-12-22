@@ -14,6 +14,7 @@ import { Environment } from "../constants/Environment";
 import Webhooks from "../webhooks";
 import CardMetadataFunction from "../Functions/CardMetadataFunction";
 import SeriesMetadata from "../contracts/SeriesMetadata";
+import InventoryHelper from "../helpers/InventoryHelper";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
