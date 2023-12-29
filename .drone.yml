@@ -14,14 +14,25 @@ steps:
   commands:
   - npm test
 - name: deploy to prod
-  image: alpine
+  image: drillster/drone-rsync
   secrets: [ ssh_key ]
-  commands:
-    - apk add rsync openssh-client
-    - eval `ssh-agent -s`
-    - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
-    - rsync -e "ssh -o StrictHostKeyChecking=no" -r ./* vylpes@192.168.68.120:/home/vylpes/apps/card-drop/card-drop_prod
-    - ssh vylpes@192.168.68.120 cd ~/apps/card-drop/card-drop_prod && docker compose --file docker-compose.prod.yml up -d && sleep 10 && pm2 start --name card-drop_prod dist/bot.js
+  settings:
+    hosts:
+      - 192.168.68.120
+    user: vylpes
+    key:
+      from_secret: ssh_key
+    source: .
+    target: ~/apps/card-drop/card-drop_prod
+    recursive: true
+    prescript:
+      - eval `ssh-agent -s`
+      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+    script:
+      - cd ~/apps/card-drop/card-drop_prod
+      - docker compose --file docker-compose.prod.yml up -d
+      - sleep 10
+      - pm2 restart card-drop_prod || pm2 start --name card-drop_prod dist/bot.js
 
 trigger:
   event:
@@ -43,14 +54,25 @@ steps:
   commands:
   - npm test
 - name: deploy to stage
-  image: alpine
+  image: drillster/drone-rsync
   secrets: [ ssh_key ]
-  commands:
-    - apk add rsync openssh-client
-    - eval `ssh-agent -s`
-    - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
-    - rsync -e "ssh -o StrictHostKeyChecking=no" -r ./* vylpes@192.168.68.120:/home/vylpes/apps/card-drop/card-drop_stage
-    - ssh vylpes@192.168.68.120 cd ~/apps/card-drop/card-drop_stage && docker compose --file docker-compose.stage.yml up -d && sleep 10 && pm2 start --name card-drop_stage dist/bot.js
+  settings:
+    hosts:
+      - 192.168.68.120
+    user: vylpes
+    key:
+      from_secret: ssh_key
+    source: .
+    target: ~/apps/card-drop/card-drop_stage
+    recursive: true
+    prescript:
+      - eval `ssh-agent -s`
+      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+    script:
+      - cd ~/apps/card-drop/card-drop_stage
+      - docker compose --file docker-compose.stage.yml up -d
+      - sleep 10
+      - pm2 restart card-drop_stage || pm2 start --name card-drop_stage dist/bot.js
 
 trigger:
   branch:
