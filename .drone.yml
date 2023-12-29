@@ -25,9 +25,6 @@ steps:
     source: .
     target: ~/apps/card-drop/card-drop_prod
     recursive: true
-    prescript:
-      - eval `ssh-agent -s`
-      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
     script:
       - cd ~/apps/card-drop/card-drop_prod
       - docker compose --file docker-compose.prod.yml up -d
@@ -65,9 +62,6 @@ steps:
     source: .
     target: ~/apps/card-drop/card-drop_stage
     recursive: true
-    prescript:
-      - eval `ssh-agent -s`
-      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
     script:
       - cd ~/apps/card-drop/card-drop_stage
       - docker compose --file docker-compose.stage.yml up -d
