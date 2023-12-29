@@ -47,7 +47,7 @@ export default class Dropnumber extends Command {
         const imageFileName = card.path.split("/").pop()!;
 
         try {
-            image = readFileSync(path.join(process.cwd(), 'cards', card.path));
+            image = readFileSync(path.join(process.env.DATA_DIR!, 'cards', card.path));
         } catch {
             await interaction.reply(`Unable to fetch image for card ${card.id}`);
             return;

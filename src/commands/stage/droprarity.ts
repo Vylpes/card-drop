@@ -50,7 +50,7 @@ export default class Droprarity extends Command {
         const imageFileName = card.card.path.split("/").pop()!;
 
         try {
-            image = readFileSync(path.join(process.cwd(), 'cards', card.card.path));
+            image = readFileSync(path.join(process.env.DATA_DIR!, 'cards', card.card.path));
         } catch {
             await interaction.reply(`Unable to fetch image for card ${card.card.id}`);
             return;
