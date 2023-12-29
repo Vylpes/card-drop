@@ -54,7 +54,7 @@ steps:
   secrets: ssh_key
   settings:
     hosts:
-      - "minisforum.local"
+      - 192.168.68.120
     user: vylpes
     key:
       from_secret: ssh_key
