@@ -15,15 +15,19 @@ steps:
   - npm test
 - name: deploy to prod
   image: drillster/drone-rsync
+  secrets: ssh_key
   settings:
     hosts:
-      - "minisforum.local"
+      - 192.168.68.120
     user: vylpes
     key:
       from_secret: ssh_key
     source: .
     target: ~/apps/card-drop/card-drop_prod
     recursive: true
+    prescript:
+      - eval `ssh-agent -s`
+      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
     script:
       - cd ~/apps/card-drop/card-drop_prod
       - docker compose --file docker-compose.prod.yml up -d
@@ -62,6 +66,7 @@ steps:
     target: ~/apps/card-drop/card-drop_stage
     recursive: true
     prescript:
+      - eval `ssh-agent -s`
       - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
     script:
       - cd ~/apps/card-drop/card-drop_stage
