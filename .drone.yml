@@ -51,6 +51,7 @@ steps:
   - npm test
 - name: deploy to stage
   image: drillster/drone-rsync
+  secrets: ssh_key
   settings:
     hosts:
       - "minisforum.local"
@@ -60,6 +61,8 @@ steps:
     source: .
     target: ~/apps/card-drop/card-drop_stage
     recursive: true
+    prescript:
+      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
     script:
       - cd ~/apps/card-drop/card-drop_stage
       - docker compose --file docker-compose.stage.yml up -d
