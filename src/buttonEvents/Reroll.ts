@@ -31,7 +31,7 @@ export default class Reroll extends ButtonEvent {
             let image: Buffer;
             const imageFileName = randomCard.card.path.split("/").pop()!;
 
-            image = readFileSync(path.join(process.cwd(), 'cards', randomCard.card.path));
+            image = readFileSync(path.join(process.env.DATA_DIR!, 'cards', randomCard.card.path));
 
             await interaction.deferReply();
 

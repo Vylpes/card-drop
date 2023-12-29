@@ -14,6 +14,7 @@ const requiredConfigs: string[] = [
     "BOT_OWNERID",
     "BOT_CLIENTID",
     "BOT_ENV",
+    "DATA_DIR",
     "DB_HOST",
     "DB_PORT",
     "DB_AUTH_USER",
@@ -39,7 +40,7 @@ Registry.RegisterCommands();
 Registry.RegisterEvents();
 Registry.RegisterButtonEvents();
 
-if (!existsSync(`${process.cwd()}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == 'true') {
+if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == 'true') {
     console.log("Card directory not found, syncing...");
 
     CoreClient.AllowDrops = false;

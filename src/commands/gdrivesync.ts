@@ -29,7 +29,7 @@ export default class Gdrivesync extends Command {
 
         CoreClient.AllowDrops = false;
 
-        exec(`rclone sync card-drop-gdrive: ${process.cwd()}/cards`, async (error: ExecException | null) => {
+        exec(`rclone sync card-drop-gdrive: ${process.env.DATA_DIR}/cards`, async (error: ExecException | null) => {
             if (error) {
                 await interaction.editReply(`Error while running sync command. Safe Mode has been activated. Code: ${error.code}`);
                 await Config.SetValue('safemode', 'true');

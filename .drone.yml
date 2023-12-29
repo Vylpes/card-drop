@@ -4,16 +4,31 @@ kind: pipeline
 name: deployment
 
 steps:
-- name: deploy
-  image: appleboy/drone-ssh
+- name: build
+  image: node
+  commands:
+  - npm ci
+  - npm run build
+- name: test
+  image: node
+  commands:
+  - npm test
+- name: deploy to prod
+  image: drillster/drone-rsync
   settings:
-    host: 192.168.68.120
-    username: vylpes
-    password:
-      from_secret: ssh_password
-    port: 22
+    hosts:
+      - "minisforum.local"
+    user: vylpes
+    key:
+      from_secret: ssh_key
+    source: .
+    target: ~/apps/card-drop/card-drop_prod
+    recursive: true
     script:
-      - sh /home/vylpes/scripts/card-drop/deploy_prod.sh
+      - cd ~/apps/card-drop/card-drop_prod
+      - docker compose --file docker-compose.prod.yml up -d
+      - sleep 10
+      - pm2 restart card-drop_prod || pm2 start --name card-drop_prod dist/bot.js
 
 trigger:
   event:
@@ -25,16 +40,31 @@ kind: pipeline
 name: staging
 
 steps:
-- name: stage
-  image: appleboy/drone-ssh
+- name: build
+  image: node
+  commands:
+  - npm ci
+  - npm run build
+- name: test
+  image: node
+  commands:
+  - npm test
+- name: deploy to stage
+  image: drillster/drone-rsync
   settings:
-    host: 192.168.68.120
-    username: vylpes
-    password:
-      from_secret: ssh_password
-    port: 22
+    hosts:
+      - "minisforum.local"
+    user: vylpes
+    key:
+      from_secret: ssh_key
+    source: .
+    target: ~/apps/card-drop/card-drop_stage
+    recursive: true
     script:
-      - sh /home/vylpes/scripts/card-drop/deploy_stage.sh
+      - cd ~/apps/card-drop/card-drop_stage
+      - docker compose --file docker-compose.stage.yml up -d
+      - sleep 10
+      - pm2 restart card-drop_stage || pm2 start --name card-drop_stage dist/bot.js
 
 trigger:
   branch:
@@ -53,17 +83,13 @@ steps:
   commands:
   - npm ci
   - npm run build
-
 - name: test
   image: node
   commands:
-  - npm ci
   - npm test
 
 trigger:
   branch:
-  - main
-  - develop
   - hotfix/*
   - feature/*
   - renovate/*

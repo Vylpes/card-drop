@@ -26,7 +26,7 @@ export default class CardMetadataFunction {
     private static async FindMetadataJSONs(): Promise<SeriesMetadata[]> {
         const res: SeriesMetadata[] = [];
 
-        const seriesJSONs = await glob(path.join(process.cwd(), 'cards', '/**/*.json'));
+        const seriesJSONs = await glob(path.join(process.env.DATA_DIR!, 'cards', '/**/*.json'));
 
         for (let jsonPath of seriesJSONs) {
             console.log(`Reading file ${jsonPath}`);
