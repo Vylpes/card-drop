@@ -8,6 +8,8 @@
     "build": "tsc",
     "start": "node ./dist/bot.js",
     "test": "jest --passWithNoTests",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "db:up": "typeorm migration:run -d dist/database/dataSources/appDataSource.js",
     "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js",
     "db:create": "typeorm migration:create ./src/database/migrations/app/new",
@@ -43,6 +45,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
+    "eslint": "^8.56.0",
     "np": "^9.0.0",
     "typescript": "^5.0.0"
   }

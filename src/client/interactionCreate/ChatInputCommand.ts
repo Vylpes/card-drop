@@ -13,7 +13,7 @@ export default class ChatInputCommand {
 
         if (!itemForServer) {
             if (!item) {
-                await interaction.reply('Command not found');
+                await interaction.reply("Command not found");
                 return;
             }
 

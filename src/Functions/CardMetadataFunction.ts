@@ -2,12 +2,12 @@ import { readFileSync } from "fs";
 import path from "path";
 import Config from "../database/entities/app/Config";
 import { glob } from "glob";
-import SeriesMetadata from "../contracts/SeriesMetadata";
+import { SeriesMetadata } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 
 export default class CardMetadataFunction {
     public static async Execute(overrideSafeMode: boolean = false): Promise<boolean> {
-        if (!overrideSafeMode && await Config.GetValue('safemode') == "true") return false;
+        if (!overrideSafeMode && await Config.GetValue("safemode") == "true") return false;
 
         try {
             CoreClient.Cards = await this.FindMetadataJSONs();
@@ -16,7 +16,7 @@ export default class CardMetadataFunction {
         } catch (e) {
             console.error(e);
 
-            await Config.SetValue('safemode', 'true');
+            await Config.SetValue("safemode", "true");
             return false;
         }
 
@@ -26,9 +26,9 @@ export default class CardMetadataFunction {
     private static async FindMetadataJSONs(): Promise<SeriesMetadata[]> {
         const res: SeriesMetadata[] = [];
 
-        const seriesJSONs = await glob(path.join(process.env.DATA_DIR!, 'cards', '/**/*.json'));
+        const seriesJSONs = await glob(path.join(process.env.DATA_DIR!, "cards", "/**/*.json"));
 
-        for (let jsonPath of seriesJSONs) {
+        for (const jsonPath of seriesJSONs) {
             console.log(`Reading file ${jsonPath}`);
             const jsonFile = readFileSync(jsonPath);
             const parsedJson: SeriesMetadata[] = JSON.parse(jsonFile.toString());

@@ -12,34 +12,32 @@ export default class Drop extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
-            .setName('drop')
-            .setDescription('Summon a new card drop');
+        this.CommandBuilder = new SlashCommandBuilder()
+            .setName("drop")
+            .setDescription("Summon a new card drop");
     }
 
     public override async execute(interaction: CommandInteraction) {
         if (!CoreClient.AllowDrops) {
-            await interaction.reply('Bot is currently syncing, please wait until its done.');
+            await interaction.reply("Bot is currently syncing, please wait until its done.");
             return;
         }
 
-        if (await Config.GetValue('safemode') == "true") {
-            await interaction.reply('Safe Mode has been activated, please resync to continue.');
+        if (await Config.GetValue("safemode") == "true") {
+            await interaction.reply("Safe Mode has been activated, please resync to continue.");
             return;
         }
 
         const randomCard = CardDropHelperMetadata.GetRandomCard();
 
         if (!randomCard) {
-            await interaction.reply('Unable to fetch card, please try again.');
+            await interaction.reply("Unable to fetch card, please try again.");
             return;
         }
 
         try {
-            let image: Buffer;
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
             const imageFileName = randomCard.card.path.split("/").pop()!;
-
-            image = readFileSync(path.join(process.env.DATA_DIR!, 'cards', randomCard.card.path));
 
             await interaction.deferReply();
 

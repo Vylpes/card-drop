@@ -1,4 +1,4 @@
-export default interface IGDriveFolderListing {
+export interface IGDriveFolderListing {
     id: string,
     name: string,
-};
+}

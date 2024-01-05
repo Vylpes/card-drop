@@ -6,9 +6,9 @@ export default class About extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
-            .setName('about')
-            .setDescription('About Bot');
+        this.CommandBuilder = new SlashCommandBuilder()
+            .setName("about")
+            .setDescription("About Bot");
     }
 
     public override async execute(interaction: CommandInteraction) {

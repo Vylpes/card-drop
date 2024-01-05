@@ -11,23 +11,23 @@ export default class Dropnumber extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
-            .setName('dropnumber')
-            .setDescription('(TEST) Summon a specific card')
+        this.CommandBuilder = new SlashCommandBuilder()
+            .setName("dropnumber")
+            .setDescription("(TEST) Summon a specific card")
             .addStringOption(x =>
                 x
-                    .setName('cardnumber')
-                    .setDescription('The card number to summon')
+                    .setName("cardnumber")
+                    .setDescription("The card number to summon")
                     .setRequired(true));
     }
 
     public override async execute(interaction: CommandInteraction<CacheType>) {
         if (!interaction.isChatInputCommand()) return;
 
-        const cardNumber = interaction.options.get('cardnumber');
+        const cardNumber = interaction.options.get("cardnumber");
 
         if (!cardNumber || !cardNumber.value) {
-            await interaction.reply('Card Number is required');
+            await interaction.reply("Card Number is required");
             return;
         }
 
@@ -36,7 +36,7 @@ export default class Dropnumber extends Command {
             .find(x => x.id == cardNumber.value);
 
         if (!card) {
-            await interaction.reply('Card not found');
+            await interaction.reply("Card not found");
             return;
         }
 
@@ -47,7 +47,7 @@ export default class Dropnumber extends Command {
         const imageFileName = card.path.split("/").pop()!;
 
         try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, 'cards', card.path));
+            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.path));
         } catch {
             await interaction.reply(`Unable to fetch image for card ${card.id}`);
             return;
@@ -78,7 +78,7 @@ export default class Dropnumber extends Command {
             if (e instanceof DiscordAPIError) {
                 await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}`);
             } else {
-                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN`);
+                await interaction.editReply("Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN");
             }
         }
 

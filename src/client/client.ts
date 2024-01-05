@@ -1,24 +1,22 @@
-import { Client } from "discord.js";
+import { Client, DMChannel, Guild, GuildBan, GuildMember, Message, NonThreadGuildBasedChannel, PartialGuildMember, PartialMessage } from "discord.js";
 import * as dotenv from "dotenv";
-import { EventType } from "../constants/EventType";
 import ICommandItem from "../contracts/ICommandItem";
-import IEventItem from "../contracts/IEventItem";
+import EventExecutors from "../contracts/EventExecutors";
 import { Command } from "../type/command";
 
 import { Events } from "./events";
 import { Util } from "./util";
-import IButtonEventItem from "../contracts/IButtonEventItem";
+import IButtonEventItem from "../contracts/ButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppDataSource from "../database/dataSources/appDataSource";
 import { Environment } from "../constants/Environment";
 import Webhooks from "../webhooks";
 import CardMetadataFunction from "../Functions/CardMetadataFunction";
-import SeriesMetadata from "../contracts/SeriesMetadata";
-import InventoryHelper from "../helpers/InventoryHelper";
+import { SeriesMetadata } from "../contracts/SeriesMetadata";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
-    private static _eventItems: IEventItem[];
+    private static _eventExecutors: EventExecutors;
     private static _buttonEvents: IButtonEventItem[];
 
     private _events: Events;
@@ -34,8 +32,8 @@ export class CoreClient extends Client {
         return this._commandItems;
     }
 
-    public static get eventItems(): IEventItem[] {
-        return this._eventItems;
+    public static get eventExecutors(): EventExecutors {
+        return this._eventExecutors;
     }
 
     public static get buttonEvents(): IButtonEventItem[] {
@@ -47,7 +45,6 @@ export class CoreClient extends Client {
         dotenv.config();
 
         CoreClient._commandItems = [];
-        CoreClient._eventItems = [];
         CoreClient._buttonEvents = [];
 
         this._events = new Events();
@@ -75,14 +72,10 @@ export class CoreClient extends Client {
 
         await CardMetadataFunction.Execute(true);
 
-        this._util.loadEvents(this, CoreClient._eventItems);
+        this._util.loadEvents(this, CoreClient._eventExecutors);
         this._util.loadSlashCommands(this);
 
         this._webhooks.start();
-
-        console.log(`Registered Commands: ${CoreClient._commandItems.flatMap(x => x.Name).join(", ")}`);
-        console.log(`Registered Events: ${CoreClient._eventItems.flatMap(x => x.EventType).join(", ")}`);
-        console.log(`Registered Buttons: ${CoreClient._buttonEvents.flatMap(x => x.ButtonId).join(", ")}`);
 
         await super.login(process.env.BOT_TOKEN);
     }
@@ -95,20 +88,260 @@ export class CoreClient extends Client {
             ServerId: serverId,
         };
 
-        if (environment &= CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
             CoreClient._commandItems.push(item);
         }
     }
 
-    public static RegisterEvent(eventType: EventType, func: Function, environment: Environment = Environment.All) {
-        const item: IEventItem = {
-            EventType: eventType,
-            ExecutionFunction: func,
-            Environment: environment,
-        };
+    public static RegisterChannelCreateEvent(fn: (channel: NonThreadGuildBasedChannel) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.ChannelCreate.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [ fn ],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
 
-        if (environment &= CoreClient.Environment) {
-            CoreClient._eventItems.push(item);
+    public static RegisterChannelDeleteEvent(fn: (channel: DMChannel | NonThreadGuildBasedChannel) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.ChannelDelete.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [ fn ],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterChannelUpdateEvent(fn: (channel: DMChannel | NonThreadGuildBasedChannel) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.ChannelCreate.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [ fn ],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterGuildBanAddEvent(fn: (ban: GuildBan) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.GuildBanAdd.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [ fn ],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterGuildBanRemoveEvent(fn: (channel: GuildBan) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.GuildBanRemove.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [ fn ],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterGuildCreateEvent(fn: (guild: Guild) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.GuildCreate.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [ fn ],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterGuildMemberAddEvent(fn: (member: GuildMember) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.GuildMemberAdd.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [ fn ],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterGuildMemberRemoveEvent(fn: (member: GuildMember | PartialGuildMember) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.GuildMemberRemove.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [ fn ],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static GuildMemebrUpdate(fn: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.GuildMemebrUpdate.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [ fn ],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterMessageCreateEvent(fn: (message: Message<boolean>) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.MessageCreate.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [ fn ],
+                MessageDelete: [],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterMessageDeleteEvent(fn: (message: Message<boolean> | PartialMessage) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.MessageDelete.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [ fn ],
+                MessageUpdate: [],
+            };
+        }
+    }
+
+    public static RegisterMessageUpdateEvent(fn: (oldMessage: Message<boolean> | PartialMessage, newMessage: Message<boolean> | PartialMessage) => void) {
+        if (this._eventExecutors) {
+            this._eventExecutors.MessageUpdate.push(fn);
+        } else {
+            this._eventExecutors = {
+                ChannelCreate: [],
+                ChannelDelete: [],
+                ChannelUpdate: [],
+                GuildBanAdd: [],
+                GuildBanRemove: [],
+                GuildCreate: [],
+                GuildMemberAdd: [],
+                GuildMemberRemove: [],
+                GuildMemebrUpdate: [],
+                MessageCreate: [],
+                MessageDelete: [],
+                MessageUpdate: [ fn ],
+            };
         }
     }
 
@@ -119,7 +352,7 @@ export class CoreClient extends Client {
             Environment: environment,
         };
 
-        if (environment &= CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
             CoreClient._buttonEvents.push(item);
         }
     }

@@ -7,16 +7,16 @@ export default class Inventory extends Command {
         super();
 
         this.CommandBuilder = new SlashCommandBuilder()
-            .setName('inventory')
-            .setDescription('View your inventory')
+            .setName("inventory")
+            .setDescription("View your inventory")
             .addNumberOption(x =>
                 x
-                    .setName('page')
-                    .setDescription('The page to start with'));
+                    .setName("page")
+                    .setDescription("The page to start with"));
     }
 
     public override async execute(interaction: CommandInteraction) {
-        const page = interaction.options.get('page');
+        const page = interaction.options.get("page");
 
         try {
             let pageNumber = 0;

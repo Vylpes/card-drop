@@ -12,10 +12,10 @@ export default class Claim extends AppBaseEntity {
     }
 
     @Column()
-    ClaimId: string;
+        ClaimId: string;
 
     @ManyToOne(() => Inventory, x => x.Claims)
-    Inventory: Inventory;
+        Inventory: Inventory;
 
     public SetInventory(inventory: Inventory) {
         this.Inventory = inventory;

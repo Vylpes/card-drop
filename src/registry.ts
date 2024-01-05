@@ -20,15 +20,15 @@ import Reroll from "./buttonEvents/Reroll";
 export default class Registry {
     public static RegisterCommands() {
         // Global Commands
-        CoreClient.RegisterCommand('about', new About());
-        CoreClient.RegisterCommand('drop', new Drop());
-        CoreClient.RegisterCommand('gdrivesync', new Gdrivesync());
-        CoreClient.RegisterCommand('inventory', new Inventory());
-        CoreClient.RegisterCommand('resync', new Resync());
+        CoreClient.RegisterCommand("about", new About());
+        CoreClient.RegisterCommand("drop", new Drop());
+        CoreClient.RegisterCommand("gdrivesync", new Gdrivesync());
+        CoreClient.RegisterCommand("inventory", new Inventory());
+        CoreClient.RegisterCommand("resync", new Resync());
 
         // Test Commands
-        CoreClient.RegisterCommand('dropnumber', new Dropnumber(), Environment.Test);
-        CoreClient.RegisterCommand('droprarity', new Droprarity(), Environment.Test);
+        CoreClient.RegisterCommand("dropnumber", new Dropnumber(), Environment.Test);
+        CoreClient.RegisterCommand("droprarity", new Droprarity(), Environment.Test);
     }
 
     public static RegisterEvents() {
@@ -36,8 +36,8 @@ export default class Registry {
     }
 
     public static RegisterButtonEvents() {
-        CoreClient.RegisterButtonEvent('claim', new Claim());
-        CoreClient.RegisterButtonEvent('inventory', new InventoryButtonEvent);
-        CoreClient.RegisterButtonEvent('reroll', new Reroll());
+        CoreClient.RegisterButtonEvent("claim", new Claim());
+        CoreClient.RegisterButtonEvent("inventory", new InventoryButtonEvent);
+        CoreClient.RegisterButtonEvent("reroll", new Reroll());
     }
 }

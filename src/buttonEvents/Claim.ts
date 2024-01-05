@@ -8,20 +8,20 @@ export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         if (!interaction.guild || !interaction.guildId) return;
 
-        const cardNumber = interaction.customId.split(' ')[1];
-        const claimId = interaction.customId.split(' ')[2];
-        const droppedBy = interaction.customId.split(' ')[3];
+        const cardNumber = interaction.customId.split(" ")[1];
+        const claimId = interaction.customId.split(" ")[2];
+        const droppedBy = interaction.customId.split(" ")[3];
         const userId = interaction.user.id;
 
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
-            await interaction.reply('This card has already been claimed');
+            await interaction.reply("This card has already been claimed");
             return;
         }
 
         if (claimId == CoreClient.ClaimId && userId != droppedBy) {
-            await interaction.reply('The latest dropped card can only be claimed by the user who dropped it');
+            await interaction.reply("The latest dropped card can only be claimed by the user who dropped it");
             return;
         }
 

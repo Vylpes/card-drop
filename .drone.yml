@@ -93,6 +93,12 @@ steps:
   commands:
   - npm ci
   - npm run build
+
+- name: lint
+  image: node
+  commands:
+  - npm run lint
+
 - name: test
   image: node
   commands:

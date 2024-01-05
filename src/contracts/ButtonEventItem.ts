@@ -1,8 +1,10 @@
 import { Environment } from "../constants/Environment";
 import { ButtonEvent } from "../type/buttonEvent";
 
-export default interface IButtonEventItem {
+interface ButtonEventItem {
     ButtonId: string,
     Event: ButtonEvent,
     Environment: Environment,
 }
+
+export default ButtonEventItem;

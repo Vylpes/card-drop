@@ -14,16 +14,16 @@ export default class Inventory extends AppBaseEntity {
     }
 
     @Column()
-    UserId: string;
+        UserId: string;
 
     @Column()
-    CardNumber: string;
+        CardNumber: string;
 
     @Column()
-    Quantity: number;
+        Quantity: number;
 
     @OneToMany(() => Claim, x => x.Inventory)
-    Claims: Claim[];
+        Claims: Claim[];
 
     public SetQuantity(quantity: number) {
         this.Quantity = quantity;

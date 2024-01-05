@@ -12,37 +12,37 @@ export default class Droprarity extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
-            .setName('droprarity')
-            .setDescription('(TEST) Summon a random card of a specific rarity')
+        this.CommandBuilder = new SlashCommandBuilder()
+            .setName("droprarity")
+            .setDescription("(TEST) Summon a random card of a specific rarity")
             .addStringOption(x =>
                 x
-                    .setName('rarity')
-                    .setDescription('The rarity you want to summon')
+                    .setName("rarity")
+                    .setDescription("The rarity you want to summon")
                     .setRequired(true));
     }
 
     public override async execute(interaction: CommandInteraction<CacheType>) {
         if (!interaction.isChatInputCommand()) return;
 
-        const rarity = interaction.options.get('rarity');
+        const rarity = interaction.options.get("rarity");
 
         if (!rarity || !rarity.value) {
-            await interaction.reply('Rarity is required');
+            await interaction.reply("Rarity is required");
             return;
         }
 
         const rarityType = CardRarityParse(rarity.value.toString());
 
         if (rarityType == CardRarity.Unknown) {
-            await interaction.reply('Invalid rarity');
+            await interaction.reply("Invalid rarity");
             return;
         }
 
         const card = await CardDropHelperMetadata.GetRandomCardByRarity(rarityType);
 
         if (!card) {
-            await interaction.reply('Card not found');
+            await interaction.reply("Card not found");
             return;
         }
 
@@ -50,7 +50,7 @@ export default class Droprarity extends Command {
         const imageFileName = card.card.path.split("/").pop()!;
 
         try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, 'cards', card.card.path));
+            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
         } catch {
             await interaction.reply(`Unable to fetch image for card ${card.card.id}`);
             return;
@@ -81,7 +81,7 @@ export default class Droprarity extends Command {
             if (e instanceof DiscordAPIError) {
                 await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}`);
             } else {
-                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN`);
+                await interaction.editReply("Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN");
             }
         }
 

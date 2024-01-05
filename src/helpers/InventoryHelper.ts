@@ -1,7 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
-import SeriesMetadata from "../contracts/SeriesMetadata";
 import EmbedColours from "../constants/EmbedColours";
 import { CardRarity, CardRarityToString } from "../constants/CardRarity";
 
@@ -37,14 +36,14 @@ export default class InventoryHelper {
 
         const pages: InventoryPage[] = [];
 
-        for (let series of allSeriesClaimed) {
+        for (const series of allSeriesClaimed) {
             const seriesCards = series.cards;
 
             for (let i = 0; i < seriesCards.length; i+= cardsPerPage) {
                 const cards = series.cards.slice(i, i + cardsPerPage);
                 const pageCards: InventoryPageCards[] = [];
 
-                for (let card of cards) {
+                for (const card of cards) {
                     const item = inventory.find(x => x.CardNumber == card.id);
 
                     if (!item) {
@@ -77,7 +76,7 @@ export default class InventoryHelper {
 
         const embed = new EmbedBuilder()
             .setTitle(username)
-            .setDescription(`**${currentPage.name} (${currentPage.seriesSubpage + 1})**\n${currentPage.cards.map(x => `[${x.id}] ${x.name} (${CardRarityToString(x.type)}) x${x.quantity}`).join('\n')}`)
+            .setDescription(`**${currentPage.name} (${currentPage.seriesSubpage + 1})**\n${currentPage.cards.map(x => `[${x.id}] ${x.name} (${CardRarityToString(x.type)}) x${x.quantity}`).join("\n")}`)
             .setFooter({ text: `Page ${page + 1} of ${pages.length}` })
             .setColor(EmbedColours.Ok);
 

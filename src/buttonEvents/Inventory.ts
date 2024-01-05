@@ -4,8 +4,8 @@ import InventoryHelper from "../helpers/InventoryHelper";
 
 export default class Inventory extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
-        const userid = interaction.customId.split(' ')[1];
-        const page = interaction.customId.split(' ')[2];
+        const userid = interaction.customId.split(" ")[1];
+        const page = interaction.customId.split(" ")[2];
 
         try {
             const embed = await InventoryHelper.GenerateInventoryPage(interaction.user.username, userid, Number(page));

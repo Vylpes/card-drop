@@ -47,7 +47,7 @@ export default class CardDropHelperMetadata {
         };
     }
 
-    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: Number, imageFileName: string): EmbedBuilder {
+    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string): EmbedBuilder {
         let description = "";
         description += `Series: ${drop.series.name}\n`;
         description += `Claimed: ${quantityClaimed}\n`;
@@ -68,7 +68,7 @@ export default class CardDropHelperMetadata {
                     .setLabel("Claim")
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
-                    .setCustomId(`reroll`)
+                    .setCustomId("reroll")
                     .setLabel("Reroll")
                     .setStyle(ButtonStyle.Secondary));
     }

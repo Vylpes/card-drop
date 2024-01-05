@@ -1,7 +1,7 @@
 export default class StringTools {
     public static Capitalise(str: string): string {
         const words = str.split(" ");
-        let result: string[] = [];
+        const result: string[] = [];
 
         words.forEach(word => {
             const firstLetter = word.substring(0, 1).toUpperCase();
@@ -26,17 +26,17 @@ export default class StringTools {
     public static RandomString(length: number) {
         let result = "";
 
-        const characters = 'abcdefghkmnpqrstuvwxyz23456789';
+        const characters = "abcdefghkmnpqrstuvwxyz23456789";
         const charactersLength = characters.length;
 
-        for ( var i = 0; i < length; i++ ) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        for ( let i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
 
         return result;
     }
 
     public static ReplaceAll(str: string, find: string, replace: string) {
-        return str.replace(new RegExp(find, 'g'), replace);
+        return str.replace(new RegExp(find, "g"), replace);
     }
 }

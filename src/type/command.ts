@@ -1,9 +1,7 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 
-export class Command {
-    public CommandBuilder: any;
-    
-    public execute(interaction: CommandInteraction) {
+export abstract class Command {
+    public CommandBuilder: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
 
-    }
+    abstract execute(interaction: CommandInteraction): Promise<void>;
 }

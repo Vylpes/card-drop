@@ -19,7 +19,7 @@ export default class Webhooks {
     }
 
     private setupRoutes() {
-        this.app.post('/api/reload-db', ReloadDB);
+        this.app.post("/api/reload-db", ReloadDB);
     }
 
     private setupListen() {

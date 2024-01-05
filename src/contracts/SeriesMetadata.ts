@@ -1,6 +1,6 @@
 import { CardRarity } from "../constants/CardRarity";
 
-export default interface SeriesMetadata {
+export interface SeriesMetadata {
     id: number,
     name: string,
     cards: CardMetadata[],

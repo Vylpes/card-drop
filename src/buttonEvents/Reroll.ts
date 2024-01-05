@@ -1,4 +1,4 @@
-import { AttachmentBuilder, ButtonInteraction, DiscordAPIError } from "discord.js";
+import { AttachmentBuilder, ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import { readFileSync } from "fs";
 import { v4 } from "uuid";
@@ -11,27 +11,25 @@ import path from "path";
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         if (!CoreClient.AllowDrops) {
-            await interaction.reply('Bot is currently syncing, please wait until its done.');
+            await interaction.reply("Bot is currently syncing, please wait until its done.");
             return;
         }
 
-        if (await Config.GetValue('safemode') == "true") {
-            await interaction.reply('Safe Mode has been activated, please resync to continue.');
+        if (await Config.GetValue("safemode") == "true") {
+            await interaction.reply("Safe Mode has been activated, please resync to continue.");
             return;
         }
 
         const randomCard = CardDropHelperMetadata.GetRandomCard();
 
         if (!randomCard) {
-            await interaction.reply('Unable to fetch card, please try again.');
+            await interaction.reply("Unable to fetch card, please try again.");
             return;
         }
 
         try {
-            let image: Buffer;
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
             const imageFileName = randomCard.card.path.split("/").pop()!;
-
-            image = readFileSync(path.join(process.env.DATA_DIR!, 'cards', randomCard.card.path));
 
             await interaction.deferReply();
 

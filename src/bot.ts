@@ -23,7 +23,7 @@ const requiredConfigs: string[] = [
     "DB_LOGGING",
     "EXPRESS_PORT",
     "GDRIVESYNC_WHITELIST",
-]
+];
 
 requiredConfigs.forEach(config => {
     if (!process.env[config]) {
@@ -40,7 +40,7 @@ Registry.RegisterCommands();
 Registry.RegisterEvents();
 Registry.RegisterButtonEvents();
 
-if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == 'true') {
+if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == "true") {
     console.log("Card directory not found, syncing...");
 
     CoreClient.AllowDrops = false;
@@ -50,7 +50,7 @@ if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO 
             console.error(error.code);
             throw `Error while running sync command. Code: ${error.code}`;
         } else {
-            console.log('Synced successfully.');
+            console.log("Synced successfully.");
             CoreClient.AllowDrops = true;
         }
     });

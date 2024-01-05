@@ -12,10 +12,10 @@ export default class Config extends AppBaseEntity {
     }
 
     @Column()
-    Key: string;
+        Key: string;
 
     @Column()
-    Value: string;
+        Value: string;
 
     public SetValue(value: string) {
         this.Value = value;

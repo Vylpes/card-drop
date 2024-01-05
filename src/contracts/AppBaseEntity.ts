@@ -11,13 +11,13 @@ export default class AppBaseEntity {
     }
 
     @PrimaryColumn()
-    Id: string;
+        Id: string;
 
     @Column()
-    WhenCreated: Date;
+        WhenCreated: Date;
 
     @Column()
-    WhenUpdated: Date;
+        WhenUpdated: Date;
 
     public async Save<T extends AppBaseEntity>(target: EntityTarget<T>, entity: DeepPartial<T>): Promise<void> {
         this.WhenUpdated = new Date();

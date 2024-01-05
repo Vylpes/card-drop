@@ -4,23 +4,23 @@ export default class TimeLengthInput {
     public readonly value: string;
 
     constructor(input: string) {
-        this.value = StringTools.ReplaceAll(input, ',', '');
+        this.value = StringTools.ReplaceAll(input, ",", "");
     }
 
     public GetDays(): number {
-        return this.GetValue('d');
+        return this.GetValue("d");
     }
 
     public GetHours(): number {
-        return this.GetValue('h');
+        return this.GetValue("h");
     }
 
     public GetMinutes(): number {
-        return this.GetValue('m');
+        return this.GetValue("m");
     }
 
     public GetSeconds(): number {
-        return this.GetValue('s');
+        return this.GetValue("s");
     }
 
     public GetMilliseconds(): number {
@@ -106,7 +106,7 @@ export default class TimeLengthInput {
     }
 
     private GetValue(designation: string): number {
-        const valueSplit = this.value.split(' ');
+        const valueSplit = this.value.split(" ");
 
         const desString = valueSplit.find(x => x.charAt(x.length - 1) == designation);
 
