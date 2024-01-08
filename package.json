@@ -39,7 +39,7 @@
     "minimatch": "9.0.3",
     "mysql": "^2.18.1",
     "ts-jest": "^29.0.0",
-    "typeorm": "0.3.17"
+    "typeorm": "0.3.19"
   },
   "resolutions": {
   },
