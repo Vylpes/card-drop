@@ -5,6 +5,7 @@ import { Environment } from "./constants/Environment";
 import About from "./commands/about";
 import Drop from "./commands/drop";
 import Gdrivesync from "./commands/gdrivesync";
+import Give from "./commands/give";
 import Inventory from "./commands/inventory";
 import Resync from "./commands/resync";
 
@@ -23,6 +24,7 @@ export default class Registry {
         CoreClient.RegisterCommand("about", new About());
         CoreClient.RegisterCommand("drop", new Drop());
         CoreClient.RegisterCommand("gdrivesync", new Gdrivesync());
+        CoreClient.RegisterCommand("give", new Give());
         CoreClient.RegisterCommand("inventory", new Inventory());
         CoreClient.RegisterCommand("resync", new Resync());
 

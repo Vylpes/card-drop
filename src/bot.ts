@@ -14,6 +14,7 @@ const requiredConfigs: string[] = [
     "BOT_OWNERID",
     "BOT_CLIENTID",
     "BOT_ENV",
+    "BOT_ADMINS",
     "DATA_DIR",
     "DB_HOST",
     "DB_PORT",
@@ -22,7 +23,6 @@ const requiredConfigs: string[] = [
     "DB_SYNC",
     "DB_LOGGING",
     "EXPRESS_PORT",
-    "GDRIVESYNC_WHITELIST",
 ];
 
 requiredConfigs.forEach(config => {

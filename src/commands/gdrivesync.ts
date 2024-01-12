@@ -18,7 +18,7 @@ export default class Gdrivesync extends Command {
     public override async execute(interaction: CommandInteraction<CacheType>) {
         if (!interaction.isChatInputCommand()) return;
 
-        const whitelistedUsers = process.env.GDRIVESYNC_WHITELIST!.split(",");
+        const whitelistedUsers = process.env.BOT_ADMINS!.split(",");
 
         if (!whitelistedUsers.find(x => x == interaction.user.id)) {
             await interaction.reply("Only whitelisted users can use this command.");

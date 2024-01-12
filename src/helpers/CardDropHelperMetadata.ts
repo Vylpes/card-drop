@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { CardRarity, CardRarityToColour, CardRarityToString } from "../constants/CardRarity";
 import CardRarityChances from "../constants/CardRarityChances";
-import { DropResult } from "../contracts/SeriesMetadata";
+import { CardMetadata, DropResult } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 
 export default class CardDropHelperMetadata {
@@ -45,6 +45,14 @@ export default class CardDropHelperMetadata {
             series: series,
             card: card,
         };
+    }
+
+    public static GetCardByCardNumber(cardNumber: string): CardMetadata | undefined {
+        const card = CoreClient.Cards
+            .flatMap(x => x.cards)
+            .find(x => x.id == cardNumber);
+
+        return card;
     }
 
     public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string): EmbedBuilder {
