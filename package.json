@@ -1,6 +1,6 @@
 {
   "name": "card-drop",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "main": "./dist/bot.js",
   "typings": "./dist",
   "scripts": {
@@ -41,8 +41,7 @@
     "ts-jest": "^29.0.0",
     "typeorm": "0.3.19"
   },
-  "resolutions": {
-  },
+  "resolutions": {},
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
