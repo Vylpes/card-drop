@@ -34,12 +34,18 @@ export default class Gdrivesync extends Command {
                 await interaction.editReply(`Error while running sync command. Safe Mode has been activated. Code: ${error.code}`);
                 await Config.SetValue("safemode", "true");
             } else {
-                await CardMetadataFunction.Execute();
+                const result = await CardMetadataFunction.Execute();
 
-                await interaction.editReply("Synced successfully.");
+                if (result) {
+                    await interaction.editReply("Synced successfully.");
 
-                CoreClient.AllowDrops = true;
-                await Config.SetValue("safemode", "false");
+                    CoreClient.AllowDrops = true;
+                    await Config.SetValue("safemode", "false");
+                } else {
+                    const safemode = await Config.GetValue("safemode");
+
+                    await interaction.editReply(`Sync failed. ${safemode == "true" ? "(Safe Mode is on)": "(Safe Mode is off)"}`);
+                }
             }
         });
     }
