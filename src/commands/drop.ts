@@ -36,10 +36,10 @@ export default class Drop extends Command {
         }
 
         try {
+            await interaction.deferReply();
+
             const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
             const imageFileName = randomCard.card.path.split("/").pop()!;
-
-            await interaction.deferReply();
 
             const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
