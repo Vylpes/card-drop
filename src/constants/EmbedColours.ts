@@ -1,5 +1,6 @@
 export default class EmbedColours {
     public static readonly Ok = 0x3050ba;
+    public static readonly Error = 0xff0000;
     public static readonly Grey = 0xd3d3d3;
     public static readonly BronzeCard = 0xcd7f32;
     public static readonly SilverCard = 0xc0c0c0;

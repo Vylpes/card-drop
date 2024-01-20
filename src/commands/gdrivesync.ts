@@ -25,7 +25,10 @@ export default class Gdrivesync extends Command {
             return;
         }
 
-        await interaction.reply("Syncing, this might take a while...");
+        await interaction.reply({
+            content: "Syncing, this might take a while...",
+            ephemeral: true,
+        });
 
         CoreClient.AllowDrops = false;
 
@@ -34,17 +37,15 @@ export default class Gdrivesync extends Command {
                 await interaction.editReply(`Error while running sync command. Safe Mode has been activated. Code: ${error.code}`);
                 await Config.SetValue("safemode", "true");
             } else {
-                const result = await CardMetadataFunction.Execute();
+                const result = await CardMetadataFunction.Execute(true);
 
-                if (result) {
+                if (result.IsSuccess) {
                     await interaction.editReply("Synced successfully.");
 
                     CoreClient.AllowDrops = true;
                     await Config.SetValue("safemode", "false");
                 } else {
-                    const safemode = await Config.GetValue("safemode");
-
-                    await interaction.editReply(`Sync failed. ${safemode == "true" ? "(Safe Mode is on)": "(Safe Mode is off)"}`);
+                    await interaction.editReply(`Sync failed \`\`\`${result.ErrorMessage}\`\`\``);
                 }
             }
         });
