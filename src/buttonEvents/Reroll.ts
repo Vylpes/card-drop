@@ -27,11 +27,11 @@ export default class Reroll extends ButtonEvent {
             return;
         }
 
+        await interaction.deferReply();
+
         try {
             const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
             const imageFileName = randomCard.card.path.split("/").pop()!;
-
-            await interaction.deferReply();
 
             const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
