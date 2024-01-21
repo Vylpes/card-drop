@@ -35,9 +35,9 @@ export default class Drop extends Command {
             return;
         }
 
-        try {
-            await interaction.deferReply();
+        await interaction.deferReply();
 
+        try {
             const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
             const imageFileName = randomCard.card.path.split("/").pop()!;
 

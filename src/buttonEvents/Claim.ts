@@ -13,15 +13,17 @@ export default class Claim extends ButtonEvent {
         const droppedBy = interaction.customId.split(" ")[3];
         const userId = interaction.user.id;
 
+        await interaction.deferReply();
+
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
-            await interaction.reply("This card has already been claimed");
+            await interaction.editReply("This card has already been claimed");
             return;
         }
 
         if (claimId == CoreClient.ClaimId && userId != droppedBy) {
-            await interaction.reply("The latest dropped card can only be claimed by the user who dropped it");
+            await interaction.editReply("The latest dropped card can only be claimed by the user who dropped it");
             return;
         }
 
@@ -40,6 +42,6 @@ export default class Claim extends ButtonEvent {
 
         await claim.Save(eClaim, claim);
 
-        await interaction.reply(`Card claimed by ${interaction.user}`);
+        await interaction.editReply(`Card claimed by ${interaction.user}`);
     }
 }
