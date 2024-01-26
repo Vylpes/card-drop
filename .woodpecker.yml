@@ -1,0 +1,47 @@
+steps:
+  build:
+    image: node
+    commands:
+    - npm ci
+    - npm run build
+    when:
+      event: push
+      branch: [ hotfix/*, feature/*, renovate/*, develop, main ]
+  lint:
+    image: node
+    commands:
+    - npm run lint
+    when:
+      event: push
+      branch: [ hotfix/*, feature/*, renovate/*, develop, main ]
+  test:
+    image: node
+    commands:
+    - npm test
+    when:
+      event: push
+      branch: [ hotfix/*, feature/*, renovate/*, develop, main ]
+  stage:
+    image: alpine
+    secrets: [ ssh_key, stage_bot_token ]
+    commands:
+      - apk add rsync openssh-client
+      - eval `ssh-agent -s`
+      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+      - rsync -e "ssh -o StrictHostKeyChecking=no" -r ./* vylpes@192.168.68.120:/home/vylpes/apps/card-drop/card-drop_stage
+      - ssh vylpes@192.168.68.120 BOT_TOKEN='$${stage_bot_token}' 'bash -s' < ./scripts/deploy_stage.sh
+    when:
+      event: push
+      branch: [ develop ]
+  deploy:
+    image: alpine
+    secrets: [ ssh_key, prod_bot_token ]
+    commands:
+      - apk add rsync openssh-client
+      - eval `ssh-agent -s`
+      - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+      - rsync -e "ssh -o StrictHostKeyChecking=no" -r ./* vylpes@192.168.68.120:/home/vylpes/apps/card-drop/card-drop_prod
+      - ssh vylpes@192.168.68.120 BOT_TOKEN='$${prod_bot_token}' 'bash -s' < ./scripts/deploy_prod.sh
+    when:
+      event: push
+      branch: [ main ]
