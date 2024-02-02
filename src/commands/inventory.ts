@@ -33,6 +33,7 @@ export default class Inventory extends Command {
             const embed = await InventoryHelper.GenerateInventoryPage(user.username, user.id, pageNumber);
 
             await interaction.reply({
+                content: `${user.username} - ${user.id}`,
                 embeds: [ embed.embed ],
                 components: [ embed.row ],
             });

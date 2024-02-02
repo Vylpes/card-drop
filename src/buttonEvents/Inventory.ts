@@ -9,7 +9,7 @@ export default class Inventory extends ButtonEvent {
         const userid = interaction.customId.split(" ")[1];
         const page = interaction.customId.split(" ")[2];
 
-        const member = interaction.guild.members.cache.find(x => x.id == userid) || interaction.member;
+        const member = interaction.guild.members.cache.find(x => x.id == userid) || await interaction.guild.members.fetch(userid);
 
         if (!member) {
             await interaction.reply("Unable to find user.");
@@ -20,10 +20,12 @@ export default class Inventory extends ButtonEvent {
             const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
 
             await interaction.update({
+                content: `${member.user.username} - ${member.user.id}`,
                 embeds: [ embed.embed ],
                 components: [ embed.row ],
             });
-        } catch {
+        } catch (e) {
+            console.error(e);
             await interaction.reply("No page for user found.");
         }
     }
