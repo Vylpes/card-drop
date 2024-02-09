@@ -48,7 +48,7 @@ jobs:
         DB_LOGGING: ${{ secrets.DB_LOGGING }}
         DB_DATA_LOCATION: ${{ secrets.DB_DATA_LOCATION }}
         DB_CARD_FILE: ${{ secrets.DB_CARD_FILE }}
-        TOKEN: ${{ secrets.BOT_TOKEN }}
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         BOT_VER: ${{ vars.BOT_VER }}
         BOT_AUTHOR: ${{ vars.BOT_AUTHOR }}
         BOT_OWNERID: ${{ vars.BOT_OWNERID }}
