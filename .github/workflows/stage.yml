@@ -48,7 +48,7 @@ jobs:
         DB_LOGGING: ${{ secrets.DB_LOGGING }}
         DB_DATA_LOCATION: ${{ secrets.DB_DATA_LOCATION }}
         DB_CARD_FILE: ${{ secrets.DB_CARD_FILE }}
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        TOKEN: ${{ secrets.BOT_TOKEN }}
         BOT_VER: ${{ vars.BOT_VER }}
         BOT_AUTHOR: ${{ vars.BOT_AUTHOR }}
         BOT_OWNERID: ${{ vars.BOT_OWNERID }}
@@ -58,12 +58,14 @@ jobs:
         DATA_DIR: ${{ secrets.DATA_DIR }}
         EXPRESS_PORT: ${{ secrets.EXPRESS_PORT }}
         GDRIVESYNC_AUTO: ${{ vars.GDRIVESYNC_AUTO }}
+        BOT_ADMINS: ${{ vars.BOT_ADMINS }}
+        BOT_ENV: ${{ vars.BOT_ENV }}
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_CARD_FILE,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO,DATA_DIR,EXPRESS_PORT,GDRIVESYNC_AUTO
+        envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_CARD_FILE,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO,DATA_DIR,EXPRESS_PORT,GDRIVESYNC_AUTO,BOT_ADMINS,BOT_ENV
         script: |
           cd ~/app \
           && docker compose down \
