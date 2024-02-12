@@ -63,7 +63,7 @@ export default class CardDropHelperMetadata {
         return new EmbedBuilder()
             .setTitle(drop.card.name)
             .setDescription(description)
-            .setFooter({ text: CardRarityToString(drop.card.type) })
+            .setFooter({ text: `${CardRarityToString(drop.card.type)} · ${drop.card.id}` })
             .setColor(CardRarityToColour(drop.card.type))
             .setImage(`attachment://${imageFileName}`);
     }
