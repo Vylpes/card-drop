@@ -109,3 +109,7 @@ ormconfig.json
 gdrive-credentials.json
 data/
 *.db
+
+.terraform
+*.tfvars
+*.tfstate

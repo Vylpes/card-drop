@@ -8,6 +8,7 @@ import Gdrivesync from "./commands/gdrivesync";
 import Give from "./commands/give";
 import Inventory from "./commands/inventory";
 import Resync from "./commands/resync";
+import View from "./commands/view";
 
 // Test Command Imports
 import Dropnumber from "./commands/stage/dropnumber";
@@ -27,6 +28,7 @@ export default class Registry {
         CoreClient.RegisterCommand("give", new Give());
         CoreClient.RegisterCommand("inventory", new Inventory());
         CoreClient.RegisterCommand("resync", new Resync());
+        CoreClient.RegisterCommand("view", new View());
 
         // Test Commands
         CoreClient.RegisterCommand("dropnumber", new Dropnumber(), Environment.Test);
