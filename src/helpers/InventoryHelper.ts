@@ -3,6 +3,7 @@ import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
 import EmbedColours from "../constants/EmbedColours";
 import { CardRarity, CardRarityToString } from "../constants/CardRarity";
+import cloneDeep from "clone-deep";
 
 interface InventoryPage {
     id: number,
@@ -24,7 +25,9 @@ export default class InventoryHelper {
 
         const inventory = await Inventory.FetchAllByUserId(userid);
 
-        const allSeriesClaimed = CoreClient.Cards
+        const clientCards = cloneDeep(CoreClient.Cards);
+
+        const allSeriesClaimed = clientCards
             .sort((a, b) => a.id - b.id)
             .filter(x => {
                 x.cards = x.cards
