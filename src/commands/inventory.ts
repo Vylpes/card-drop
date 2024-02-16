@@ -12,11 +12,16 @@ export default class Inventory extends Command {
             .addNumberOption(x =>
                 x
                     .setName("page")
-                    .setDescription("The page to start with"));
+                    .setDescription("The page to start with"))
+            .addUserOption(x =>
+                x
+                    .setName("user")
+                    .setDescription("The user to view (Defaults to yourself)"));
     }
 
     public override async execute(interaction: CommandInteraction) {
         const page = interaction.options.get("page");
+        const user = interaction.options.getUser("user") || interaction.user;
 
         try {
             let pageNumber = 0;
@@ -25,7 +30,7 @@ export default class Inventory extends Command {
                 pageNumber = Number(page.value) - 1;
             }
 
-            const embed = await InventoryHelper.GenerateInventoryPage(interaction.user.username, interaction.user.id, pageNumber);
+            const embed = await InventoryHelper.GenerateInventoryPage(user.username, user.id, pageNumber);
 
             await interaction.reply({
                 embeds: [ embed.embed ],
