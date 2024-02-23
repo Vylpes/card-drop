@@ -8,6 +8,7 @@ import Gdrivesync from "./commands/gdrivesync";
 import Give from "./commands/give";
 import Inventory from "./commands/inventory";
 import Resync from "./commands/resync";
+import Trade from "./commands/trade";
 import View from "./commands/view";
 
 // Test Command Imports
@@ -18,6 +19,7 @@ import Droprarity from "./commands/stage/droprarity";
 import Claim from "./buttonEvents/Claim";
 import InventoryButtonEvent from "./buttonEvents/Inventory";
 import Reroll from "./buttonEvents/Reroll";
+import TradeButtonEvent from "./buttonEvents/Trade";
 
 export default class Registry {
     public static RegisterCommands() {
@@ -28,6 +30,7 @@ export default class Registry {
         CoreClient.RegisterCommand("give", new Give());
         CoreClient.RegisterCommand("inventory", new Inventory());
         CoreClient.RegisterCommand("resync", new Resync());
+        CoreClient.RegisterCommand("trade", new Trade());
         CoreClient.RegisterCommand("view", new View());
 
         // Test Commands
@@ -41,7 +44,8 @@ export default class Registry {
 
     public static RegisterButtonEvents() {
         CoreClient.RegisterButtonEvent("claim", new Claim());
-        CoreClient.RegisterButtonEvent("inventory", new InventoryButtonEvent);
+        CoreClient.RegisterButtonEvent("inventory", new InventoryButtonEvent());
         CoreClient.RegisterButtonEvent("reroll", new Reroll());
+        CoreClient.RegisterButtonEvent("trade", new TradeButtonEvent());
     }
 }
