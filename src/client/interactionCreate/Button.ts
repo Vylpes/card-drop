@@ -12,6 +12,12 @@ export default class Button {
             return;
         }
 
-        item.Event.execute(interaction);
+        try {
+            item.Event.execute(interaction);
+        } catch (e) {
+            console.error(e);
+
+            await interaction.reply("An error occurred while executing the event");
+        }
     }
 }

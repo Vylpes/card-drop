@@ -22,6 +22,12 @@ export default class ChatInputCommand {
             itemToUse = itemForServer;
         }
 
-        itemToUse.Command.execute(interaction);
+        try {
+            itemToUse.Command.execute(interaction);
+        } catch (e) {
+            console.error(e);
+
+            await interaction.reply("An error occurred while executing the command");
+        }
     }
 }
