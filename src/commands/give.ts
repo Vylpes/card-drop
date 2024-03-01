@@ -63,6 +63,6 @@ export default class Give extends Command {
 
         await inventory.Save(Inventory, inventory);
 
-        await interaction.reply(`${card.name} given to ${interaction.user}, they now have ${inventory.Quantity}`);
+        await interaction.reply(`${card.name} given to ${user.username}, they now have ${inventory.Quantity}`);
     }
 }
