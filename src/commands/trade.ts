@@ -63,19 +63,19 @@ export default class Trade extends Command {
         const expiry = now.setMinutes(now.getMinutes() + 15);
 
         const tradeEmbed = new EmbedBuilder()
-            .setTitle("Trade Offer")
+            .setTitle("⚠️ Trade Offer ⚠️")
             .setDescription(`Trade initiated between ${interaction.user.username} and ${user.username}`)
             .setColor(EmbedColours.Grey)
             .setImage("https://media1.tenor.com/m/KkZwKl2AQ2QAAAAd/trade-offer.gif")
             .addFields([
                 {
-                    name: `${interaction.user.username} is giving`,
-                    value: `${giveItem.id}: ${giveItem.name}`,
+                    name: "I Receive",
+                    value: `${receiveItem.id}: ${receiveItem.name}`,
                     inline: true,
                 },
                 {
-                    name: `${user.username} is giving`,
-                    value: `${receiveItem.id}: ${receiveItem.name}`,
+                    name: "You Receive",
+                    value: `${giveItem.id}: ${giveItem.name}`,
                     inline: true,
                 },
                 {
@@ -109,13 +109,13 @@ export default class Trade extends Command {
             .setImage("https://media1.tenor.com/m/KkZwKl2AQ2QAAAAd/trade-offer.gif")
             .addFields([
                 {
-                    name: `${receiveUsername} is giving`,
-                    value: `${giveCardNumber}: ${giveCardName}`,
+                    name: "I Receive",
+                    value: `${receiveCardNumber}: ${receiveCardName}`,
                     inline: true,
                 },
                 {
-                    name: `${giveUsername} is giving`,
-                    value: `${receiveCardNumber}: ${receiveCardName}`,
+                    name: "You Receive",
+                    value: `${giveCardNumber}: ${giveCardName}`,
                     inline: true,
                 },
                 {

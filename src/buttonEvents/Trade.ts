@@ -100,13 +100,13 @@ export default class Trade extends ButtonEvent {
             .setImage("https://i.imgur.com/9w5f1ls.gif")
             .addFields([
                 {
-                    name: `${receiveUser.username} is giving`,
-                    value: `${giveItem.id}: ${giveItem.name}`,
+                    name: "I receieve",
+                    value: `${receiveItem.id}: ${receiveItem.name}`,
                     inline: true,
                 },
                 {
-                    name: `${giveUser.username} is giving`,
-                    value: `${receiveItem.id}: ${receiveItem.name}`,
+                    name: "You receieve",
+                    value: `${giveItem.id}: ${giveItem.name}`,
                     inline: true,
                 },
                 {
@@ -140,7 +140,7 @@ export default class Trade extends ButtonEvent {
         // No need to get expiry date
         const timeoutId = interaction.customId.split(" ")[7];
 
-        if (interaction.user.id !== receiveUserId || interaction.user.id !== giveUserId) {
+        if (interaction.user.id != receiveUserId && interaction.user.id !==giveUserId) {
             await interaction.reply("You are not the user who the trade is intended for");
             return;
         }
@@ -170,13 +170,13 @@ export default class Trade extends ButtonEvent {
             .setImage("https://i.imgur.com/9w5f1ls.gif")
             .addFields([
                 {
-                    name: `${receiveUser.username} is giving`,
-                    value: `${giveItem.id}: ${giveItem.name}`,
+                    name: "I Receive",
+                    value: `${receiveItem.id}: ${receiveItem.name}`,
                     inline: true,
                 },
                 {
-                    name: `${giveUser.username} is giving`,
-                    value: `${receiveItem.id}: ${receiveItem.name}`,
+                    name: "You Receive",
+                    value: `${giveItem.id}: ${giveItem.name}`,
                     inline: true,
                 },
                 {
