@@ -1,6 +1,7 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import InventoryHelper from "../helpers/InventoryHelper";
+import AppLogger from "../client/appLogger";
 
 export default class Inventory extends Command {
     constructor() {
@@ -23,6 +24,8 @@ export default class Inventory extends Command {
         const page = interaction.options.get("page");
         const user = interaction.options.getUser("user") || interaction.user;
 
+        AppLogger.LogSilly("Commands/Inventory", `Parameters: page=${page?.value}, user=${user.id}`);
+
         try {
             let pageNumber = 0;
 
@@ -36,7 +39,9 @@ export default class Inventory extends Command {
                 embeds: [ embed.embed ],
                 components: [ embed.row ],
             });
-        } catch {
+        } catch (e) {
+            AppLogger.LogError("Commands/Inventory", e as string);
+
             await interaction.reply("No page for user found.");
         }
     }

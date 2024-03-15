@@ -3,6 +3,7 @@ import { CardRarity, CardRarityToColour, CardRarityToString } from "../constants
 import CardRarityChances from "../constants/CardRarityChances";
 import { CardMetadata, DropResult } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
+import AppLogger from "../client/appLogger";
 
 export default class CardDropHelperMetadata {
     public static GetRandomCard(): DropResult | undefined {
@@ -23,10 +24,14 @@ export default class CardDropHelperMetadata {
 
         const randomCard = this.GetRandomCardByRarity(cardRarity);
 
+        AppLogger.LogSilly("CardDropHelperMetadata/GetRandomCard", `Random card: ${randomCard?.card.id} ${randomCard?.card.name}`);
+
         return randomCard;
     }
 
     public static GetRandomCardByRarity(rarity: CardRarity): DropResult | undefined {
+        AppLogger.LogSilly("CardDropHelperMetadata/GetRandomCardByRarity", `Parameters: rarity=${rarity}`);
+
         const allCards = CoreClient.Cards
             .flatMap(x => x.cards)
             .filter(x => x.type == rarity);
@@ -38,8 +43,12 @@ export default class CardDropHelperMetadata {
             .find(x => x.cards.includes(card));
 
         if (!series) {
+            AppLogger.LogWarn("CardDropHelperMetadata/GetRandomCardByRarity", `Series not found for card ${card.id}`);
+
             return undefined;
         }
+
+        AppLogger.LogSilly("CardDropHelperMetadata/GetRandomCardByRarity", `Random card: ${card.id} ${card.name}`);
 
         return {
             series: series,
@@ -48,14 +57,20 @@ export default class CardDropHelperMetadata {
     }
 
     public static GetCardByCardNumber(cardNumber: string): CardMetadata | undefined {
+        AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Parameters: cardNumber=${cardNumber}`);
+
         const card = CoreClient.Cards
             .flatMap(x => x.cards)
             .find(x => x.id == cardNumber);
+
+        AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Card: ${card?.id} ${card?.name}`);
 
         return card;
     }
 
     public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string): EmbedBuilder {
+        AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropEmbed", `Parameters: drop=${drop.card.id}, quantityClaimed=${quantityClaimed}, imageFileName=${imageFileName}`);
+
         let description = "";
         description += `Series: ${drop.series.name}\n`;
         description += `Claimed: ${quantityClaimed}\n`;
@@ -69,6 +84,8 @@ export default class CardDropHelperMetadata {
     }
 
     public static GenerateDropButtons(drop: DropResult, claimId: string, userId: string): ActionRowBuilder<ButtonBuilder> {
+        AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropButtons", `Parameters: drop=${drop.card.id}, claimId=${claimId}, userId=${userId}`);
+
         return new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()

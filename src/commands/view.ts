@@ -5,6 +5,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import Inventory from "../database/entities/app/Inventory";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
+import AppLogger from "../client/appLogger";
 
 export default class View extends Command {
     constructor() {
@@ -22,6 +23,8 @@ export default class View extends Command {
 
     public override async execute(interaction: CommandInteraction) {
         const cardNumber = interaction.options.get("cardnumber");
+
+        AppLogger.LogSilly("Commands/View", `Parameters: cardNumber=${cardNumber?.value}`);
 
         if (!cardNumber || !cardNumber.value) {
             await interaction.reply("Card number is required.");
@@ -46,6 +49,8 @@ export default class View extends Command {
         try {
             image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.path));
         } catch {
+            AppLogger.LogError("Commands/View", `Unable to fetch image for card ${card.id}.`);
+
             await interaction.reply(`Unable to fetch image for card ${card.id}.`);
             return;
         }
@@ -65,7 +70,7 @@ export default class View extends Command {
                 files: [ attachment ],
             });
         } catch (e) {
-            console.error(e);
+            AppLogger.LogError("Commands/View", `Error sending view for card ${card.id}: ${e}`);
 
             if (e instanceof DiscordAPIError) {
                 await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}.`);

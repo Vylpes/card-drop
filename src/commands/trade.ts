@@ -3,6 +3,7 @@ import { Command } from "../type/command";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
 import EmbedColours from "../constants/EmbedColours";
+import AppLogger from "../client/appLogger";
 
 export default class Trade extends Command {
     constructor() {
@@ -32,6 +33,8 @@ export default class Trade extends Command {
         const user = interaction.options.getUser("user")!;
         const give = interaction.options.get("give")!;
         const receive = interaction.options.get("receive")!;
+
+        AppLogger.LogSilly("Commands/Trade", `Parameters: user=${user.id}, give=${give.value}, receive=${receive.value}`);
 
         const giveItemEntity = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, give.value!.toString());
         const receiveItemEntity = await Inventory.FetchOneByCardNumberAndUserId(user.id, receive.value!.toString());
@@ -102,6 +105,8 @@ export default class Trade extends Command {
     }
 
     private async autoDecline(interaction: CommandInteraction, giveUsername: string, receiveUsername: string, giveCardNumber: string, receiveCardNumber: string, giveCardName: string, receiveCardName: string) {
+        AppLogger.LogSilly("Commands/Trade/AutoDecline", `Auto declining trade between ${giveUsername} and ${receiveUsername}`);
+
         const tradeEmbed = new EmbedBuilder()
             .setTitle("Trade Expired")
             .setDescription(`Trade initiated between ${receiveUsername} and ${giveUsername}`)

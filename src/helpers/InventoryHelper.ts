@@ -4,6 +4,7 @@ import { CoreClient } from "../client/client";
 import EmbedColours from "../constants/EmbedColours";
 import { CardRarity, CardRarityToString } from "../constants/CardRarity";
 import cloneDeep from "clone-deep";
+import AppLogger from "../client/appLogger";
 
 interface InventoryPage {
     id: number,
@@ -21,6 +22,8 @@ interface InventoryPageCards {
 
 export default class InventoryHelper {
     public static async GenerateInventoryPage(username: string, userid: string, page: number): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder> }> {
+        AppLogger.LogSilly("Helpers/InventoryHelper", `Parameters: username=${username}, userid=${userid}, page=${page}`);
+
         const cardsPerPage = 15;
 
         const inventory = await Inventory.FetchAllByUserId(userid);
@@ -73,7 +76,7 @@ export default class InventoryHelper {
         const currentPage = pages[page];
 
         if (!currentPage) {
-            console.error("Unable to find page");
+            AppLogger.LogError("Helpers/InventoryHelper", "Unable to find page");
             return Promise.reject("Unable to find page");
         }
 

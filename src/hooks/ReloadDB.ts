@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import CardMetadataFunction from "../Functions/CardMetadataFunction";
+import AppLogger from "../client/appLogger";
 
 export default async function ReloadDB(req: Request, res: Response) {
-    console.log("Reloading Card DB...");
+    AppLogger.LogInfo("Hooks/ReloadDB", "Reloading Card DB...");
 
     await CardMetadataFunction.Execute();
 

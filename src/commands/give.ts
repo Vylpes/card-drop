@@ -4,6 +4,7 @@ import { CoreClient } from "../client/client";
 import Config from "../database/entities/app/Config";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import Inventory from "../database/entities/app/Inventory";
+import AppLogger from "../client/appLogger";
 
 export default class Give extends Command {
     constructor() {
@@ -45,6 +46,8 @@ export default class Give extends Command {
 
         const cardNumber = interaction.options.get("cardnumber", true);
         const user = interaction.options.getUser("user", true);
+
+        AppLogger.LogSilly("Commands/Give", `Parameters: cardNumber=${cardNumber.value}, user=${user.id}`);
 
         const card = CardDropHelperMetadata.GetCardByCardNumber(cardNumber.value!.toString());
 

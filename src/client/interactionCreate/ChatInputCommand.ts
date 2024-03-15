@@ -1,6 +1,7 @@
 import { Interaction } from "discord.js";
 import { CoreClient } from "../client";
 import ICommandItem from "../../contracts/ICommandItem";
+import AppLogger from "../appLogger";
 
 export default class ChatInputCommand {
     public static async onChatInput(interaction: Interaction) {
@@ -13,6 +14,8 @@ export default class ChatInputCommand {
 
         if (!itemForServer) {
             if (!item) {
+                AppLogger.LogVerbose("ChatInputCommand", `Command not found: ${interaction.commandName}`);
+
                 await interaction.reply("Command not found");
                 return;
             }
@@ -23,9 +26,12 @@ export default class ChatInputCommand {
         }
 
         try {
+            AppLogger.LogDebug("Command", `Executing ${interaction.commandName}`);
+
             itemToUse.Command.execute(interaction);
         } catch (e) {
-            console.error(e);
+            AppLogger.LogError("ChatInputCommand", `Error occurred while executing command: ${interaction.commandName}`);
+            AppLogger.LogError("ChatInputCommand", e as string);
 
             await interaction.reply("An error occurred while executing the command");
         }

@@ -7,6 +7,7 @@ import Inventory from "../database/entities/app/Inventory";
 import Config from "../database/entities/app/Config";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import path from "path";
+import AppLogger from "../client/appLogger";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -16,6 +17,8 @@ export default class Reroll extends ButtonEvent {
         }
 
         if (await Config.GetValue("safemode") == "true") {
+            AppLogger.LogWarn("Button/Reroll", "Safe Mode is active, refusing to send next drop.");
+
             await interaction.reply("Safe Mode has been activated, please resync to continue.");
             return;
         }
@@ -30,6 +33,8 @@ export default class Reroll extends ButtonEvent {
         await interaction.deferReply();
 
         try {
+            AppLogger.LogVerbose("Button/Reroll", `Sending next drop: ${randomCard.card.id} (${randomCard.card.name})`);
+
             const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
             const imageFileName = randomCard.card.path.split("/").pop()!;
 
@@ -51,9 +56,8 @@ export default class Reroll extends ButtonEvent {
             });
 
             CoreClient.ClaimId = claimId;
-
         } catch (e) {
-            console.error(e);
+            AppLogger.LogError("Button/Reroll", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
 
             await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. (${randomCard.card.id})`);
         }

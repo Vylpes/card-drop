@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import express, { Application } from "express";
 import ReloadDB from "./hooks/ReloadDB";
+import AppLogger from "./client/appLogger";
 
 export default class Webhooks {
     private app: Application;
@@ -24,7 +25,7 @@ export default class Webhooks {
 
     private setupListen() {
         this.app.listen(this.port, () => {
-            console.log(`API listening on port ${this.port}`);
+            AppLogger.LogInfo("Webhooks", `API listening on port ${this.port}`);
         });
     }
 }

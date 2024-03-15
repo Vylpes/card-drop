@@ -4,6 +4,7 @@ import Config from "../database/entities/app/Config";
 import { glob } from "glob";
 import { SeriesMetadata } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
+import AppLogger from "../client/appLogger";
 
 export interface CardMetadataResult {
     IsSuccess: boolean;
@@ -21,16 +22,22 @@ export interface FindMetadataResult {
 
 export default class CardMetadataFunction {
     public static async Execute(overrideSafeMode: boolean = false): Promise<CardMetadataResult> {
-        if (!overrideSafeMode && await Config.GetValue("safemode") == "true") return {
-            IsSuccess: false,
-            ErrorMessage: "Safe mode is on and not overridden",
-        };
+        AppLogger.LogInfo("Functions/CardMetadataFunction", "Executing");
+
+        if (!overrideSafeMode && await Config.GetValue("safemode") == "true") {
+            AppLogger.LogWarn("Functions/CardMetadataFunction", "Safe Mode is active, refusing to resync");
+
+            return {
+                IsSuccess: false,
+                ErrorMessage: "Safe mode is on and not overridden",
+            };
+        }
 
         const cardResult = await this.FindMetadataJSONs();
 
         if (cardResult.IsSuccess) {
             CoreClient.Cards = cardResult.Result!;
-            console.log(`Loaded ${CoreClient.Cards.flatMap(x => x.cards).length} cards to database`);
+            AppLogger.LogInfo("Functions/CardMetadataFunction", `Loaded ${CoreClient.Cards.flatMap(x => x.cards).length} cards to database`);
 
             return {
                 IsSuccess: true,
@@ -38,6 +45,7 @@ export default class CardMetadataFunction {
         }
 
         await Config.SetValue("safemode", "true");
+        AppLogger.LogError("Functions/CardMetadataFunction", `Safe Mode activated due to error: ${cardResult.Error!.Message}`);
 
         return {
             IsSuccess: false,
@@ -52,13 +60,13 @@ export default class CardMetadataFunction {
 
         for (const jsonPath of seriesJSONs) {
             try {
-                console.log(`Reading file ${jsonPath}`);
+                AppLogger.LogVerbose("Functions/CardMetadataFunction", `Reading file ${jsonPath}`);
                 const jsonFile = readFileSync(jsonPath);
                 const parsedJson: SeriesMetadata[] = JSON.parse(jsonFile.toString());
 
                 res.push(...parsedJson);
             } catch (e) {
-                console.error(e);
+                AppLogger.LogError("Functions/CardMetadataFunction", `Error reading file ${jsonPath}: ${e}`);
 
                 return {
                     IsSuccess: false,

@@ -3,10 +3,13 @@ import { ButtonEvent } from "../type/buttonEvent";
 import { CoreClient } from "../client/client";
 import Inventory from "../database/entities/app/Inventory";
 import EmbedColours from "../constants/EmbedColours";
+import AppLogger from "../client/appLogger";
 
 export default class Trade extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         const action = interaction.customId.split(" ")[1];
+
+        AppLogger.LogSilly("Button/Trade", `Parameters: action=${action}`);
 
         switch (action) {
         case "accept":
@@ -25,6 +28,8 @@ export default class Trade extends ButtonEvent {
         const receiveCardNumber = interaction.customId.split(" ")[5];
         const expiry = interaction.customId.split(" ")[6];
         const timeoutId = interaction.customId.split(" ")[7];
+
+        AppLogger.LogSilly("Button/Trade/AcceptTrade", `Parameters: giveUserId=${giveUserId}, receiveUserId=${receiveUserId}, giveCardNumber=${giveCardNumber}, receiveCardNumber=${receiveCardNumber}, expiry=${expiry}, timeoutId=${timeoutId}`);
 
         const expiryDate = new Date(expiry);
 
@@ -139,6 +144,8 @@ export default class Trade extends ButtonEvent {
         const receiveCardNumber = interaction.customId.split(" ")[5];
         // No need to get expiry date
         const timeoutId = interaction.customId.split(" ")[7];
+
+        AppLogger.LogSilly("Button/Trade/DeclineTrade", `Parameters: giveUserId=${giveUserId}, receiveUserId=${receiveUserId}, giveCardNumber=${giveCardNumber}, receiveCardNumber=${receiveCardNumber}, timeoutId=${timeoutId}`);
 
         if (interaction.user.id != receiveUserId && interaction.user.id !==giveUserId) {
             await interaction.reply("You are not the user who the trade is intended for");

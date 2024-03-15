@@ -7,6 +7,7 @@ import Inventory from "../database/entities/app/Inventory";
 import Config from "../database/entities/app/Config";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import path from "path";
+import AppLogger from "../client/appLogger";
 
 export default class Drop extends Command {
     constructor() {
@@ -24,6 +25,8 @@ export default class Drop extends Command {
         }
 
         if (await Config.GetValue("safemode") == "true") {
+            AppLogger.LogWarn("Commands/Drop", "Safe Mode is active, refusing to send next drop.");
+
             await interaction.reply("Safe Mode has been activated, please resync to continue.");
             return;
         }
@@ -31,6 +34,8 @@ export default class Drop extends Command {
         const randomCard = CardDropHelperMetadata.GetRandomCard();
 
         if (!randomCard) {
+            AppLogger.LogWarn("Commands/Drop", "Unable to fetch card, please try again. (randomCard is null)");
+
             await interaction.reply("Unable to fetch card, please try again.");
             return;
         }
@@ -61,7 +66,7 @@ export default class Drop extends Command {
             CoreClient.ClaimId = claimId;
 
         } catch (e) {
-            console.error(e);
+            AppLogger.LogError("Commands/Drop", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
 
             await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. (${randomCard.card.id})`);
         }

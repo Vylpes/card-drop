@@ -1,6 +1,7 @@
 import { Client, REST, Routes, SlashCommandBuilder } from "discord.js";
 import EventExecutors from "../contracts/EventExecutors";
 import { CoreClient } from "./client";
+import AppLogger from "./appLogger";
 
 export class Util {
     public loadSlashCommands(client: Client) {
@@ -29,6 +30,8 @@ export class Util {
 
         const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN!);
 
+        AppLogger.LogVerbose("Util", `REST PUT: ${globalCommandData.flatMap(x => x.name).join(", ")}`);
+
         rest.put(
             Routes.applicationCommands(process.env.BOT_CLIENTID!),
             {
@@ -48,6 +51,8 @@ export class Util {
             }
 
             if (!client.guilds.cache.has(guild)) continue;
+
+            AppLogger.LogVerbose("Util", `REST PUT: ${guild} - ${guildCommandData.flatMap(x => x.name).join(", ")}`);
 
             rest.put(
                 Routes.applicationGuildCommands(process.env.BOT_CLIENTID!, guild),

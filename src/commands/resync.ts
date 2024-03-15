@@ -2,6 +2,7 @@ import { CacheType, CommandInteraction, PermissionsBitField, SlashCommandBuilder
 import { Command } from "../type/command";
 import Config from "../database/entities/app/Config";
 import CardMetadataFunction from "../Functions/CardMetadataFunction";
+import AppLogger from "../client/appLogger";
 
 export default class Resync extends Command {
     constructor() {
@@ -23,10 +24,14 @@ export default class Resync extends Command {
             return;
         }
 
+        AppLogger.LogInfo("Commands/Resync", "Resyncing database");
+
         const result = await CardMetadataFunction.Execute(true);
 
         if (result) {
             if (await Config.GetValue("safemode") == "true") {
+                AppLogger.LogInfo("Commands/Resync", "Resync successful, safe mode disabled");
+
                 await Config.SetValue("safemode", "false");
                 await interaction.reply("Resynced database and disabled safe mode.");
 
@@ -34,6 +39,8 @@ export default class Resync extends Command {
             }
             await interaction.reply("Resynced database.");
         } else {
+            AppLogger.LogWarn("Commands/Resync", "Resync failed, safe mode activated");
+
             await interaction.reply("Resync failed, safe mode has been activated until successful resync.");
         }
     }
