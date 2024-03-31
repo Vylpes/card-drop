@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { CardRarity, CardRarityToColour, CardRarityToString } from "../constants/CardRarity";
 import CardRarityChances from "../constants/CardRarityChances";
-import { CardMetadata, DropResult } from "../contracts/SeriesMetadata";
+import { DropResult } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 import AppLogger from "../client/appLogger";
 
@@ -56,24 +56,39 @@ export default class CardDropHelperMetadata {
         };
     }
 
-    public static GetCardByCardNumber(cardNumber: string): CardMetadata | undefined {
+    public static GetCardByCardNumber(cardNumber: string): DropResult | undefined {
         AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Parameters: cardNumber=${cardNumber}`);
 
         const card = CoreClient.Cards
             .flatMap(x => x.cards)
             .find(x => x.id == cardNumber);
 
-        AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Card: ${card?.id} ${card?.name}`);
+        const series = CoreClient.Cards
+            .find(x => x.cards.find(y => y.id == card?.id));
 
-        return card;
+        AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Card: ${card?.id} ${card?.name}`);
+        AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Series: ${series?.id} ${series?.name}`);
+
+        if (!card || !series) {
+            AppLogger.LogVerbose("CardDropHelperMetadata/GetCardByCardNumber", `Unable to find card metadata: ${cardNumber}`);
+            return undefined;
+        }
+
+        return { card, series };
     }
 
-    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string): EmbedBuilder {
+    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string): EmbedBuilder {
         AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropEmbed", `Parameters: drop=${drop.card.id}, quantityClaimed=${quantityClaimed}, imageFileName=${imageFileName}`);
 
         let description = "";
         description += `Series: ${drop.series.name}\n`;
         description += `Claimed: ${quantityClaimed}\n`;
+
+        if (claimedBy != null) {
+            description += `Claimed by: ${claimedBy}\n`;
+        } else {
+            description += "Claimed by: (UNCLAIMED)\n";
+        }
 
         return new EmbedBuilder()
             .setTitle(drop.card.name)
@@ -83,7 +98,7 @@ export default class CardDropHelperMetadata {
             .setImage(`attachment://${imageFileName}`);
     }
 
-    public static GenerateDropButtons(drop: DropResult, claimId: string, userId: string): ActionRowBuilder<ButtonBuilder> {
+    public static GenerateDropButtons(drop: DropResult, claimId: string, userId: string, disabled: boolean = false): ActionRowBuilder<ButtonBuilder> {
         AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropButtons", `Parameters: drop=${drop.card.id}, claimId=${claimId}, userId=${userId}`);
 
         return new ActionRowBuilder<ButtonBuilder>()
@@ -91,7 +106,8 @@ export default class CardDropHelperMetadata {
                 new ButtonBuilder()
                     .setCustomId(`claim ${drop.card.id} ${claimId} ${userId}`)
                     .setLabel("Claim")
-                    .setStyle(ButtonStyle.Primary),
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(disabled),
                 new ButtonBuilder()
                     .setCustomId("reroll")
                     .setLabel("Reroll")

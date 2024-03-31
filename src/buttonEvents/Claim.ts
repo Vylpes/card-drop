@@ -1,9 +1,12 @@
-import { ButtonInteraction } from "discord.js";
+import { AttachmentBuilder, ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
 import { default as eClaim } from "../database/entities/app/Claim";
 import AppLogger from "../client/appLogger";
+import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
+import { readFileSync } from "fs";
+import path from "path";
 
 export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -16,17 +19,15 @@ export default class Claim extends ButtonEvent {
 
         AppLogger.LogSilly("Button/Claim", `Parameters: cardNumber=${cardNumber}, claimId=${claimId}, droppedBy=${droppedBy}, userId=${userId}`);
 
-        await interaction.deferReply();
-
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
-            await interaction.editReply("This card has already been claimed");
+            await interaction.reply("This card has already been claimed");
             return;
         }
 
         if (claimId == CoreClient.ClaimId && userId != droppedBy) {
-            await interaction.editReply("The latest dropped card can only be claimed by the user who dropped it");
+            await interaction.reply("The latest dropped card can only be claimed by the user who dropped it");
             return;
         }
 
@@ -45,6 +46,24 @@ export default class Claim extends ButtonEvent {
 
         await claim.Save(eClaim, claim);
 
-        await interaction.editReply(`Card claimed by ${interaction.user}`);
+        const card = CardDropHelperMetadata.GetCardByCardNumber(cardNumber);
+
+        if (!card) {
+            return;
+        }
+
+        const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
+        const imageFileName = card.card.path.split("/").pop()!;
+
+        const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username);
+        const row = CardDropHelperMetadata.GenerateDropButtons(card, claimId, interaction.user.id, true);
+
+        await interaction.update({
+            embeds: [ embed ],
+            files: [ attachment ],
+            components: [ row ],
+        });
     }
 }

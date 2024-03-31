@@ -56,16 +56,16 @@ export default class Give extends Command {
             return;
         }
 
-        let inventory = await Inventory.FetchOneByCardNumberAndUserId(user.id, card.id);
+        let inventory = await Inventory.FetchOneByCardNumberAndUserId(user.id, card.card.id);
 
         if (!inventory) {
-            inventory = new Inventory(user.id, card.id, 1);
+            inventory = new Inventory(user.id, card.card.id, 1);
         } else {
             inventory.SetQuantity(inventory.Quantity + 1);
         }
 
         await inventory.Save(Inventory, inventory);
 
-        await interaction.reply(`${card.name} given to ${user.username}, they now have ${inventory.Quantity}`);
+        await interaction.reply(`${card.card.name} given to ${user.username}, they now have ${inventory.Quantity}`);
     }
 }
