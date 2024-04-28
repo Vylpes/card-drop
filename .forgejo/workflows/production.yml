@@ -60,7 +60,8 @@ jobs:
         port: ${{ secrets.PROD_SSH_PORT }}
         envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO,BOT_ENV,BOT_ADMINS,DATA_DIR,GDRIVESYNC_AUTO,SERVER_PATH,EXPRESS_PORT
         script: |
-          cd /home/vylpes/apps/card-drop/card-drop_prod \
+          source .sshrc \
+          && cd /home/vylpes/apps/card-drop/card-drop_prod \
           && docker compose down \
           && (pm2 stop card-drop_prod || true) \
           && (pm2 delete card-drop_prod || true) \
