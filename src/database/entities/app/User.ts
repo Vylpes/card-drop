@@ -16,4 +16,12 @@ export default class User extends AppBaseEntity {
     public UpdateCurrency(currency: number) {
         this.Currency = currency;
     }
+
+    public RemoveCurrency(amount: number): boolean {
+        if (this.Currency < amount) return false;
+
+        this.Currency -= amount;
+
+        return true;
+    }
 }

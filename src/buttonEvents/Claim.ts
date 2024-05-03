@@ -7,6 +7,7 @@ import AppLogger from "../client/appLogger";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import { readFileSync } from "fs";
 import path from "path";
+import User from "../database/entities/app/User";
 
 export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -40,6 +41,17 @@ export default class Claim extends ButtonEvent {
         }
 
         await inventory.Save(Inventory, inventory);
+
+        let user = await User.FetchOneById(User, userId) || new User(userId, 300);
+
+        AppLogger.LogSilly("Button/Claim", `${user.Id} has ${user.Currency} currency`);
+
+        if (!user.RemoveCurrency(10)) {
+            await interaction.reply(`Not enough currency! You need 10 currency, you have ${user.Currency}`);
+            return;
+        }
+
+        await user.Save(User, user);
 
         const claim = new eClaim(claimId);
         claim.SetInventory(inventory);
