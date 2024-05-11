@@ -42,7 +42,7 @@ export default class Claim extends ButtonEvent {
 
         await inventory.Save(Inventory, inventory);
 
-        let user = await User.FetchOneById(User, userId) || new User(userId, 300);
+        const user = await User.FetchOneById(User, userId) || new User(userId, 300);
 
         AppLogger.LogSilly("Button/Claim", `${user.Id} has ${user.Currency} currency`);
 
