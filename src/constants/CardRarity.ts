@@ -59,3 +59,20 @@ export function CardRarityParse(rarity: string): CardRarity {
         return CardRarity.Unknown;
     }
 }
+
+export function GetSacrificeAmount(rarity: CardRarity): number {
+    switch (rarity) {
+    case CardRarity.Bronze:
+        return 5;
+    case CardRarity.Silver:
+        return 15;
+    case CardRarity.Gold:
+        return 30;
+    case CardRarity.Manga:
+        return 50;
+    case CardRarity.Legendary:
+        return 100;
+    default:
+        return 0;
+    }
+}
