@@ -27,6 +27,12 @@ export default class AppBaseEntity {
         await repository.save(entity);
     }
 
+    public static async SaveAll<T extends AppBaseEntity>(target: EntityTarget<T>, entities: DeepPartial<T>[]): Promise<void> {
+        const repository = AppDataSource.getRepository<T>(target);
+
+        await repository.save(entities);
+    }
+
     public static async Remove<T extends AppBaseEntity>(target: EntityTarget<T>, entity: T): Promise<void> {
         const repository = AppDataSource.getRepository<T>(target);
 

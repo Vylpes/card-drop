@@ -41,10 +41,6 @@ export default class Registry {
         CoreClient.RegisterCommand("droprarity", new Droprarity(), Environment.Test);
     }
 
-    public static RegisterEvents() {
-
-    }
-
     public static RegisterButtonEvents() {
         CoreClient.RegisterButtonEvent("claim", new Claim());
         CoreClient.RegisterButtonEvent("inventory", new InventoryButtonEvent());

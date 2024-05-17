@@ -14,6 +14,8 @@ import Webhooks from "../webhooks";
 import CardMetadataFunction from "../Functions/CardMetadataFunction";
 import { SeriesMetadata } from "../contracts/SeriesMetadata";
 import AppLogger from "./appLogger";
+import TimerHelper from "../helpers/TimerHelper";
+import GiveCurrency from "../timers/GiveCurrency";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -23,6 +25,7 @@ export class CoreClient extends Client {
     private _events: Events;
     private _util: Util;
     private _webhooks: Webhooks;
+    private _timerHelper: TimerHelper;
 
     public static ClaimId: string;
     public static Environment: Environment;
@@ -59,6 +62,7 @@ export class CoreClient extends Client {
         this._events = new Events();
         this._util = new Util();
         this._webhooks = new Webhooks();
+        this._timerHelper = new TimerHelper();
 
         AppLogger.LogInfo("Client", `Environment: ${CoreClient.Environment}`);
 
@@ -72,7 +76,12 @@ export class CoreClient extends Client {
         }
 
         await AppDataSource.initialize()
-            .then(() => AppLogger.LogInfo("Client", "App Data Source Initialised"))
+            .then(() => {
+                AppLogger.LogInfo("Client", "App Data Source Initialised");
+
+                const timerId = this._timerHelper.AddTimer("*/30 * * * * *", "Europe/London", GiveCurrency, false);
+                this._timerHelper.StartTimer(timerId);
+            })
             .catch(err => {
                 AppLogger.LogError("Client", "App Data Source Initialisation Failed");
                 AppLogger.LogError("Client", err);

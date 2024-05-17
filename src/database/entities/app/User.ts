@@ -13,10 +13,6 @@ export default class User extends AppBaseEntity {
     @Column()
         Currency: number;
 
-    public UpdateCurrency(currency: number) {
-        this.Currency = currency;
-    }
-
     public AddCurrency(amount: number) {
         this.Currency += amount;
     }

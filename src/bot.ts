@@ -37,7 +37,6 @@ const client = new CoreClient([
 ]);
 
 Registry.RegisterCommands();
-Registry.RegisterEvents();
 Registry.RegisterButtonEvents();
 
 if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == "true") {
