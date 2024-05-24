@@ -3,6 +3,7 @@ import { Environment } from "./constants/Environment";
 
 // Global Command Imports
 import About from "./commands/about";
+import Daily from "./commands/daily";
 import Drop from "./commands/drop";
 import Gdrivesync from "./commands/gdrivesync";
 import Give from "./commands/give";
@@ -29,6 +30,7 @@ export default class Registry {
     public static RegisterCommands() {
         // Global Commands
         CoreClient.RegisterCommand("about", new About());
+        CoreClient.RegisterCommand("daily", new Daily());
         CoreClient.RegisterCommand("drop", new Drop());
         CoreClient.RegisterCommand("gdrivesync", new Gdrivesync());
         CoreClient.RegisterCommand("give", new Give());

@@ -13,6 +13,9 @@ export default class User extends AppBaseEntity {
     @Column()
         Currency: number;
 
+    @Column()
+        LastUsedDaily?: Date;
+
     public AddCurrency(amount: number) {
         this.Currency += amount;
     }
@@ -23,5 +26,9 @@ export default class User extends AppBaseEntity {
         this.Currency -= amount;
 
         return true;
+    }
+
+    public UpdateLastUsedDaily(lastUsedDaily: Date) {
+        this.LastUsedDaily = lastUsedDaily;
     }
 }
