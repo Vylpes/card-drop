@@ -50,8 +50,8 @@ export default class Sacrifice extends Command {
         const embed = new EmbedBuilder()
             .setTitle("Sacrifice")
             .setDescription(description.join("\n"))
-            .setColor(EmbedColours.Grey)
-            .setFooter({ text: `${interaction.user.username} · ${cardData.card.name}` });
+            .setColor(EmbedColours.Error)
+            .setFooter({ text: `${interaction.user.username}` });
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents([

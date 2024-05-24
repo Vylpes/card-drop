@@ -24,6 +24,11 @@ export default class Sacrifice extends ButtonEvent {
         const userId = interaction.customId.split(" ")[2];
         const cardNumber = interaction.customId.split(" ")[3];
 
+        if (userId != interaction.user.id) {
+            await interaction.reply("Only the user who created this sacrifice can confirm it.");
+            return;
+        }
+
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
         if (!cardInInventory) {
@@ -67,8 +72,8 @@ export default class Sacrifice extends ButtonEvent {
         const embed = new EmbedBuilder()
             .setTitle("Card Sacrificed")
             .setDescription(description.join("\n"))
-            .setColor(EmbedColours.Ok)
-            .setFooter({ text: `${interaction.user.username} · ${cardData.card.name}` });
+            .setColor(EmbedColours.Green)
+            .setFooter({ text: `${interaction.user.username}` });
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents([
@@ -93,6 +98,11 @@ export default class Sacrifice extends ButtonEvent {
     private async cancel(interaction: ButtonInteraction) {
         const userId = interaction.customId.split(" ")[2];
         const cardNumber = interaction.customId.split(" ")[3];
+
+        if (userId != interaction.user.id) {
+            await interaction.reply("Only the user who created this sacrifice can cancel it.");
+            return;
+        }
 
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
@@ -122,8 +132,8 @@ export default class Sacrifice extends ButtonEvent {
         const embed = new EmbedBuilder()
             .setTitle("Sacrifice Cancelled")
             .setDescription(description.join("\n"))
-            .setColor(EmbedColours.Error)
-            .setFooter({ text: `${interaction.user.username} · ${cardData.card.name}` });
+            .setColor(EmbedColours.Grey)
+            .setFooter({ text: `${interaction.user.username}` });
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents([
