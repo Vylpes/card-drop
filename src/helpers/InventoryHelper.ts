@@ -35,7 +35,8 @@ export default class InventoryHelper {
             .filter(x => {
                 x.cards = x.cards
                     .sort((a, b) => b.type - a.type)
-                    .filter(y => inventory.find(z => z.CardNumber == y.id));
+                    .filter(y => inventory.find(z => z.CardNumber == y.id))
+                    .filter(y => inventory.find(z => z.CardNumber == y.id)!.Quantity > 0);
 
                 return x;
             });
