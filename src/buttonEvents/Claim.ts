@@ -1,16 +1,16 @@
-import { AttachmentBuilder, ButtonInteraction } from "discord.js";
+import { ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
 import { default as eClaim } from "../database/entities/app/Claim";
 import AppLogger from "../client/appLogger";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
-import { readFileSync } from "fs";
-import path from "path";
 
 export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         if (!interaction.guild || !interaction.guildId) return;
+
+        await interaction.deferUpdate();
 
         const cardNumber = interaction.customId.split(" ")[1];
         const claimId = interaction.customId.split(" ")[2];
@@ -52,17 +52,13 @@ export default class Claim extends ButtonEvent {
             return;
         }
 
-        const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
         const imageFileName = card.card.path.split("/").pop()!;
-
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
         const embed = CardDropHelperMetadata.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username);
         const row = CardDropHelperMetadata.GenerateDropButtons(card, claimId, interaction.user.id, true);
 
-        await interaction.update({
+        await interaction.editReply({
             embeds: [ embed ],
-            files: [ attachment ],
             components: [ row ],
         });
     }

@@ -108,4 +108,5 @@ config.json
 ormconfig.json
 gdrive-credentials.json
 data/
+.temp/
 *.db
