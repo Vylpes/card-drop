@@ -79,7 +79,7 @@ export class CoreClient extends Client {
             .then(() => {
                 AppLogger.LogInfo("Client", "App Data Source Initialised");
 
-                const timerId = this._timerHelper.AddTimer("*/30 * * * * *", "Europe/London", GiveCurrency, false);
+                const timerId = this._timerHelper.AddTimer("*/20 * * * *", "Europe/London", GiveCurrency, false);
                 this._timerHelper.StartTimer(timerId);
             })
             .catch(err => {
