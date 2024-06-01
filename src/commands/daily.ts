@@ -38,6 +38,6 @@ export default class Daily extends Command {
 
         await user.Save(User, user);
 
-        await interaction.reply(`Given ${CardConstants.DailyCurrency} currency to ${interaction.user.username}`);
+        await interaction.reply(`Congratulations, you have claimed your daily ${CardConstants.DailyCurrency} currency! You now have ${user.Currency} currency and can claim again in 24 hours!`);
     }
 }
