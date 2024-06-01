@@ -39,6 +39,13 @@ export default class CardMetadataFunction {
             CoreClient.Cards = cardResult.Result!;
             AppLogger.LogInfo("Functions/CardMetadataFunction", `Loaded ${CoreClient.Cards.flatMap(x => x.cards).length} cards to database`);
 
+            const duplicateCards = CoreClient.Cards.flatMap(x => x.cards)
+                .filter((card, index, self) => self.findIndex(c => c.id === card.id) !== index);
+
+            if (duplicateCards.length > 0) {
+                AppLogger.LogWarn("Functions/CardMetadataFunction", `Duplicate card ids found: ${duplicateCards.flatMap(x => x.id).join(", ")}`);
+            }
+
             return {
                 IsSuccess: true,
             };
