@@ -36,6 +36,11 @@ export default class Trade extends Command {
 
         AppLogger.LogSilly("Commands/Trade", `Parameters: user=${user.id}, give=${give.value}, receive=${receive.value}`);
 
+        if (interaction.user.id == user.id) {
+            await interaction.reply("You can not create a trade with yourself.");
+            return;
+        }
+
         const giveItemEntity = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, give.value!.toString());
         const receiveItemEntity = await Inventory.FetchOneByCardNumberAndUserId(user.id, receive.value!.toString());
 
