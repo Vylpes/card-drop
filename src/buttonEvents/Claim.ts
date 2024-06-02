@@ -11,6 +11,7 @@ import CardConstants from "../constants/CardConstants";
 export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         if (!interaction.guild || !interaction.guildId) return;
+        if (!interaction.channel) return;
 
         await interaction.deferUpdate();
 
@@ -21,15 +22,26 @@ export default class Claim extends ButtonEvent {
 
         AppLogger.LogSilly("Button/Claim", `Parameters: cardNumber=${cardNumber}, claimId=${claimId}, droppedBy=${droppedBy}, userId=${userId}`);
 
+        const user = await User.FetchOneById(User, userId) || new User(userId, CardConstants.StartingCurrency);
+
+        AppLogger.LogSilly("Button/Claim", `${user.Id} has ${user.Currency} currency`);
+
+        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
+            await interaction.channel.send(`${interaction.user}, Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
+            return;
+        }
+
+        await user.Save(User, user);
+
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
-            await interaction.reply("This card has already been claimed");
+            await interaction.channel.send(`${interaction.user}, This card has already been claimed!`);
             return;
         }
 
         if (claimId == CoreClient.ClaimId && userId != droppedBy) {
-            await interaction.reply("The latest dropped card can only be claimed by the user who dropped it");
+            await interaction.channel.send(`${interaction.user}, The latest dropped card can only be claimed by the user who dropped it!`);
             return;
         }
 
@@ -42,17 +54,6 @@ export default class Claim extends ButtonEvent {
         }
 
         await inventory.Save(Inventory, inventory);
-
-        const user = await User.FetchOneById(User, userId) || new User(userId, CardConstants.StartingCurrency);
-
-        AppLogger.LogSilly("Button/Claim", `${user.Id} has ${user.Currency} currency`);
-
-        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
-            await interaction.reply(`Not enough currency! You need 10 currency, you have ${user.Currency}`);
-            return;
-        }
-
-        await user.Save(User, user);
 
         const claim = new eClaim(claimId);
         claim.SetInventory(inventory);

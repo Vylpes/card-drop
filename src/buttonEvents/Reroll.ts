@@ -8,6 +8,8 @@ import Config from "../database/entities/app/Config";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import path from "path";
 import AppLogger from "../client/appLogger";
+import User from "../database/entities/app/User";
+import CardConstants from "../constants/CardConstants";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -20,6 +22,20 @@ export default class Reroll extends ButtonEvent {
             AppLogger.LogWarn("Button/Reroll", "Safe Mode is active, refusing to send next drop.");
 
             await interaction.reply("Safe Mode has been activated, please resync to continue.");
+            return;
+        }
+
+        let user = await User.FetchOneById(User, interaction.user.id);
+
+        if (!user) {
+            user = new User(interaction.user.id, CardConstants.StartingCurrency);
+            await user.Save(User, user);
+
+            AppLogger.LogInfo("Commands/Drop", `New user (${interaction.user.id}) saved to the database`);
+        }
+
+        if (user.Currency < CardConstants.ClaimCost) {
+            await interaction.reply(`Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
             return;
         }
 
