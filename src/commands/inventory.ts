@@ -22,7 +22,9 @@ export default class Inventory extends Command {
 
     public override async execute(interaction: CommandInteraction) {
         const page = interaction.options.get("page");
-        const user = interaction.options.getUser("user") || interaction.user;
+        const userOption = interaction.options.get("user");
+
+        const user = userOption ? userOption.user! : interaction.user;
 
         AppLogger.LogSilly("Commands/Inventory", `Parameters: page=${page?.value}, user=${user.id}`);
 

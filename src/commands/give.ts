@@ -77,7 +77,7 @@ export default class Give extends Command {
         }
 
         const cardNumber = interaction.options.get("cardnumber", true);
-        const user = interaction.options.getUser("user", true);
+        const user = interaction.options.get("user", true).user!;
 
         AppLogger.LogSilly("Commands/Give/GiveCard", `Parameters: cardNumber=${cardNumber.value}, user=${user.id}`);
 
@@ -103,7 +103,7 @@ export default class Give extends Command {
 
     private async GiveCurrency(interaction: CommandInteraction) {
         const amount = interaction.options.get("amount", true);
-        const user = interaction.options.getUser("user", true);
+        const user = interaction.options.get("user", true).user!;
 
         AppLogger.LogSilly("Commands/Give/GiveCurrency", `Parameters: amount=${amount.value} user=${user.id}`);
 

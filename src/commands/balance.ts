@@ -8,14 +8,14 @@ export default class Balance extends Command {
         super();
 
         this.CommandBuilder = new SlashCommandBuilder()
-        .setName("balance")
-        .setDescription("Get your currency balance");
+            .setName("balance")
+            .setDescription("Get your currency balance");
     }
 
     public override async execute(interaction: CommandInteraction) {
         const user = await User.FetchOneById(User, interaction.user.id);
 
-        let userBalance = user != null ? user.Currency : 0;
+        const userBalance = user != null ? user.Currency : 0;
 
         const embed = new EmbedBuilder()
             .setColor(EmbedColours.Ok)
