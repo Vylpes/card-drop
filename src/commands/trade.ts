@@ -30,9 +30,9 @@ export default class Trade extends Command {
     }
 
     public override async execute(interaction: CommandInteraction) {
-        const user = interaction.options.getUser("user")!;
-        const give = interaction.options.get("give")!;
-        const receive = interaction.options.get("receive")!;
+        const user = interaction.options.get("user", true).user!;
+        const give = interaction.options.get("give", true);
+        const receive = interaction.options.get("receive", true);
 
         AppLogger.LogSilly("Commands/Trade", `Parameters: user=${user.id}, give=${give.value}, receive=${receive.value}`);
 
