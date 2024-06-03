@@ -65,11 +65,11 @@ export function GetSacrificeAmount(rarity: CardRarity): number {
     case CardRarity.Bronze:
         return 5;
     case CardRarity.Silver:
-        return 15;
+        return 10;
     case CardRarity.Gold:
         return 30;
     case CardRarity.Manga:
-        return 50;
+        return 40;
     case CardRarity.Legendary:
         return 100;
     default:
