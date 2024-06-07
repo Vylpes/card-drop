@@ -41,28 +41,28 @@ export default class Trade extends Command {
             return;
         }
 
-        const giveItemEntity = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, give.value!.toString());
-        const receiveItemEntity = await Inventory.FetchOneByCardNumberAndUserId(user.id, receive.value!.toString());
+        const user1ItemEntity = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, give.value!.toString());
+        const user2ItemEntity = await Inventory.FetchOneByCardNumberAndUserId(user.id, receive.value!.toString());
 
-        if (!giveItemEntity) {
+        if (!user1ItemEntity) {
             await interaction.reply("You do not have the item you are trying to trade.");
             return;
         }
 
-        if (!receiveItemEntity) {
+        if (!user2ItemEntity) {
             await interaction.reply("The user you are trying to trade with does not have the item you are trying to trade for.");
             return;
         }
 
-        const giveItem = CoreClient.Cards
+        const user1Item = CoreClient.Cards
             .flatMap(x => x.cards)
             .find(x => x.id === give.value!.toString());
 
-        const receiveItem = CoreClient.Cards
+        const user2Item = CoreClient.Cards
             .flatMap(x => x.cards)
             .find(x => x.id === receive.value!.toString());
 
-        if (!giveItem || !receiveItem) {
+        if (!user1Item || !user2Item) {
             await interaction.reply("One or more of the items you are trying to trade does not exist.");
             return;
         }
@@ -77,13 +77,13 @@ export default class Trade extends Command {
             .setImage("https://media1.tenor.com/m/KkZwKl2AQ2QAAAAd/trade-offer.gif")
             .addFields([
                 {
-                    name: "I Receive",
-                    value: `${receiveItem.id}: ${receiveItem.name}`,
+                    name: `${interaction.user.username} Receives`,
+                    value: `${user2Item.id}: ${user2Item.name}`,
                     inline: true,
                 },
                 {
-                    name: "You Receive",
-                    value: `${giveItem.id}: ${giveItem.name}`,
+                    name: `${user.username} Receives`,
+                    value: `${user1Item.id}: ${user1Item.name}`,
                     inline: true,
                 },
                 {
@@ -92,16 +92,16 @@ export default class Trade extends Command {
                 }
             ]);
 
-        const timeoutId = setTimeout(async () => this.autoDecline(interaction, interaction.user.username, user.username, giveItem.id, receiveItem.id, giveItem.name, receiveItem.name), 1000 * 60 * 15); // 15 minutes
+        const timeoutId = setTimeout(async () => this.autoDecline(interaction, interaction.user.username, user.username, user1Item.id, user2Item.id, user1Item.name, user2Item.name), 1000 * 60 * 15); // 15 minutes
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents([
                 new ButtonBuilder()
-                    .setCustomId(`trade accept ${interaction.user.id} ${user.id} ${giveItem.id} ${receiveItem.id} ${expiry} ${timeoutId}`)
+                    .setCustomId(`trade accept ${interaction.user.id} ${user.id} ${user1Item.id} ${user2Item.id} ${expiry} ${timeoutId}`)
                     .setLabel("Accept")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setCustomId(`trade decline ${interaction.user.id} ${user.id} ${giveItem.id} ${receiveItem.id} ${expiry} ${timeoutId}`)
+                    .setCustomId(`trade decline ${interaction.user.id} ${user.id} ${user1Item.id} ${user2Item.id} ${expiry} ${timeoutId}`)
                     .setLabel("Decline")
                     .setStyle(ButtonStyle.Danger),
             ]);
@@ -109,23 +109,23 @@ export default class Trade extends Command {
         await interaction.reply({ content: `${user}`, embeds: [ tradeEmbed ], components: [ row ] });
     }
 
-    private async autoDecline(interaction: CommandInteraction, giveUsername: string, receiveUsername: string, giveCardNumber: string, receiveCardNumber: string, giveCardName: string, receiveCardName: string) {
-        AppLogger.LogSilly("Commands/Trade/AutoDecline", `Auto declining trade between ${giveUsername} and ${receiveUsername}`);
+    private async autoDecline(interaction: CommandInteraction, user1Username: string, user2Username: string, user1CardNumber: string, user2CardNumber: string, user1CardName: string, user2CardName: string) {
+        AppLogger.LogSilly("Commands/Trade/AutoDecline", `Auto declining trade between ${user1Username} and ${user2Username}`);
 
         const tradeEmbed = new EmbedBuilder()
             .setTitle("Trade Expired")
-            .setDescription(`Trade initiated between ${receiveUsername} and ${giveUsername}`)
+            .setDescription(`Trade initiated between ${user1Username} and ${user2Username}`)
             .setColor(EmbedColours.Error)
             .setImage("https://media1.tenor.com/m/KkZwKl2AQ2QAAAAd/trade-offer.gif")
             .addFields([
                 {
-                    name: "I Receive",
-                    value: `${receiveCardNumber}: ${receiveCardName}`,
+                    name: `${user1Username} Receives`,
+                    value: `${user2CardNumber}: ${user2CardName}`,
                     inline: true,
                 },
                 {
-                    name: "You Receive",
-                    value: `${giveCardNumber}: ${giveCardName}`,
+                    name: `${user2Username} Receives`,
+                    value: `${user1CardNumber}: ${user1CardName}`,
                     inline: true,
                 },
                 {
