@@ -16,6 +16,7 @@ import { SeriesMetadata } from "../contracts/SeriesMetadata";
 import AppLogger from "./appLogger";
 import TimerHelper from "../helpers/TimerHelper";
 import GiveCurrency from "../timers/GiveCurrency";
+import PurgeClaims from "../timers/PurgeClaims";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -79,8 +80,10 @@ export class CoreClient extends Client {
             .then(() => {
                 AppLogger.LogInfo("Client", "App Data Source Initialised");
 
-                const timerId = this._timerHelper.AddTimer("*/20 * * * *", "Europe/London", GiveCurrency, false);
-                this._timerHelper.StartTimer(timerId);
+                this._timerHelper.AddTimer("*/20 * * * *", "Europe/London", GiveCurrency, false);
+                this._timerHelper.AddTimer("0 0 * * *", "Europe/London", PurgeClaims, false);
+
+                this._timerHelper.StartAllTimers();
             })
             .catch(err => {
                 AppLogger.LogError("Client", "App Data Source Initialisation Failed");
