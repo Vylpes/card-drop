@@ -31,8 +31,6 @@ export default class Claim extends ButtonEvent {
             return;
         }
 
-        await user.Save(User, user);
-
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
@@ -44,6 +42,8 @@ export default class Claim extends ButtonEvent {
             await interaction.channel.send(`${interaction.user}, The latest dropped card can only be claimed by the user who dropped it!`);
             return;
         }
+
+        await user.Save(User, user);
 
         let inventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
