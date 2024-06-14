@@ -10,5 +10,5 @@ export default async function PurgeClaims() {
 
     await Claim.RemoveMany(Claim, expiredClaims);
 
-    AppLogger.LogDebug("Timers/PurgeClaims", `Purged ${expiredClaims.length} claims from the database`);
+    AppLogger.LogInfo("Timers/PurgeClaims", `Purged ${expiredClaims.length} claims from the database`);
 }
