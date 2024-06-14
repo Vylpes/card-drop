@@ -20,6 +20,14 @@ export default class Claim extends ButtonEvent {
         const droppedBy = interaction.customId.split(" ")[3];
         const userId = interaction.user.id;
 
+        const whenDropped = interaction.message.createdAt;
+        const lastClaimableDate = new Date(Date.now() - (1000 * 60 * 5)); // 5 minutes ago
+
+        if (whenDropped < lastClaimableDate) {
+            await interaction.channel.send(`${interaction.user}, Cards can only be claimed within 5 minutes of it being dropped!`);
+            return;
+        }
+
         AppLogger.LogSilly("Button/Claim", `Parameters: cardNumber=${cardNumber}, claimId=${claimId}, droppedBy=${droppedBy}, userId=${userId}`);
 
         const user = await User.FetchOneById(User, userId) || new User(userId, CardConstants.StartingCurrency);
