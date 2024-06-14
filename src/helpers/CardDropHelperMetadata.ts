@@ -4,6 +4,7 @@ import CardRarityChances from "../constants/CardRarityChances";
 import { DropResult } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 import AppLogger from "../client/appLogger";
+import CardConstants from "../constants/CardConstants";
 
 export default class CardDropHelperMetadata {
     public static GetRandomCard(): DropResult | undefined {
@@ -105,7 +106,7 @@ export default class CardDropHelperMetadata {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(`claim ${drop.card.id} ${claimId} ${userId}`)
-                    .setLabel("Claim")
+                    .setLabel(`Claim (${CardConstants.ClaimCost} 🪙)`)
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(disabled),
                 new ButtonBuilder()
