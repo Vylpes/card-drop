@@ -39,6 +39,12 @@ export default class AppBaseEntity {
         await repository.remove(entity);
     }
 
+    public static async RemoveMany<T extends AppBaseEntity>(target: EntityTarget<T>, entity: T[]): Promise<void> {
+        const repository = AppDataSource.getRepository<T>(target);
+
+        await repository.remove(entity);
+    }
+
     public static async FetchAll<T extends AppBaseEntity>(target: EntityTarget<T>, relations?: string[]): Promise<T[]> {
         const repository = AppDataSource.getRepository<T>(target);
 
