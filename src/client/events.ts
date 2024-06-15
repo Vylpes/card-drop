@@ -2,10 +2,13 @@ import { Interaction } from "discord.js";
 import ChatInputCommand from "./interactionCreate/ChatInputCommand";
 import Button from "./interactionCreate/Button";
 import AppLogger from "./appLogger";
+import NewUserDiscovery from "./interactionCreate/middleware/NewUserDiscovery";
 
 export class Events {
     public async onInteractionCreate(interaction: Interaction) {
         if (!interaction.guildId) return;
+
+        await NewUserDiscovery(interaction);
 
         if (interaction.isChatInputCommand()) {
             AppLogger.LogVerbose("Client", `ChatInputCommand: ${interaction.commandName}`);
