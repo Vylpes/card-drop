@@ -1,4 +1,5 @@
 import { Logger, createLogger, format, transports } from "winston";
+import DiscordTransport from "winston-discord-transport";
 
 export default class AppLogger {
     public static Logger: Logger;
@@ -20,7 +21,7 @@ export default class AppLogger {
             ),
             defaultMeta: { service: "bot" },
             transports: [
-                new transports.File({ filename: "error.log", level: "error" }),
+                new transports.File({ filename: "priority.log", level: "warn" }),
                 new transports.File({ filename: "combined.log" }),
             ],
         });
@@ -32,6 +33,18 @@ export default class AppLogger {
                     format.timestamp(),
                     customFormat,
                 )}));
+        }
+
+        if (process.env.BOT_LOG_DISCORD_ENABLE == "true") {
+            if (process.env.BOT_LOG_DISCORD_WEBHOOK) {
+                logger.add(new DiscordTransport({
+                    webhook: process.env.BOT_LOG_DISCORD_WEBHOOK.toString(),
+                    defaultMeta: { service: process.env.BOT_LOG_DISCORD_SERVICE },
+                    level: process.env.BOT_LOG_DISCORD_LEVEL,
+                }));
+            } else {
+                throw "BOT_LOG_DISCORD_WEBHOOK is required to enable discord logger support.";
+            }
         }
 
         AppLogger.Logger = logger;
