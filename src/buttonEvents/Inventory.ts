@@ -25,6 +25,7 @@ export default class Inventory extends ButtonEvent {
             const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
 
             await interaction.update({
+                files: [ embed.image ],
                 embeds: [ embed.embed ],
                 components: [ embed.row ],
             });

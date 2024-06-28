@@ -1,10 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
 import EmbedColours from "../constants/EmbedColours";
 import { CardRarity, CardRarityToString } from "../constants/CardRarity";
 import cloneDeep from "clone-deep";
 import AppLogger from "../client/appLogger";
+import { createCanvas, loadImage } from "canvas";
+import path from "path";
 
 interface InventoryPage {
     id: number,
@@ -18,10 +20,18 @@ interface InventoryPageCards {
     name: string,
     type: CardRarity,
     quantity: number,
+    path: string,
 }
 
+interface ReturnedInventoryPage {
+    embed: EmbedBuilder,
+    row: ActionRowBuilder<ButtonBuilder>,
+    image: AttachmentBuilder,
+}
+
+
 export default class InventoryHelper {
-    public static async GenerateInventoryPage(username: string, userid: string, page: number): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder> }> {
+    public static async GenerateInventoryPage(username: string, userid: string, page: number): Promise<ReturnedInventoryPage> {
         AppLogger.LogSilly("Helpers/InventoryHelper", `Parameters: username=${username}, userid=${userid}, page=${page}`);
 
         const cardsPerPage = 15;
@@ -62,6 +72,7 @@ export default class InventoryHelper {
                         name: card.name,
                         type: card.type,
                         quantity: item.Quantity,
+                        path: card.path,
                     });
                 }
 
@@ -85,7 +96,8 @@ export default class InventoryHelper {
             .setTitle(username)
             .setDescription(`**${currentPage.name} (${currentPage.seriesSubpage + 1})**\n${currentPage.cards.map(x => `[${x.id}] ${x.name} (${CardRarityToString(x.type)}) x${x.quantity}`).join("\n")}`)
             .setFooter({ text: `Page ${page + 1} of ${pages.length}` })
-            .setColor(EmbedColours.Ok);
+            .setColor(EmbedColours.Ok)
+            .setImage("attachment://page.png");
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -100,6 +112,42 @@ export default class InventoryHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page + 1 == pages.length));
 
-        return { embed, row };
+        const buffer = await this.GenerateInventoryImage(currentPage);
+        const image = new AttachmentBuilder(buffer, { name: "page.png" });
+
+        return { embed, row, image };
+    }
+
+    private static async GenerateInventoryImage(page: InventoryPage): Promise<Buffer> {
+        const gridSize = 3;
+        const imageWidth = 526;
+        const imageHeight = 712;
+        
+        const canvasWidth = imageWidth * gridSize;
+        const canvasHeight = imageHeight * Math.floor((gridSize ** 2) / gridSize);
+
+        const canvas = createCanvas(canvasWidth, canvasHeight);
+        const ctx = canvas.getContext("2d");
+
+        for (let i = 0; i < page.cards.length; i++) {
+            const card = page.cards[i];
+
+            const image = await loadImage(path.join(process.env.DATA_DIR!, "cards", card.path));
+
+            if (!image) {
+                AppLogger.LogError("InventoryHelper/GenerateInventoryImage", `Failed to load image for card ${card.id}`);
+                continue;
+            }
+
+            const x = i % gridSize;
+            const y = Math.floor(i / gridSize);
+
+            const imageX = imageWidth * x;
+            const imageY = imageHeight * y;
+
+            ctx.drawImage(image, imageX, imageY);
+        }
+
+        return canvas.toBuffer();
     }
 }

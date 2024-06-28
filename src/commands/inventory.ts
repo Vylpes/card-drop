@@ -38,6 +38,7 @@ export default class Inventory extends Command {
             const embed = await InventoryHelper.GenerateInventoryPage(user.username, user.id, pageNumber);
 
             await interaction.reply({
+                files: [ embed.image ],
                 embeds: [ embed.embed ],
                 components: [ embed.row ],
             });
