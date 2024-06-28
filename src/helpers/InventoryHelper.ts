@@ -119,12 +119,14 @@ export default class InventoryHelper {
     }
 
     private static async GenerateInventoryImage(page: InventoryPage): Promise<Buffer> {
-        const gridSize = 3;
+        const gridWidth = 3;
+        const gridHeight = Math.ceil(page.cards.length / gridWidth);
+
         const imageWidth = 526;
         const imageHeight = 712;
         
-        const canvasWidth = imageWidth * gridSize;
-        const canvasHeight = imageHeight * Math.floor((gridSize ** 2) / gridSize);
+        const canvasWidth = imageWidth * gridWidth;
+        const canvasHeight = imageHeight * gridHeight; 
 
         const canvas = createCanvas(canvasWidth, canvasHeight);
         const ctx = canvas.getContext("2d");
@@ -139,8 +141,8 @@ export default class InventoryHelper {
                 continue;
             }
 
-            const x = i % gridSize;
-            const y = Math.floor(i / gridSize);
+            const x = i % gridWidth;
+            const y = Math.floor(i / gridWidth);
 
             const imageX = imageWidth * x;
             const imageY = imageHeight * y;
