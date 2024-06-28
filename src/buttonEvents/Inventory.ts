@@ -11,6 +11,8 @@ export default class Inventory extends ButtonEvent {
         const page = interaction.customId.split(" ")[2];
 
         AppLogger.LogSilly("Button/Inventory", `Parameters: userid=${userid}, page=${page}`);
+        
+        await interaction.deferUpdate();
 
         const member = interaction.guild.members.cache.find(x => x.id == userid) || await interaction.guild.members.fetch(userid);
 
@@ -24,7 +26,7 @@ export default class Inventory extends ButtonEvent {
 
             const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
 
-            await interaction.update({
+            await interaction.followUp({
                 files: [ embed.image ],
                 embeds: [ embed.embed ],
                 components: [ embed.row ],

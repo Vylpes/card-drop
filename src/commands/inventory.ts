@@ -26,6 +26,8 @@ export default class Inventory extends Command {
 
         const user = userOption ? userOption.user! : interaction.user;
 
+        await interaction.deferReply();
+
         AppLogger.LogSilly("Commands/Inventory", `Parameters: page=${page?.value}, user=${user.id}`);
 
         try {
@@ -37,7 +39,7 @@ export default class Inventory extends Command {
 
             const embed = await InventoryHelper.GenerateInventoryPage(user.username, user.id, pageNumber);
 
-            await interaction.reply({
+            await interaction.followUp({
                 files: [ embed.image ],
                 embeds: [ embed.embed ],
                 components: [ embed.row ],
@@ -45,7 +47,7 @@ export default class Inventory extends Command {
         } catch (e) {
             AppLogger.LogError("Commands/Inventory", e as string);
 
-            await interaction.reply("No page for user found.");
+            await interaction.followUp("No page for user found.");
         }
     }
 }
