@@ -34,7 +34,7 @@ export default class InventoryHelper {
     public static async GenerateInventoryPage(username: string, userid: string, page: number): Promise<ReturnedInventoryPage> {
         AppLogger.LogSilly("Helpers/InventoryHelper", `Parameters: username=${username}, userid=${userid}, page=${page}`);
 
-        const cardsPerPage = 15;
+        const cardsPerPage = 12;
 
         const inventory = await Inventory.FetchAllByUserId(userid);
 
