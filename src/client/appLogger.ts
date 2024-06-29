@@ -1,4 +1,6 @@
+import path from "path";
 import { Logger, createLogger, format, transports } from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 import DiscordTransport from "winston-discord-transport";
 
 export default class AppLogger {
@@ -20,11 +22,20 @@ export default class AppLogger {
                 customFormat,
             ),
             defaultMeta: { service: "bot" },
-            transports: [
-                new transports.File({ filename: "priority.log", level: "warn" }),
-                new transports.File({ filename: "combined.log" }),
-            ],
+            transports: [],
         });
+
+        if (process.env.DATA_DIR) {
+            const logDir = path.join(process.env.DATA_DIR, "logs");
+
+            logger.add(new DailyRotateFile({
+                filename: "bot-%DATE%.log",
+                dirname: logDir,
+                datePattern: "YYYY-MM-DD-HH",
+                maxSize: "20m",
+                maxFiles: "14d",
+            }));
+        }
 
         if (outputToConsole) {
             logger.add(new transports.Console({
