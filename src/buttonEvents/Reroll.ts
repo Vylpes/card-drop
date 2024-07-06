@@ -59,7 +59,7 @@ export default class Reroll extends ButtonEvent {
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName);
+            const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
 
             const claimId = v4();
 

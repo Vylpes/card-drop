@@ -76,7 +76,7 @@ export default class Claim extends ButtonEvent {
 
         const imageFileName = card.card.path.split("/").pop()!;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username);
+        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username, user.Currency);
         const row = CardDropHelperMetadata.GenerateDropButtons(card, claimId, interaction.user.id, true);
 
         await interaction.editReply({

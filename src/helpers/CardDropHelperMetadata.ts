@@ -78,25 +78,41 @@ export default class CardDropHelperMetadata {
         return { card, series };
     }
 
-    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string): EmbedBuilder {
+    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string, currency?: number): EmbedBuilder {
         AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropEmbed", `Parameters: drop=${drop.card.id}, quantityClaimed=${quantityClaimed}, imageFileName=${imageFileName}`);
 
-        let description = "";
-        description += `Series: ${drop.series.name}\n`;
-        description += `Claimed: ${quantityClaimed}\n`;
+        const description = drop.series.name;
 
-        if (claimedBy != null) {
-            description += `Claimed by: ${claimedBy}\n`;
-        } else {
-            description += "Claimed by: (UNCLAIMED)\n";
-        }
-
-        return new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setTitle(drop.card.name)
             .setDescription(description)
             .setFooter({ text: `${CardRarityToString(drop.card.type)} · ${drop.card.id}` })
             .setColor(CardRarityToColour(drop.card.type))
-            .setImage(`attachment://${imageFileName}`);
+            .setImage(`attachment://${imageFileName}`)
+            .addFields([
+                {
+                    name: "Claimed",
+                    value: `${quantityClaimed}`,
+                    inline: true,
+                },
+                {
+                    name: "Claimed by",
+                    value: claimedBy ?? "(UNCLAIMED)",
+                    inline: true,
+                }
+            ]);
+
+        if (currency != null) {
+            embed.addFields([
+                {
+                    name: "Currency",
+                    value: `${currency}`,
+                    inline: true,
+                }
+            ]);
+        }
+
+        return embed;
     }
 
     public static GenerateDropButtons(drop: DropResult, claimId: string, userId: string, disabled: boolean = false): ActionRowBuilder<ButtonBuilder> {
