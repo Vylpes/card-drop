@@ -31,12 +31,14 @@ interface ReturnedInventoryPage {
 
 
 export default class InventoryHelper {
-    public static async GenerateInventoryPage(username: string, userid: string, page: number): Promise<ReturnedInventoryPage> {
+    public static async GenerateInventoryPage(username: string, userid: string, page: number): Promise<ReturnedInventoryPage | undefined> {
         AppLogger.LogSilly("Helpers/InventoryHelper", `Parameters: username=${username}, userid=${userid}, page=${page}`);
 
         const cardsPerPage = 9;
 
         const inventory = await Inventory.FetchAllByUserId(userid);
+
+        if (!inventory || inventory.length == 0) return undefined;
 
         const clientCards = cloneDeep(CoreClient.Cards);
 
@@ -88,8 +90,7 @@ export default class InventoryHelper {
         const currentPage = pages[page];
 
         if (!currentPage) {
-            AppLogger.LogError("Helpers/InventoryHelper", "Unable to find page");
-            return Promise.reject("Unable to find page");
+            return undefined;
         }
 
         const embed = new EmbedBuilder()

@@ -39,6 +39,11 @@ export default class Inventory extends Command {
 
             const embed = await InventoryHelper.GenerateInventoryPage(user.username, user.id, pageNumber);
 
+            if (!embed) {
+                await interaction.followUp("No page for user found.");
+                return;
+            }
+
             await interaction.followUp({
                 files: [ embed.image ],
                 embeds: [ embed.embed ],
@@ -47,7 +52,7 @@ export default class Inventory extends Command {
         } catch (e) {
             AppLogger.LogError("Commands/Inventory", e as string);
 
-            await interaction.followUp("No page for user found.");
+            await interaction.followUp("An error has occurred running this command.");
         }
     }
 }

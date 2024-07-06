@@ -26,6 +26,11 @@ export default class Inventory extends ButtonEvent {
 
             const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
 
+            if (!embed) {
+                await interaction.followUp("No page for user found.");
+                return;
+            }
+
             await interaction.followUp({
                 files: [ embed.image ],
                 embeds: [ embed.embed ],
@@ -34,7 +39,7 @@ export default class Inventory extends ButtonEvent {
         } catch (e) {
             AppLogger.LogError("Button/Inventory", `Error generating inventory page for ${member.user.username} with id ${member.user.id}: ${e}`);
 
-            await interaction.reply("No page for user found.");
+            await interaction.followUp("An error has occurred running this command.");
         }
     }
 }
