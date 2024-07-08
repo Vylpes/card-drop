@@ -94,13 +94,18 @@ export default class CardDropHelperMetadata {
                     name: "Claimed",
                     value: `${quantityClaimed}`,
                     inline: true,
-                },
+                }
+            ]);
+
+        if (claimedBy != null) {
+            embed.addFields([
                 {
                     name: "Claimed by",
-                    value: claimedBy ?? "(UNCLAIMED)",
+                    value: claimedBy,
                     inline: true,
                 }
             ]);
+        }
 
         if (currency != null) {
             embed.addFields([
