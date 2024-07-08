@@ -20,6 +20,7 @@ export default class SeriesHelper {
         }
 
         const totalPages = Math.ceil(series.cards.length / itemsPerPage);
+        const totalCards = series.cards.length;
 
         if (page > totalPages) {
             AppLogger.LogVerbose("Helpers/SeriesHelper", `Trying to find page greater than what exists for this series. Page: ${page} but there are only ${totalPages} pages`);
@@ -36,7 +37,7 @@ export default class SeriesHelper {
             .setTitle(series.name)
             .setColor(EmbedColours.Ok)
             .setDescription(description)
-            .setFooter({ text: `${series.id} · ${series.cards.length} cards · Page ${page + 1} of ${totalPages}` });
+            .setFooter({ text: `${series.id} · ${totalCards} cards · Page ${page + 1} of ${totalPages}` });
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -72,7 +73,7 @@ export default class SeriesHelper {
         const seriesOnPage = series.splice(page * itemsPerPage, itemsPerPage);
 
         const description = seriesOnPage
-            .map(x => `[${x.id}] ${x.name}`)
+            .map(x => `[${x.id}] ${x.name} (x${x.cards.length})`)
             .join("\n");
 
         const embed = new EmbedBuilder()
