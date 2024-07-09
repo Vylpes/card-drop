@@ -24,11 +24,14 @@ export default class Series extends ButtonEvent {
         const seriesid = interaction.customId.split(" ")[2];
         const page = interaction.customId.split(" ")[3];
 
-        const embed = SeriesHelper.GenerateSeriesViewPage(Number(seriesid), Number(page));
+        await interaction.deferUpdate();
 
-        await interaction.update({
+        const embed = await SeriesHelper.GenerateSeriesViewPage(Number(seriesid), Number(page));
+
+        await interaction.editReply({
             embeds: [ embed!.embed ],
             components: [ embed!.row ],
+            files: [ embed!.image ],
         });
     }
 

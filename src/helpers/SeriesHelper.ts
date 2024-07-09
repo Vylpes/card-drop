@@ -1,15 +1,16 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import AppLogger from "../client/appLogger";
 import cloneDeep from "clone-deep";
 import { CoreClient } from "../client/client";
 import EmbedColours from "../constants/EmbedColours";
 import { CardRarityToString } from "../constants/CardRarity";
+import ImageHelper from "./ImageHelper";
 
 export default class SeriesHelper {
-    public static GenerateSeriesViewPage(seriesId: number, page: number): { embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder> } | null {
+    public static async GenerateSeriesViewPage(seriesId: number, page: number): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder>, image: AttachmentBuilder } | null> {
         AppLogger.LogSilly("Helpers/SeriesHelper", `Parameters: seriesId=${seriesId}, page=${page}`);
 
-        const itemsPerPage = 15;
+        const itemsPerPage = 9;
 
         const series = cloneDeep(CoreClient.Cards)
             .find(x => x.id == seriesId);
@@ -37,7 +38,8 @@ export default class SeriesHelper {
             .setTitle(series.name)
             .setColor(EmbedColours.Ok)
             .setDescription(description)
-            .setFooter({ text: `${series.id} · ${totalCards} cards · Page ${page + 1} of ${totalPages}` });
+            .setFooter({ text: `${series.id} · ${totalCards} cards · Page ${page + 1} of ${totalPages}` })
+            .setImage("attachment://page.png");
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -52,7 +54,10 @@ export default class SeriesHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page + 1 > totalPages));
 
-        return { embed, row };
+        const buffer = await ImageHelper.GenerateCardImageGrid(cardsOnPage.map(x => x.path));
+        const image = new AttachmentBuilder(buffer, { name: "page.png" });
+
+        return { embed, row, image };
     }
 
     public static GenerateSeriesListPage(page: number): { embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder> } | null {

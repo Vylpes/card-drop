@@ -5,8 +5,7 @@ import EmbedColours from "../constants/EmbedColours";
 import { CardRarity, CardRarityToString } from "../constants/CardRarity";
 import cloneDeep from "clone-deep";
 import AppLogger from "../client/appLogger";
-import { createCanvas, loadImage } from "canvas";
-import path from "path";
+import ImageHelper from "./ImageHelper";
 
 interface InventoryPage {
     id: number,
@@ -113,44 +112,9 @@ export default class InventoryHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page + 1 == pages.length));
 
-        const buffer = await this.GenerateInventoryImage(currentPage);
+        const buffer = await ImageHelper.GenerateCardImageGrid(currentPage.cards.map(x => x.path));
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
 
         return { embed, row, image };
-    }
-
-    private static async GenerateInventoryImage(page: InventoryPage): Promise<Buffer> {
-        const gridWidth = 3;
-        const gridHeight = Math.ceil(page.cards.length / gridWidth);
-
-        const imageWidth = 526;
-        const imageHeight = 712;
-        
-        const canvasWidth = imageWidth * gridWidth;
-        const canvasHeight = imageHeight * gridHeight; 
-
-        const canvas = createCanvas(canvasWidth, canvasHeight);
-        const ctx = canvas.getContext("2d");
-
-        for (let i = 0; i < page.cards.length; i++) {
-            const card = page.cards[i];
-
-            const image = await loadImage(path.join(process.env.DATA_DIR!, "cards", card.path));
-
-            if (!image) {
-                AppLogger.LogError("InventoryHelper/GenerateInventoryImage", `Failed to load image for card ${card.id}`);
-                continue;
-            }
-
-            const x = i % gridWidth;
-            const y = Math.floor(i / gridWidth);
-
-            const imageX = imageWidth * x;
-            const imageY = imageHeight * y;
-
-            ctx.drawImage(image, imageX, imageY);
-        }
-
-        return canvas.toBuffer();
     }
 }

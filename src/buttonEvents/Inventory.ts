@@ -31,7 +31,7 @@ export default class Inventory extends ButtonEvent {
                 return;
             }
 
-            await interaction.followUp({
+            await interaction.editReply({
                 files: [ embed.image ],
                 embeds: [ embed.embed ],
                 components: [ embed.row ],

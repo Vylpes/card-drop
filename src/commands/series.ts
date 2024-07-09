@@ -47,6 +47,8 @@ export default class Series extends Command {
 
         AppLogger.LogSilly("Commands/Series/View", `Parameters: id=${id?.value}`);
 
+        await interaction.deferReply();
+
         if (!id) return;
 
         const series = CoreClient.Cards.find(x => x.id == id.value);
@@ -54,13 +56,17 @@ export default class Series extends Command {
         if (!series) {
             AppLogger.LogVerbose("Commands/Series/View", "Series not found.");
 
-            await interaction.reply("Series not found.");
+            await interaction.followUp("Series not found.");
             return;
         }
 
-        const embed = SeriesHelper.GenerateSeriesViewPage(series.id, 0);
+        const embed = await SeriesHelper.GenerateSeriesViewPage(series.id, 0);
 
-        await interaction.reply({ embeds: [ embed!.embed ], components: [ embed!.row ]});
+        await interaction.followUp({
+            embeds: [ embed!.embed ],
+            components: [ embed!.row ],
+            files: [ embed!.image ],
+        });
     }
 
     private async ListSeries(interaction: CommandInteraction) {
