@@ -78,7 +78,7 @@ export default class SeriesHelper {
         const seriesOnPage = series.splice(page * itemsPerPage, itemsPerPage);
 
         const description = seriesOnPage
-            .map(x => `[${x.id}] ${x.name} (x${x.cards.length})`)
+            .map(x => `[${x.id}] ${x.name} (${x.cards.length} cards)`)
             .join("\n");
 
         const embed = new EmbedBuilder()
