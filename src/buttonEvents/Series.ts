@@ -26,7 +26,7 @@ export default class Series extends ButtonEvent {
 
         await interaction.deferUpdate();
 
-        const embed = await SeriesHelper.GenerateSeriesViewPage(Number(seriesid), Number(page));
+        const embed = await SeriesHelper.GenerateSeriesViewPage(Number(seriesid), Number(page), interaction.user.id);
 
         await interaction.editReply({
             embeds: [ embed!.embed ],

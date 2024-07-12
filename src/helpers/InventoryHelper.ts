@@ -112,7 +112,7 @@ export default class InventoryHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page + 1 == pages.length));
 
-        const buffer = await ImageHelper.GenerateCardImageGrid(currentPage.cards.map(x => x.path));
+        const buffer = await ImageHelper.GenerateCardImageGrid(currentPage.cards.map(x => ({ id: x.id, path: x.path })));
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
 
         return { embed, row, image };

@@ -60,7 +60,7 @@ export default class Series extends Command {
             return;
         }
 
-        const embed = await SeriesHelper.GenerateSeriesViewPage(series.id, 0);
+        const embed = await SeriesHelper.GenerateSeriesViewPage(series.id, 0, interaction.user.id);
 
         await interaction.followUp({
             embeds: [ embed!.embed ],

@@ -7,7 +7,7 @@ import { CardRarityToString } from "../constants/CardRarity";
 import ImageHelper from "./ImageHelper";
 
 export default class SeriesHelper {
-    public static async GenerateSeriesViewPage(seriesId: number, page: number): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder>, image: AttachmentBuilder } | null> {
+    public static async GenerateSeriesViewPage(seriesId: number, page: number, userId: string): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder>, image: AttachmentBuilder } | null> {
         AppLogger.LogSilly("Helpers/SeriesHelper", `Parameters: seriesId=${seriesId}, page=${page}`);
 
         const itemsPerPage = 9;
@@ -54,7 +54,7 @@ export default class SeriesHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page + 1 > totalPages));
 
-        const buffer = await ImageHelper.GenerateCardImageGrid(cardsOnPage.map(x => x.path));
+        const buffer = await ImageHelper.GenerateCardImageGrid(cardsOnPage.map(x => ({id: x.id, path: x.path})), userId);
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
 
         return { embed, row, image };
