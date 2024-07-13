@@ -52,7 +52,7 @@ export default class SeriesHelper {
                     .setCustomId(`series view ${seriesId} ${page + 1}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page + 1 > totalPages));
+                    .setDisabled(page + 1 == totalPages));
 
         const buffer = await ImageHelper.GenerateCardImageGrid(cardsOnPage.map(x => ({id: x.id, path: x.path})), userId);
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
@@ -98,7 +98,7 @@ export default class SeriesHelper {
                     .setCustomId(`series list ${page + 1}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page + 1 > totalPages));
+                    .setDisabled(page + 1 == totalPages));
 
         return { embed, row };
     }
