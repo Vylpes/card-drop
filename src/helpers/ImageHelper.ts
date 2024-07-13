@@ -46,7 +46,7 @@ export default class ImageHelper {
                 }
             }
 
-            const image = await loadImage(await imageData.getBufferAsync("image/jpeg"));
+            const image = await loadImage(await imageData.getBufferAsync("image/png"));
 
             const x = i % gridWidth;
             const y = Math.floor(i / gridWidth);
