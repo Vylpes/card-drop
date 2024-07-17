@@ -30,7 +30,7 @@ jobs:
     needs: build
     runs-on: node
     steps:
-    - uses: https://github.com/appleboy/ssh-action@v1.0.0
+    - uses: https://github.com/appleboy/ssh-action@v1.0.3
       env:
         DB_NAME: ${{ secrets.STAGE_DB_NAME }}
         DB_AUTH_USER: ${{ secrets.STAGE_DB_AUTH_USER }}
