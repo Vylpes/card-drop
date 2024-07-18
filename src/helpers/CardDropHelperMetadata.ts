@@ -81,7 +81,7 @@ export default class CardDropHelperMetadata {
     public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string, currency?: number): EmbedBuilder {
         AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropEmbed", `Parameters: drop=${drop.card.id}, quantityClaimed=${quantityClaimed}, imageFileName=${imageFileName}`);
 
-        const description = drop.series.name;
+        const description = drop.card.subseries ?? drop.series.name;
 
         const embed = new EmbedBuilder()
             .setTitle(drop.card.name)

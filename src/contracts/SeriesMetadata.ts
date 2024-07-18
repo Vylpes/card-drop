@@ -11,6 +11,7 @@ export interface CardMetadata {
     name: string,
     type: CardRarity,
     path: string,
+    subseries?: string,
 }
 
 export interface DropResult {
