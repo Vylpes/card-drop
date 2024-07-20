@@ -3,6 +3,7 @@ import { Environment } from "./constants/Environment";
 
 // Global Command Imports
 import About from "./commands/about";
+import AllBalance from "./commands/allbalance";
 import Balance from "./commands/balance";
 import Daily from "./commands/daily";
 import Drop from "./commands/drop";
@@ -31,6 +32,7 @@ export default class Registry {
     public static RegisterCommands() {
         // Global Commands
         CoreClient.RegisterCommand("about", new About());
+        CoreClient.RegisterCommand("allbalance", new AllBalance());
         CoreClient.RegisterCommand("balance", new Balance());
         CoreClient.RegisterCommand("daily", new Daily());
         CoreClient.RegisterCommand("drop", new Drop());
