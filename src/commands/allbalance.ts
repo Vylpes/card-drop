@@ -16,7 +16,8 @@ export default class AllBalance extends Command {
     public override async execute(interaction: CommandInteraction) {
         const users = await User.FetchAll(User);
 
-        const filteredUsers = users.filter(x => x.Currency > 0);
+        const filteredUsers = users.filter(x => x.Currency > 0)
+            .sort((a, b) => b.Currency - a.Currency);
 
         const embed = new EmbedBuilder()
             .setColor(EmbedColours.Ok)
