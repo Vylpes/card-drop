@@ -15,11 +15,11 @@
     "db:create": "typeorm migration:create ./src/database/migrations/app/new",
     "release": "np --no-publish"
   },
-  "repository": "https://gitea.vylpes.xyz/External/card-drop.git",
+  "repository": "https://git.vylpes.xyz/External/card-drop.git",
   "author": "Ethan Lane <ethan@vylpes.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https//gitea.vylpes.xyz/External/card-drop/issues",
+    "url": "https//git.vylpes.xyz/External/card-drop/issues",
     "email": "helpdesk@vylpes.com"
   },
   "homepage": "https://gitea.vylpes.xyz/External/card-drop",
@@ -49,8 +49,8 @@
     "winston-daily-rotate-file": "^5.0.0",
     "winston-discord-transport": "^1.3.0"
   },
-  "overrides": {
-    "undici": "^5.28.3"
+  "resolutions": {
+      "**/ws": "^8.17.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
