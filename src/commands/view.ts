@@ -1,11 +1,7 @@
-import { AttachmentBuilder, CommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
-import { CoreClient } from "../client/client";
-import { readFileSync } from "fs";
-import path from "path";
-import Inventory from "../database/entities/app/Inventory";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import AppLogger from "../client/appLogger";
+import CardSearchHelper from "../helpers/CardSearchHelper";
 
 export default class View extends Command {
     constructor() {
@@ -16,67 +12,29 @@ export default class View extends Command {
             .setDescription("View a specific command")
             .addStringOption(x =>
                 x
-                    .setName("cardnumber")
-                    .setDescription("The card number to view")
+                    .setName("name")
+                    .setDescription("The card name to search for")
                     .setRequired(true));
     }
 
     public override async execute(interaction: CommandInteraction) {
-        const cardNumber = interaction.options.get("cardnumber");
+        const name = interaction.options.get("name", true);
 
-        AppLogger.LogSilly("Commands/View", `Parameters: cardNumber=${cardNumber?.value}`);
-
-        if (!cardNumber || !cardNumber.value) {
-            await interaction.reply("Card number is required.");
-            return;
-        }
-
-        const card = CoreClient.Cards
-            .flatMap(x => x.cards)
-            .find(x => x.id == cardNumber.value);
-
-        if (!card) {
-            await interaction.reply("Card not found.");
-            return;
-        }
-
-        const series = CoreClient.Cards
-            .find(x => x.cards.includes(card))!;
-
-        let image: Buffer;
-        const imageFileName = card.path.split("/").pop()!;
-
-        try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.path));
-        } catch {
-            AppLogger.LogError("Commands/View", `Unable to fetch image for card ${card.id}.`);
-
-            await interaction.reply(`Unable to fetch image for card ${card.id}.`);
-            return;
-        }
+        AppLogger.LogSilly("Commands/View", `Parameters: name=${name.value}`);
 
         await interaction.deferReply();
 
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
+        const searchResult = await CardSearchHelper.GenerateSearchPage(name.value!.toString(), interaction.user.id, 0);
 
-        const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.id);
-        const quantityClaimed = inventory ? inventory.Quantity : 0;
-
-        const embed = CardDropHelperMetadata.GenerateDropEmbed({ card, series }, quantityClaimed, imageFileName);
-
-        try {
-            await interaction.editReply({
-                embeds: [ embed ],
-                files: [ attachment ],
-            });
-        } catch (e) {
-            AppLogger.LogError("Commands/View", `Error sending view for card ${card.id}: ${e}`);
-
-            if (e instanceof DiscordAPIError) {
-                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}.`);
-            } else {
-                await interaction.editReply("Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN.");
-            }
+        if (!searchResult) {
+            await interaction.editReply("No results found");
+            return;
         }
+
+        await interaction.editReply({
+            embeds: [ searchResult.embed ],
+            components: [ searchResult.row ],
+            files: [ searchResult.attachment ],
+        });
     }
 }

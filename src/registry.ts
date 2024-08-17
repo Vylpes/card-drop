@@ -27,6 +27,7 @@ import Reroll from "./buttonEvents/Reroll";
 import SacrificeButtonEvent from "./buttonEvents/Sacrifice";
 import SeriesEvent from "./buttonEvents/Series";
 import TradeButtonEvent from "./buttonEvents/Trade";
+import ViewButtonEvent from "./buttonEvents/View";
 
 export default class Registry {
     public static RegisterCommands() {
@@ -57,5 +58,6 @@ export default class Registry {
         CoreClient.RegisterButtonEvent("sacrifice", new SacrificeButtonEvent());
         CoreClient.RegisterButtonEvent("series", new SeriesEvent());
         CoreClient.RegisterButtonEvent("trade", new TradeButtonEvent());
+        CoreClient.RegisterButtonEvent("view", new ViewButtonEvent());
     }
 }
