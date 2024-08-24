@@ -9,6 +9,7 @@ import Daily from "./commands/daily";
 import Drop from "./commands/drop";
 import Gdrivesync from "./commands/gdrivesync";
 import Give from "./commands/give";
+import Id from "./commands/id";
 import Inventory from "./commands/inventory";
 import Resync from "./commands/resync";
 import Sacrifice from "./commands/sacrifice";
@@ -39,6 +40,7 @@ export default class Registry {
         CoreClient.RegisterCommand("drop", new Drop());
         CoreClient.RegisterCommand("gdrivesync", new Gdrivesync());
         CoreClient.RegisterCommand("give", new Give());
+        CoreClient.RegisterCommand("id", new Id());
         CoreClient.RegisterCommand("inventory", new Inventory());
         CoreClient.RegisterCommand("resync", new Resync());
         CoreClient.RegisterCommand("sacrifice", new Sacrifice());

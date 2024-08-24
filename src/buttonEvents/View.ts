@@ -5,11 +5,11 @@ import CardSearchHelper from "../helpers/CardSearchHelper.js";
 export default class View extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         const page = interaction.customId.split(" ")[1];
-        const query = interaction.customId.split(" ").splice(1).join(" ");
+        const results = interaction.customId.split(" ").splice(2);
 
         await interaction.deferUpdate();
 
-        const searchResult = await CardSearchHelper.GenerateSearchPage(query, interaction.user.id, Number(page));
+        const searchResult = await CardSearchHelper.GenerateSearchPageFromQuery(results, interaction.user.id, Number(page));
 
         if (!searchResult) {
             await interaction.followUp("No results found");

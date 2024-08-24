@@ -9,7 +9,7 @@ export default class View extends Command {
 
         this.CommandBuilder = new SlashCommandBuilder()
             .setName("view")
-            .setDescription("View a specific command")
+            .setDescription("Search for a card by its name")
             .addStringOption(x =>
                 x
                     .setName("name")
@@ -24,7 +24,7 @@ export default class View extends Command {
 
         await interaction.deferReply();
 
-        const searchResult = await CardSearchHelper.GenerateSearchPage(name.value!.toString(), interaction.user.id, 0);
+        const searchResult = await CardSearchHelper.GenerateSearchQuery(name.value!.toString(), interaction.user.id, 7);
 
         if (!searchResult) {
             await interaction.editReply("No results found");
