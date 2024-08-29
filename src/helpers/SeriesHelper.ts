@@ -31,7 +31,7 @@ export default class SeriesHelper {
         const cardsOnPage = series.cards.splice(page * itemsPerPage, itemsPerPage);
 
         const description = cardsOnPage
-            .map(x => `[${x.id}] ${x.name} ${CardRarityToString(x.type).toUpperCase()}`)
+            .map(x => `[${x.id}] ${x.name} (${CardRarityToString(x.type)})`)
             .join("\n");
 
         const embed = new EmbedBuilder()
