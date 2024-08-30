@@ -5,6 +5,7 @@ import { glob } from "glob";
 import { SeriesMetadata } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 import AppLogger from "../client/appLogger";
+import {CardRarity} from "../constants/CardRarity";
 
 export interface CardMetadataResult {
     IsSuccess: boolean;
@@ -37,7 +38,22 @@ export default class CardMetadataFunction {
 
         if (cardResult.IsSuccess) {
             CoreClient.Cards = cardResult.Result!;
-            AppLogger.LogInfo("Functions/CardMetadataFunction", `Loaded ${CoreClient.Cards.flatMap(x => x.cards).length} cards to database`);
+
+            const allCards = CoreClient.Cards.flatMap(x => x.cards);
+
+            const totalCards = allCards.length;
+            const bronzeCards = allCards.filter(x => x.type == CardRarity.Bronze)
+                .length;
+            const silverCards = allCards.filter(x => x.type == CardRarity.Silver)
+                .length;
+            const goldCards = allCards.filter(x => x.type == CardRarity.Gold)
+                .length;
+            const mangaCards = allCards.filter(x => x.type == CardRarity.Manga)
+                .length;
+            const legendaryCards = allCards.filter(x => x.type == CardRarity.Legendary)
+                .length;
+
+            AppLogger.LogInfo("Functions/CardMetadataFunction", `Loaded ${totalCards} cards to database (${bronzeCards} bronze, ${silverCards} silver, ${goldCards} gold, ${mangaCards} manga, ${legendaryCards} legendary)`);
 
             const duplicateCards = CoreClient.Cards.flatMap(x => x.cards)
                 .filter((card, index, self) => self.findIndex(c => c.id === card.id) !== index);

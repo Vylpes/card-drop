@@ -13,6 +13,7 @@ import Inventory from "./commands/inventory";
 import Resync from "./commands/resync";
 import Sacrifice from "./commands/sacrifice";
 import Series from "./commands/series";
+import Stats from "./commands/stats";
 import Trade from "./commands/trade";
 import View from "./commands/view";
 
@@ -42,6 +43,7 @@ export default class Registry {
         CoreClient.RegisterCommand("resync", new Resync());
         CoreClient.RegisterCommand("sacrifice", new Sacrifice());
         CoreClient.RegisterCommand("series", new Series());
+        CoreClient.RegisterCommand("stats", new Stats());
         CoreClient.RegisterCommand("trade", new Trade());
         CoreClient.RegisterCommand("view", new View());
 
