@@ -5,6 +5,7 @@ import { DropResult } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 import AppLogger from "../client/appLogger";
 import CardConstants from "../constants/CardConstants";
+import StringTools from "./StringTools";
 
 export default class CardDropHelperMetadata {
     public static GetRandomCard(): DropResult | undefined {
@@ -82,12 +83,25 @@ export default class CardDropHelperMetadata {
         AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropEmbed", `Parameters: drop=${drop.card.id}, quantityClaimed=${quantityClaimed}, imageFileName=${imageFileName}`);
 
         const description = drop.card.subseries ?? drop.series.name;
+        let colour = CardRarityToColour(drop.card.type);
+
+        if (drop.card.colour && StringTools.IsHexCode(drop.card.colour)) {
+            const hexCode = Number("0x" + drop.card.colour);
+
+            if (hexCode) {
+                colour = hexCode; 
+            } else {
+                AppLogger.LogWarn("CardDropHelperMetadata/GenerateDropEmbed", `Card's colour override is invalid: ${drop.card.id}, ${drop.card.colour}`);
+            }
+        } else if (drop.card.colour) {
+            AppLogger.LogWarn("CardDropHelperMetadata/GenerateDropEmbed", `Card's colour override is invalid: ${drop.card.id}, ${drop.card.colour}`);
+        }
 
         const embed = new EmbedBuilder()
             .setTitle(drop.card.name)
             .setDescription(description)
             .setFooter({ text: `${CardRarityToString(drop.card.type)} · ${drop.card.id}` })
-            .setColor(CardRarityToColour(drop.card.type))
+            .setColor(colour)
             .setImage(`attachment://${imageFileName}`)
             .addFields([
                 {

@@ -12,6 +12,7 @@ export interface CardMetadata {
     type: CardRarity,
     path: string,
     subseries?: string,
+    colour?: string,
 }
 
 export interface DropResult {

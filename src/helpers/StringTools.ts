@@ -39,4 +39,18 @@ export default class StringTools {
     public static ReplaceAll(str: string, find: string, replace: string) {
         return str.replace(new RegExp(find, "g"), replace);
     }
+
+    public static IsHexCode(str: string): boolean {
+        if (str.length != 6) return false;
+
+        const characters = "0123456789abcdefABCDEF";
+
+        for (let i = 0; i < 6; i++) {
+            const char = str[i];
+
+            if (!characters.includes(char)) return false;
+        }
+
+        return true;
+    }
 }
