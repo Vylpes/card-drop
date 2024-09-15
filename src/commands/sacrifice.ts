@@ -16,16 +16,28 @@ export default class Sacrifice extends Command {
                 x
                     .setName("cardnumber")
                     .setDescription("The card to sacrifice from your inventory")
-                    .setRequired(true));
+                    .setRequired(true))
+            .addNumberOption(x =>
+                x
+                    .setName("quantity")
+                    .setDescription("The amount to sacrifice (default 1)"));
     }
 
     public override async execute(interaction: CommandInteraction<CacheType>): Promise<void> {
         const cardnumber = interaction.options.get("cardnumber", true);
+        const quantityInput = interaction.options.get("quantity")?.value ?? 1;
+
+        const quantity = Number(quantityInput) || 1;
 
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, cardnumber.value! as string);
 
         if (!cardInInventory || cardInInventory.Quantity == 0) {
             await interaction.reply("Unable to find card in your inventory.");
+            return;
+        }
+
+        if (cardInInventory.Quantity < quantity) {
+            await interaction.reply(`You can only sacrifice what you own! You have ${cardInInventory.Quantity} of this card`);
             return;
         }
 
@@ -36,7 +48,7 @@ export default class Sacrifice extends Command {
             return;
         }
 
-        const cardValue = GetSacrificeAmount(cardData.card.type);
+        const cardValue = GetSacrificeAmount(cardData.card.type) * quantity;
         const cardRarityString = CardRarityToString(cardData.card.type);
 
         const description = [
@@ -44,6 +56,7 @@ export default class Sacrifice extends Command {
             `Series: ${cardData.series.name}`,
             `Rarity: ${cardRarityString}`,
             `Quantity Owned: ${cardInInventory.Quantity}`,
+            `Quantity To Sacrifice: ${quantity}`,
             `Sacrifice Amount: ${cardValue}`,
         ];
 
@@ -56,11 +69,11 @@ export default class Sacrifice extends Command {
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents([
                 new ButtonBuilder()
-                    .setCustomId(`sacrifice confirm ${interaction.user.id} ${cardnumber.value!}`)
+                    .setCustomId(`sacrifice confirm ${interaction.user.id} ${cardnumber.value!} ${quantity}`)
                     .setLabel("Confirm")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setCustomId(`sacrifice cancel ${interaction.user.id} ${cardnumber.value!}`)
+                    .setCustomId(`sacrifice cancel ${interaction.user.id} ${cardnumber.value!} ${quantity}`)
                     .setLabel("Cancel")
                     .setStyle(ButtonStyle.Secondary),
             ]);

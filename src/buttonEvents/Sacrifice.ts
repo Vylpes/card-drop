@@ -23,6 +23,7 @@ export default class Sacrifice extends ButtonEvent {
     private async confirm(interaction: ButtonInteraction) {
         const userId = interaction.customId.split(" ")[2];
         const cardNumber = interaction.customId.split(" ")[3];
+        const quantity = Number(interaction.customId.split(" ")[4]) || 1;
 
         if (userId != interaction.user.id) {
             await interaction.reply("Only the user who created this sacrifice can confirm it.");
@@ -31,8 +32,13 @@ export default class Sacrifice extends ButtonEvent {
 
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
-        if (!cardInInventory) {
+        if (!cardInInventory || cardInInventory.Quantity == 0) {
             await interaction.reply("Unable to find card in inventory.");
+            return;
+        }
+
+        if (cardInInventory.Quantity < quantity) {
+            await interaction.reply("You can only sacrifice what you own.");
             return;
         }
 
@@ -50,11 +56,11 @@ export default class Sacrifice extends ButtonEvent {
             return;
         }
 
-        cardInInventory.RemoveQuantity(1);
+        cardInInventory.RemoveQuantity(quantity);
 
         await cardInInventory.Save(Inventory, cardInInventory);
 
-        const cardValue = GetSacrificeAmount(cardData.card.type);
+        const cardValue = GetSacrificeAmount(cardData.card.type) * quantity;
         const cardRarityString = CardRarityToString(cardData.card.type);
 
         user.AddCurrency(cardValue);
@@ -66,6 +72,7 @@ export default class Sacrifice extends ButtonEvent {
             `Series: ${cardData.series.name}`,
             `Rarity: ${cardRarityString}`,
             `Quantity Owned: ${cardInInventory.Quantity}`,
+            `Quantity To Sacrifice: ${quantity}`,
             `Sacrifice Amount: ${cardValue}`,
         ];
 
@@ -98,6 +105,7 @@ export default class Sacrifice extends ButtonEvent {
     private async cancel(interaction: ButtonInteraction) {
         const userId = interaction.customId.split(" ")[2];
         const cardNumber = interaction.customId.split(" ")[3];
+        const quantity = Number(interaction.customId.split(" ")[4]) || 1;
 
         if (userId != interaction.user.id) {
             await interaction.reply("Only the user who created this sacrifice can cancel it.");
@@ -106,8 +114,13 @@ export default class Sacrifice extends ButtonEvent {
 
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
-        if (!cardInInventory) {
+        if (!cardInInventory || cardInInventory.Quantity == 0) {
             await interaction.reply("Unable to find card in inventory.");
+            return;
+        }
+
+        if (cardInInventory.Quantity < quantity) {
+            await interaction.reply("You can only sacrifice what you own.");
             return;
         }
 
@@ -118,7 +131,7 @@ export default class Sacrifice extends ButtonEvent {
             return;
         }
 
-        const cardValue = GetSacrificeAmount(cardData.card.type);
+        const cardValue = GetSacrificeAmount(cardData.card.type) * quantity;
         const cardRarityString = CardRarityToString(cardData.card.type);
 
         const description = [
@@ -126,6 +139,7 @@ export default class Sacrifice extends ButtonEvent {
             `Series: ${cardData.series.name}`,
             `Rarity: ${cardRarityString}`,
             `Quantity Owned: ${cardInInventory.Quantity}`,
+            `Quantity To Sacrifice: ${quantity}`,
             `Sacrifice Amount: ${cardValue}`,
         ];
 
