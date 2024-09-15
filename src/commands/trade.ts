@@ -26,13 +26,26 @@ export default class Trade extends Command {
                 x
                     .setName("receive")
                     .setDescription("Item to receive")
-                    .setRequired(true));
+                    .setRequired(true))
+            .addNumberOption(x =>
+                x
+                    .setName("givequantity")
+                    .setDescription("Amount to give"))
+            .addNumberOption(x =>
+                x
+                    .setName("receivequantity")
+                    .setDescription("Amount to receive"));
     }
 
     public override async execute(interaction: CommandInteraction) {
         const user = interaction.options.get("user", true).user!;
         const give = interaction.options.get("give", true);
         const receive = interaction.options.get("receive", true);
+        const givequantityInput = interaction.options.get("givequantity")?.value ?? 1;
+        const receivequantityInput = interaction.options.get("receivequantity")?.value ?? 1;
+        
+        const givequantity = Number(givequantityInput) || 1;
+        const receivequantity = Number(receivequantityInput) || 1;
 
         AppLogger.LogSilly("Commands/Trade", `Parameters: user=${user.id}, give=${give.value}, receive=${receive.value}`);
 
@@ -44,12 +57,12 @@ export default class Trade extends Command {
         const user1ItemEntity = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, give.value!.toString());
         const user2ItemEntity = await Inventory.FetchOneByCardNumberAndUserId(user.id, receive.value!.toString());
 
-        if (!user1ItemEntity) {
+        if (!user1ItemEntity || user1ItemEntity.Quantity < givequantity) {
             await interaction.reply("You do not have the item you are trying to trade.");
             return;
         }
 
-        if (!user2ItemEntity) {
+        if (!user2ItemEntity || user2ItemEntity.Quantity < receivequantity) {
             await interaction.reply("The user you are trying to trade with does not have the item you are trying to trade for.");
             return;
         }
@@ -78,12 +91,12 @@ export default class Trade extends Command {
             .addFields([
                 {
                     name: `${interaction.user.username} Receives`,
-                    value: `${user2Item.id}: ${user2Item.name}`,
+                    value: `${user2Item.id}: ${user2Item.name} x${receivequantity}`,
                     inline: true,
                 },
                 {
                     name: `${user.username} Receives`,
-                    value: `${user1Item.id}: ${user1Item.name}`,
+                    value: `${user1Item.id}: ${user1Item.name} x${givequantity}`,
                     inline: true,
                 },
                 {
@@ -92,16 +105,16 @@ export default class Trade extends Command {
                 }
             ]);
 
-        const timeoutId = setTimeout(async () => this.autoDecline(interaction, interaction.user.username, user.username, user1Item.id, user2Item.id, user1Item.name, user2Item.name), 1000 * 60 * 15); // 15 minutes
+        const timeoutId = setTimeout(async () => this.autoDecline(interaction, interaction.user.username, user.username, user1Item.id, user2Item.id, user1Item.name, user2Item.name, givequantity, receivequantity), 1000 * 60 * 15); // 15 minutes
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents([
                 new ButtonBuilder()
-                    .setCustomId(`trade accept ${interaction.user.id} ${user.id} ${user1Item.id} ${user2Item.id} ${expiry} ${timeoutId}`)
+                    .setCustomId(`trade accept ${interaction.user.id} ${user.id} ${user1Item.id} ${user2Item.id} ${expiry} ${timeoutId} ${givequantity} ${receivequantity}`)
                     .setLabel("Accept")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setCustomId(`trade decline ${interaction.user.id} ${user.id} ${user1Item.id} ${user2Item.id} ${expiry} ${timeoutId}`)
+                    .setCustomId(`trade decline ${interaction.user.id} ${user.id} ${user1Item.id} ${user2Item.id} ${expiry} ${timeoutId} ${givequantity} ${receivequantity}`)
                     .setLabel("Decline")
                     .setStyle(ButtonStyle.Danger),
             ]);
@@ -109,7 +122,7 @@ export default class Trade extends Command {
         await interaction.reply({ content: `${user}`, embeds: [ tradeEmbed ], components: [ row ] });
     }
 
-    private async autoDecline(interaction: CommandInteraction, user1Username: string, user2Username: string, user1CardNumber: string, user2CardNumber: string, user1CardName: string, user2CardName: string) {
+    private async autoDecline(interaction: CommandInteraction, user1Username: string, user2Username: string, user1CardNumber: string, user2CardNumber: string, user1CardName: string, user2CardName: string, user1Quantity: number, user2Quantity: number) {
         AppLogger.LogSilly("Commands/Trade/AutoDecline", `Auto declining trade between ${user1Username} and ${user2Username}`);
 
         const tradeEmbed = new EmbedBuilder()
@@ -120,12 +133,12 @@ export default class Trade extends Command {
             .addFields([
                 {
                     name: `${user1Username} Receives`,
-                    value: `${user2CardNumber}: ${user2CardName}`,
+                    value: `${user2CardNumber}: ${user2CardName} x${user2Quantity}`,
                     inline: true,
                 },
                 {
                     name: `${user2Username} Receives`,
-                    value: `${user1CardNumber}: ${user1CardName}`,
+                    value: `${user1CardNumber}: ${user1CardName} x${user1Quantity}`,
                     inline: true,
                 },
                 {

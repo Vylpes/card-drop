@@ -35,6 +35,10 @@ export default class Inventory extends AppBaseEntity {
         this.Quantity -= amount;
     }
 
+    public AddQuantity(amount: number) {
+        this.Quantity += amount;
+    }
+
     public AddClaim(claim: Claim) {
         this.Claims.push(claim);
     }

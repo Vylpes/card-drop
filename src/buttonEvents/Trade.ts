@@ -28,8 +28,10 @@ export default class Trade extends ButtonEvent {
         const user2CardNumber = interaction.customId.split(" ")[5];
         const expiry = interaction.customId.split(" ")[6];
         const timeoutId = interaction.customId.split(" ")[7];
+        const user1Quantity = Number(interaction.customId.split(" ")[8]) || 1;
+        const user2Quantity = Number(interaction.customId.split(" ")[9]) || 1;
 
-        AppLogger.LogSilly("Button/Trade/AcceptTrade", `Parameters: user1UserId=${user1UserId}, user2UserId=${user2UserId}, user1CardNumber=${user1CardNumber}, user2CardNumber=${user2CardNumber}, expiry=${expiry}, timeoutId=${timeoutId}`);
+        AppLogger.LogSilly("Button/Trade/AcceptTrade", `Parameters: user1UserId=${user1UserId}, user2UserId=${user2UserId}, user1CardNumber=${user1CardNumber}, user2CardNumber=${user2CardNumber}, expiry=${expiry}, timeoutId=${timeoutId} user1Quantity=${user1Quantity} user2Quantity=${user2Quantity}`);
 
         const expiryDate = new Date(expiry);
 
@@ -67,13 +69,13 @@ export default class Trade extends ButtonEvent {
             return;
         }
 
-        if (user1UserInventory1.Quantity < 1 || user2UserInventory1.Quantity < 1) {
+        if (user1UserInventory1.Quantity < user1Quantity || user2UserInventory1.Quantity < user2Quantity) {
             await interaction.reply("One or more of the items you are trying to trade does not exist.");
             return;
         }
 
-        user1UserInventory1.SetQuantity(user1UserInventory1.Quantity - 1);
-        user2UserInventory1.SetQuantity(user2UserInventory1.Quantity - 1);
+        user1UserInventory1.RemoveQuantity(user1Quantity);
+        user2UserInventory1.RemoveQuantity(user2Quantity);
 
         await user1UserInventory1.Save(Inventory, user1UserInventory1);
         await user2UserInventory1.Save(Inventory, user2UserInventory1);
@@ -82,15 +84,15 @@ export default class Trade extends ButtonEvent {
         let user2UserInventory2 = await Inventory.FetchOneByCardNumberAndUserId(user2UserId, user1CardNumber);
 
         if (!user1UserInventory2) {
-            user1UserInventory2 = new Inventory(user1UserId, user1CardNumber, 1);
+            user1UserInventory2 = new Inventory(user1UserId, user2CardNumber, user2Quantity);
         } else {
-            user1UserInventory2.SetQuantity(user1UserInventory2.Quantity + 1);
+            user1UserInventory2.AddQuantity(user2Quantity);
         }
 
         if (!user2UserInventory2) {
-            user2UserInventory2 = new Inventory(user2UserId, user2CardNumber, 1);
+            user2UserInventory2 = new Inventory(user2UserId, user1CardNumber, user1Quantity);
         } else {
-            user2UserInventory2.SetQuantity(user2UserInventory2.Quantity + 1);
+            user2UserInventory2.AddQuantity(user1Quantity);
         }
 
         await user1UserInventory2.Save(Inventory, user1UserInventory2);
@@ -106,12 +108,12 @@ export default class Trade extends ButtonEvent {
             .addFields([
                 {
                     name: `${user1User.username} Receives`,
-                    value: `${user2Item.id}: ${user2Item.name}`,
+                    value: `${user2Item.id}: ${user2Item.name} x${user2Quantity}`,
                     inline: true,
                 },
                 {
                     name: `${user2User.username} Receives`,
-                    value: `${user1Item.id}: ${user1Item.name}`,
+                    value: `${user1Item.id}: ${user1Item.name} x${user1Quantity}`,
                     inline: true,
                 },
                 {
@@ -144,6 +146,8 @@ export default class Trade extends ButtonEvent {
         const user2CardNumber = interaction.customId.split(" ")[5];
         // No need to get expiry date
         const timeoutId = interaction.customId.split(" ")[7];
+        const user1Quantity = Number(interaction.customId.split(" ")[8]) || 1;
+        const user2Quantity = Number(interaction.customId.split(" ")[9]) || 1;
 
         AppLogger.LogSilly("Button/Trade/DeclineTrade", `Parameters: user1UserId=${user1UserId}, user2UserId=${user2UserId}, user1CardNumber=${user1CardNumber}, user2CardNumber=${user2CardNumber}, timeoutId=${timeoutId}`);
 
@@ -178,12 +182,12 @@ export default class Trade extends ButtonEvent {
             .addFields([
                 {
                     name: `${user1User.username} Receives`,
-                    value: `${user2Item.id}: ${user2Item.name}`,
+                    value: `${user2Item.id}: ${user2Item.name} x${user2Quantity}`,
                     inline: true,
                 },
                 {
                     name: `${user2User.username} Receives`,
-                    value: `${user1Item.id}: ${user1Item.name}`,
+                    value: `${user1Item.id}: ${user1Item.name} x${user1Quantity}`,
                     inline: true,
                 },
                 {
