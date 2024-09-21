@@ -31,6 +31,9 @@ import SeriesEvent from "./buttonEvents/Series";
 import TradeButtonEvent from "./buttonEvents/Trade";
 import ViewButtonEvent from "./buttonEvents/View";
 
+// String Dropdown Event Imports
+import InventoryStringDropdown from "./stringDropdowns/Inventory";
+
 export default class Registry {
     public static RegisterCommands() {
         // Global Commands
@@ -63,5 +66,9 @@ export default class Registry {
         CoreClient.RegisterButtonEvent("series", new SeriesEvent());
         CoreClient.RegisterButtonEvent("trade", new TradeButtonEvent());
         CoreClient.RegisterButtonEvent("view", new ViewButtonEvent());
+    }
+
+    public static RegisterStringDropdownEvents() {
+        CoreClient.RegisterStringDropdownEvent("inventory", new InventoryStringDropdown());
     }
 }

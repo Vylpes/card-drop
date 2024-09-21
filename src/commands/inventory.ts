@@ -47,7 +47,7 @@ export default class Inventory extends Command {
             await interaction.followUp({
                 files: [ embed.image ],
                 embeds: [ embed.embed ],
-                components: [ embed.row ],
+                components: [ embed.row1, embed.row2 ],
             });
         } catch (e) {
             AppLogger.LogError("Commands/Inventory", e as string);

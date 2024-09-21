@@ -1,16 +1,16 @@
-import { ButtonInteraction } from "discord.js";
-import { ButtonEvent } from "../type/buttonEvent";
-import InventoryHelper from "../helpers/InventoryHelper";
+import {StringSelectMenuInteraction} from "discord.js";
+import {StringDropdownEvent} from "../type/stringDropdownEvent";
 import AppLogger from "../client/appLogger";
+import InventoryHelper from "../helpers/InventoryHelper";
 
-export default class Inventory extends ButtonEvent {
-    public override async execute(interaction: ButtonInteraction) {
+export default class Inventory extends StringDropdownEvent {
+    public override async execute(interaction: StringSelectMenuInteraction) {
         if (!interaction.guild) return;
 
-        const userid = interaction.customId.split(" ")[1];
-        const page = interaction.customId.split(" ")[2];
+        const userid = interaction.values[0].split(" ")[0];
+        const page = interaction.values[0].split(" ")[1];
 
-        AppLogger.LogSilly("Button/Inventory", `Parameters: userid=${userid}, page=${page}`);
+        AppLogger.LogDebug("StringDropdown/Inventory", `Parameters: userid=${userid}, page=${page}`);
 
         await interaction.deferUpdate();
 
@@ -22,8 +22,6 @@ export default class Inventory extends ButtonEvent {
         }
 
         try {
-            AppLogger.LogVerbose("Button/Inventory", `Generating inventory page ${page} for ${member.user.username} with id ${member.user.id}`);
-
             const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
 
             if (!embed) {
@@ -37,7 +35,7 @@ export default class Inventory extends ButtonEvent {
                 components: [ embed.row1, embed.row2 ],
             });
         } catch (e) {
-            AppLogger.LogError("Button/Inventory", `Error generating inventory page for ${member.user.username} with id ${member.user.id}: ${e}`);
+            AppLogger.LogError("StringDropdown/Inventory", `Error generating inventory page for ${member.user.username} with id ${member.user.id}: ${e}`);
 
             await interaction.followUp("An error has occurred running this command.");
         }

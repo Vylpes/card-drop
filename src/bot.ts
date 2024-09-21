@@ -38,6 +38,7 @@ const client = new CoreClient([
 
 Registry.RegisterCommands();
 Registry.RegisterButtonEvents();
+Registry.RegisterStringDropdownEvents();
 
 if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == "true") {
     console.log("Card directory not found, syncing...");

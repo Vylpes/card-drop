@@ -17,11 +17,14 @@ import AppLogger from "./appLogger";
 import TimerHelper from "../helpers/TimerHelper";
 import GiveCurrency from "../timers/GiveCurrency";
 import PurgeClaims from "../timers/PurgeClaims";
+import StringDropdownEventItem from "../contracts/StringDropdownEventItem";
+import {StringDropdownEvent} from "../type/stringDropdownEvent";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
     private static _eventExecutors: EventExecutors;
     private static _buttonEvents: IButtonEventItem[];
+    private static _stringDropdowns: StringDropdownEventItem[];
 
     private _events: Events;
     private _util: Util;
@@ -45,6 +48,10 @@ export class CoreClient extends Client {
         return this._buttonEvents;
     }
 
+    public static get stringDropdowns(): StringDropdownEventItem[] {
+        return this._stringDropdowns;
+    }
+
     constructor(intents: number[]) {
         super({ intents: intents });
         dotenv.config();
@@ -59,6 +66,7 @@ export class CoreClient extends Client {
 
         CoreClient._commandItems = [];
         CoreClient._buttonEvents = [];
+        CoreClient._stringDropdowns = [];
 
         this._events = new Events();
         this._util = new Util();
@@ -408,4 +416,19 @@ export class CoreClient extends Client {
             AppLogger.LogVerbose("Client", `Registered Button Event: ${buttonId}`);
         }
     }
+
+    public static RegisterStringDropdownEvent(dropdownId: string, event: StringDropdownEvent, environment: Environment = Environment.All) {
+        const item: StringDropdownEventItem = {
+            DropdownId: dropdownId,
+            Event: event,
+            Environment: environment,
+        };
+
+        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
+            CoreClient._stringDropdowns.push(item);
+
+            AppLogger.LogVerbose("Client", `Registered String Dropdown Event: ${dropdownId}`);
+        }
+    }
 }
+

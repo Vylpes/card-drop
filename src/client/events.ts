@@ -3,6 +3,7 @@ import ChatInputCommand from "./interactionCreate/ChatInputCommand";
 import Button from "./interactionCreate/Button";
 import AppLogger from "./appLogger";
 import NewUserDiscovery from "./interactionCreate/middleware/NewUserDiscovery";
+import StringDropdown from "./interactionCreate/StringDropdown";
 
 export class Events {
     public async onInteractionCreate(interaction: Interaction) {
@@ -18,6 +19,11 @@ export class Events {
         if (interaction.isButton()) {
             AppLogger.LogVerbose("Client", `Button: ${interaction.customId}`);
             Button.onButtonClicked(interaction);
+        }
+
+        if (interaction.isStringSelectMenu()) {
+            AppLogger.LogVerbose("Client", `StringDropdown: ${interaction.customId}`);
+            StringDropdown.onStringDropdownSelected(interaction);
         }
     }
 

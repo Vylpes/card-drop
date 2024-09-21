@@ -1,4 +1,4 @@
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
 import EmbedColours from "../constants/EmbedColours";
@@ -24,7 +24,8 @@ interface InventoryPageCards {
 
 interface ReturnedInventoryPage {
     embed: EmbedBuilder,
-    row: ActionRowBuilder<ButtonBuilder>,
+    row1: ActionRowBuilder<ButtonBuilder>,
+    row2: ActionRowBuilder<StringSelectMenuBuilder>,
     image: AttachmentBuilder,
 }
 
@@ -99,7 +100,7 @@ export default class InventoryHelper {
             .setColor(EmbedColours.Ok)
             .setImage("attachment://page.png");
 
-        const row = new ActionRowBuilder<ButtonBuilder>()
+        const row1 = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(`inventory ${userid} ${page - 1}`)
@@ -112,9 +113,23 @@ export default class InventoryHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page + 1 == pages.length));
 
+        let pageNum = 0;
+
+        const row2 = new ActionRowBuilder<StringSelectMenuBuilder>()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId("inventory")
+                    .setPlaceholder(`${currentPage.name} (${currentPage.seriesSubpage + 1})`)
+                    .addOptions(...pages.map(x =>
+                        new StringSelectMenuOptionBuilder()
+                            .setLabel(`${x.name} (${x.seriesSubpage + 1})`.substring(0, 100))
+                            .setDescription(`Page ${pageNum + 1}`)
+                            .setDefault(currentPage.id == x.id)
+                            .setValue(`${userid} ${pageNum++}`))));
+
         const buffer = await ImageHelper.GenerateCardImageGrid(currentPage.cards.map(x => ({ id: x.id, path: x.path })));
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
 
-        return { embed, row, image };
+        return { embed, row1, row2, image };
     }
 }
