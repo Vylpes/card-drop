@@ -16,7 +16,7 @@ export default class Multidrop extends Command {
         super();
 
         this.CommandBuilder = new SlashCommandBuilder()
-            .setName("mutlidrop")
+            .setName("multidrop")
             .setDescription("Drop 11 cards for the price of 10!");
     }
 
@@ -70,6 +70,18 @@ export default class Multidrop extends Command {
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
             const embed = CardDropHelperMetadata.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
+
+            const row = CardDropHelperMetadata.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id);
+
+            await interaction.editReply({
+                embeds: [ embed ],
+                files: [ attachment ],
+                components: [ row ],
+            });
+        } catch (e) {
+            AppLogger.LogError("Commands/Multidrop", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
+
+            await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. (${randomCard.card.id})`);
         }
     }
 }

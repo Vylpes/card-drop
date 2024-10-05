@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
-import { CardRarity, CardRarityToColour, CardRarityToString } from "../constants/CardRarity";
+import { CardRarity, CardRarityToColour, CardRarityToString, GetSacrificeAmount } from "../constants/CardRarity";
 import CardRarityChances from "../constants/CardRarityChances";
 import { DropResult } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
@@ -158,16 +158,17 @@ export default class CardDropHelperMetadata {
         return dropEmbed;
     }
 
-    public static GenerateMultidropButtons(drop: DropResult, cardsRemaining: number, disabled = false): ActionRowBuilder<ButtonBuilder> {
+    public static GenerateMultidropButtons(drop: DropResult, cardsRemaining: number, userId: string, disabled = false): ActionRowBuilder<ButtonBuilder> {
         return new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`multidrop keep ${drop.card.id} ${cardsRemaining}`)
+                    .setCustomId(`multidrop keep ${drop.card.id} ${cardsRemaining} ${userId}`)
                     .setLabel("Keep")
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(disabled),
                 new ButtonBuilder()
-                    .setCustomId(`multidrop sacrifice ${drop.card.id} ${cardsRemaining}`)
+                    .setCustomId(`multidrop sacrifice ${drop.card.id} ${cardsRemaining} ${userId}`)
+                    .setLabel(`Sacrifice (+${GetSacrificeAmount(drop.card.type)} 🪙)`)
                     .setStyle(ButtonStyle.Secondary));
     }
 }

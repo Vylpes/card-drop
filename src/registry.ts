@@ -11,6 +11,7 @@ import Gdrivesync from "./commands/gdrivesync";
 import Give from "./commands/give";
 import Id from "./commands/id";
 import Inventory from "./commands/inventory";
+import Multidrop from "./commands/multidrop";
 import Resync from "./commands/resync";
 import Sacrifice from "./commands/sacrifice";
 import Series from "./commands/series";
@@ -46,6 +47,7 @@ export default class Registry {
         CoreClient.RegisterCommand("give", new Give());
         CoreClient.RegisterCommand("id", new Id());
         CoreClient.RegisterCommand("inventory", new Inventory());
+        CoreClient.RegisterCommand("multidrop", new Multidrop());
         CoreClient.RegisterCommand("resync", new Resync());
         CoreClient.RegisterCommand("sacrifice", new Sacrifice());
         CoreClient.RegisterCommand("series", new Series());
