@@ -1,12 +1,13 @@
-import { ButtonInteraction, EmbedBuilder } from "discord.js";
+import { AttachmentBuilder, ButtonInteraction, EmbedBuilder } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppLogger from "../client/appLogger";
-import { CoreClient } from "../client/client";
 import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import Inventory from "../database/entities/app/Inventory";
 import EmbedColours from "../constants/EmbedColours";
 import { readFileSync } from "fs";
 import path from "path";
+import ErrorMessages from "../constants/ErrorMessages";
+import User from "../database/entities/app/User";
 
 export default class Multidrop extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -45,6 +46,14 @@ export default class Multidrop extends ButtonEvent {
             return;
         }
 
+        const user = await User.FetchOneById(User, interaction.user.id);
+
+        if (!user) {
+            AppLogger.LogWarn("Button/Multidrop/Keep", ErrorMessages.UnableToFetchUser);
+            await interaction.reply(ErrorMessages.UnableToFetchUser);
+            return;
+        }
+
         // Claim
         let inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, cardNumber);
 
@@ -67,12 +76,39 @@ export default class Multidrop extends ButtonEvent {
         }
 
         // Drop next card
+        const randomCard = CardDropHelperMetadata.GetRandomCard();
         cardsRemaining -= 1;
+
+        if (!randomCard) {
+            AppLogger.LogWarn("Button/Multidrop/Keep", ErrorMessages.UnableToFetchCard);
+            await interaction.reply(ErrorMessages.UnableToFetchCard);
+            return;
+        }
 
         await interaction.deferUpdate();
 
         try {
-            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", ))
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", ));
+            const imageFileName = randomCard.card.path.split("/").pop()!;
+
+            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+            const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
+            const quantityClaimed = inventory ? inventory.Quantity : 0;
+
+            const embed = CardDropHelperMetadata.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
+
+            const row = CardDropHelperMetadata.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id, cardsRemaining < 0);
+
+            await interaction.update({
+                embeds: [ embed ],
+                files: [ attachment ],
+                components: [ row ],
+            });
+        } catch (e) {
+            AppLogger.LogError("Button/Multidrop/Keep", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
+
+            await interaction.reply(`Unable to send next drop. Please try again, and report this if it keeps happening. (${randomCard.card.id})`);
         }
     }
 }
