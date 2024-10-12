@@ -13,7 +13,7 @@ export default class User extends AppBaseEntity {
     @Column()
         Currency: number;
 
-    @Column()
+    @Column({ nullable: true })
         LastUsedDaily?: Date;
 
     public AddCurrency(amount: number) {
