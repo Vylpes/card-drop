@@ -58,7 +58,7 @@ export default class Claim extends ButtonEvent {
         if (!inventory) {
             inventory = new Inventory(userId, cardNumber, 1);
         } else {
-            inventory.SetQuantity(inventory.Quantity + 1);
+            inventory.AddQuantity(1);
         }
 
         await inventory.Save(Inventory, inventory);

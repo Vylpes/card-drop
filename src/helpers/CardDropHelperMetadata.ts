@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
-import { CardRarity, CardRarityToColour, CardRarityToString } from "../constants/CardRarity";
+import { CardRarity, CardRarityToColour, CardRarityToString, GetSacrificeAmount } from "../constants/CardRarity";
 import CardRarityChances from "../constants/CardRarityChances";
 import { DropResult } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
@@ -89,7 +89,7 @@ export default class CardDropHelperMetadata {
             const hexCode = Number("0x" + drop.card.colour);
 
             if (hexCode) {
-                colour = hexCode; 
+                colour = hexCode;
             } else {
                 AppLogger.LogWarn("CardDropHelperMetadata/GenerateDropEmbed", `Card's colour override is invalid: ${drop.card.id}, ${drop.card.colour}`);
             }
@@ -147,6 +147,28 @@ export default class CardDropHelperMetadata {
                 new ButtonBuilder()
                     .setCustomId("reroll")
                     .setLabel("Reroll")
+                    .setStyle(ButtonStyle.Secondary));
+    }
+
+    public static GenerateMultidropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, cardsRemaining: number, claimedBy?: string, currency?: number): EmbedBuilder {
+        const dropEmbed = this.GenerateDropEmbed(drop, quantityClaimed, imageFileName, claimedBy, currency);
+
+        dropEmbed.setFooter({ text: `${dropEmbed.data.footer?.text} · ${cardsRemaining} Remaining`});
+
+        return dropEmbed;
+    }
+
+    public static GenerateMultidropButtons(drop: DropResult, cardsRemaining: number, userId: string, disabled = false): ActionRowBuilder<ButtonBuilder> {
+        return new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`multidrop keep ${drop.card.id} ${cardsRemaining} ${userId}`)
+                    .setLabel("Keep")
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(disabled),
+                new ButtonBuilder()
+                    .setCustomId(`multidrop sacrifice ${drop.card.id} ${cardsRemaining} ${userId}`)
+                    .setLabel(`Sacrifice (+${GetSacrificeAmount(drop.card.type)} 🪙)`)
                     .setStyle(ButtonStyle.Secondary));
     }
 }
