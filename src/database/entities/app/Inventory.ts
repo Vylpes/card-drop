@@ -29,6 +29,10 @@ export default class Inventory extends AppBaseEntity {
         this.Quantity = quantity;
     }
 
+    public AddQuantity(amount: number) {
+        this.Quantity += amount;
+    }
+
     public RemoveQuantity(amount: number) {
         if (this.Quantity < amount) return;
 

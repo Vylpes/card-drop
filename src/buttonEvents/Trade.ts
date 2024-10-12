@@ -72,8 +72,8 @@ export default class Trade extends ButtonEvent {
             return;
         }
 
-        user1UserInventory1.SetQuantity(user1UserInventory1.Quantity - 1);
-        user2UserInventory1.SetQuantity(user2UserInventory1.Quantity - 1);
+        user1UserInventory1.RemoveQuantity(1);
+        user2UserInventory1.RemoveQuantity(1);
 
         await user1UserInventory1.Save(Inventory, user1UserInventory1);
         await user2UserInventory1.Save(Inventory, user2UserInventory1);
@@ -82,15 +82,15 @@ export default class Trade extends ButtonEvent {
         let user2UserInventory2 = await Inventory.FetchOneByCardNumberAndUserId(user2UserId, user1CardNumber);
 
         if (!user1UserInventory2) {
-            user1UserInventory2 = new Inventory(user1UserId, user1CardNumber, 1);
+            user1UserInventory2 = new Inventory(user1UserId, user2CardNumber, 1);
         } else {
-            user1UserInventory2.SetQuantity(user1UserInventory2.Quantity + 1);
+            user1UserInventory2.AddQuantity(1);
         }
 
         if (!user2UserInventory2) {
-            user2UserInventory2 = new Inventory(user2UserId, user2CardNumber, 1);
+            user2UserInventory2 = new Inventory(user2UserId, user1CardNumber, 1);
         } else {
-            user2UserInventory2.SetQuantity(user2UserInventory2.Quantity + 1);
+            user2UserInventory2.AddQuantity(1);
         }
 
         await user1UserInventory2.Save(Inventory, user1UserInventory2);
