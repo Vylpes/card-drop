@@ -3,7 +3,7 @@ import path from "path";
 import AppLogger from "../client/appLogger";
 import {existsSync} from "fs";
 import Inventory from "../database/entities/app/Inventory";
-import Jimp from "jimp";
+import {Jimp} from "jimp";
 
 interface CardInput {
     id: string;
@@ -46,7 +46,7 @@ export default class ImageHelper {
                 }
             }
 
-            const image = await loadImage(await imageData.getBufferAsync("image/png"));
+            const image = await loadImage(await imageData.getBuffer("image/png"));
 
             const x = i % gridWidth;
             const y = Math.floor(i / gridWidth);

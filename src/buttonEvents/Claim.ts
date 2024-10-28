@@ -12,6 +12,7 @@ export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         if (!interaction.guild || !interaction.guildId) return;
         if (!interaction.channel) return;
+        if (!interaction.channel.isSendable()) return;
 
         await interaction.deferUpdate();
 
