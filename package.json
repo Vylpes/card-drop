@@ -7,7 +7,7 @@
     "clean": "rm -rf node_modules/ dist/",
     "build": "tsc",
     "start": "node ./dist/bot.js",
-    "test": "echo true",
+    "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "db:up": "typeorm migration:run -d dist/database/dataSources/appDataSource.js",
