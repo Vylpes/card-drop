@@ -110,7 +110,7 @@ describe("UseEffect", () => {
             });
         });
 
-        describe("GIVEN effect.WhenExpires is null", () => {
+        describe("GIVEN effect.WhenExpires is undefined", () => {
             let result: boolean | undefined;
 
             // nowMock > whenExpires
@@ -119,7 +119,7 @@ describe("UseEffect", () => {
 
             const userEffect = {
                 Unused: 1,
-                WhenExpires: null,
+                WhenExpires: undefined,
                 UseEffect: jest.fn(),
                 Save: jest.fn(),
             };
