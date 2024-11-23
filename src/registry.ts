@@ -7,6 +7,7 @@ import AllBalance from "./commands/allbalance";
 import Balance from "./commands/balance";
 import Daily from "./commands/daily";
 import Drop from "./commands/drop";
+import Effects from "./commands/effects";
 import Gdrivesync from "./commands/gdrivesync";
 import Give from "./commands/give";
 import Id from "./commands/id";
@@ -44,6 +45,7 @@ export default class Registry {
         CoreClient.RegisterCommand("balance", new Balance());
         CoreClient.RegisterCommand("daily", new Daily());
         CoreClient.RegisterCommand("drop", new Drop());
+        CoreClient.RegisterCommand("effects", new Effects());
         CoreClient.RegisterCommand("gdrivesync", new Gdrivesync());
         CoreClient.RegisterCommand("give", new Give());
         CoreClient.RegisterCommand("id", new Id());
