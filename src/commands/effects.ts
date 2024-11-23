@@ -7,7 +7,10 @@ export default class Effects extends Command {
 
         this.CommandBuilder = new SlashCommandBuilder()
             .setName("effects")
-            .setDescription("Effects");
+            .setDescription("Effects")
+            .addSubcommand(x => x
+                .setName("list")
+                .setDescription("List all effects I have"));
     }
 
     public override async execute(interaction: CommandInteraction) {

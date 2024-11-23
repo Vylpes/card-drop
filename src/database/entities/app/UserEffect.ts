@@ -57,4 +57,19 @@ export default class UserEffect extends AppBaseEntity {
 
         return single;
     }
+
+    public static async FetchAllByUserIdPaginated(userId: string, page: number = 0): Promise<UserEffect[]> {
+        const itemsPerPage = 10;
+
+        const repository = AppDataSource.getRepository(UserEffect);
+
+        const all = await repository.find({
+            where: { UserId: userId },
+            order: { Name: "ASC" },
+            skip: page * itemsPerPage,
+            take: itemsPerPage,
+        });
+
+        return all;
+    }
 }

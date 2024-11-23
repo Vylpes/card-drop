@@ -1,4 +1,6 @@
+import {EmbedBuilder} from "discord.js";
 import UserEffect from "../database/entities/app/UserEffect";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class EffectHelper {
     public static async AddEffectToUserInventory(userId: string, name: string, quantity: number = 1) {
@@ -45,5 +47,22 @@ export default class EffectHelper {
         }
 
         return true;
+    }
+
+    public static async GenerateEffectEmbed(userId: string, page: number): Promise<EmbedBuilder> {
+        const effects = await UserEffect.FetchAllByUserIdPaginated(userId, page - 1);
+
+        let description = "*none*";
+
+        if (effects.length > 0) {
+            description = effects.map(x => `${x.Name} x${x.Unused}`).join("\n");
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle("Effects")
+            .setDescription(description)
+            .setColor(EmbedColours.Ok);
+
+        return embed;
     }
 }
