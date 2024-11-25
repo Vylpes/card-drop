@@ -1,4 +1,4 @@
-import {EmbedBuilder} from "discord.js";
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from "discord.js";
 import UserEffect from "../database/entities/app/UserEffect";
 import EmbedColours from "../constants/EmbedColours";
 
@@ -49,8 +49,18 @@ export default class EffectHelper {
         return true;
     }
 
-    public static async GenerateEffectEmbed(userId: string, page: number): Promise<EmbedBuilder> {
-        const effects = await UserEffect.FetchAllByUserIdPaginated(userId, page - 1);
+    public static async GenerateEffectEmbed(userId: string, page: number): Promise<{
+        embed: EmbedBuilder,
+        row: ActionRowBuilder<ButtonBuilder>,
+    }> {
+        const itemsPerPage = 10;
+
+        const query = await UserEffect.FetchAllByUserIdPaginated(userId, page - 1, itemsPerPage);
+
+        const effects = query[0];
+        const count = query[1];
+
+        const isLastPage = Math.ceil(count / itemsPerPage) - 1 == page;
 
         let description = "*none*";
 
@@ -63,6 +73,23 @@ export default class EffectHelper {
             .setDescription(description)
             .setColor(EmbedColours.Ok);
 
-        return embed;
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`effects list ${page - 1}`)
+                    .setLabel("Previous")
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(page == 0),
+                new ButtonBuilder()
+                    .setCustomId(`effects list ${page + 1}`)
+                    .setLabel("Next")
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(isLastPage),
+            );
+
+        return {
+            embed,
+            row,
+        };
     }
 }

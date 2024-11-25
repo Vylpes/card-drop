@@ -58,9 +58,7 @@ export default class UserEffect extends AppBaseEntity {
         return single;
     }
 
-    public static async FetchAllByUserIdPaginated(userId: string, page: number = 0): Promise<UserEffect[]> {
-        const itemsPerPage = 10;
-
+    public static async FetchAllByUserIdPaginated(userId: string, page: number = 0, itemsPerPage: number = 10): Promise<[UserEffect[], number]> {
         const repository = AppDataSource.getRepository(UserEffect);
 
         const query = await repository.createQueryBuilder("effect")
@@ -69,7 +67,7 @@ export default class UserEffect extends AppBaseEntity {
             .orderBy("effect.Name", "ASC")
             .skip(page * itemsPerPage)
             .take(itemsPerPage)
-            .getMany();
+            .getManyAndCount();
 
         return query;
     }
