@@ -63,13 +63,14 @@ export default class UserEffect extends AppBaseEntity {
 
         const repository = AppDataSource.getRepository(UserEffect);
 
-        const all = await repository.find({
-            where: { UserId: userId },
-            order: { Name: "ASC" },
-            skip: page * itemsPerPage,
-            take: itemsPerPage,
-        });
+        const query = await repository.createQueryBuilder("effect")
+            .where("effect.UserId = :userId", { userId })
+            .where("effect.Unused > 0")
+            .orderBy("effect.Name", "ASC")
+            .skip(page * itemsPerPage)
+            .take(itemsPerPage)
+            .getMany();
 
-        return all;
+        return query;
     }
 }
