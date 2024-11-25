@@ -14,5 +14,17 @@ export default class Effects extends Command {
     }
 
     public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
+
+        const subcommand = interaction.options.getSubcommand();
+
+        switch (subcommand) {
+            case "list":
+                await this.List(interaction);
+                break;
+        }
+    }
+
+    private async List(interaction: CommandInteraction) {
     }
 }
