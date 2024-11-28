@@ -26,6 +26,7 @@ import Droprarity from "./commands/stage/droprarity";
 
 // Button Event Imports
 import Claim from "./buttonEvents/Claim";
+import EffectsButtonEvent from "./buttonEvents/Effects";
 import InventoryButtonEvent from "./buttonEvents/Inventory";
 import MultidropButtonEvent from "./buttonEvents/Multidrop";
 import Reroll from "./buttonEvents/Reroll";
@@ -65,6 +66,7 @@ export default class Registry {
 
     public static RegisterButtonEvents() {
         CoreClient.RegisterButtonEvent("claim", new Claim());
+        CoreClient.RegisterButtonEvent("effects", new EffectsButtonEvent());
         CoreClient.RegisterButtonEvent("inventory", new InventoryButtonEvent());
         CoreClient.RegisterButtonEvent("multidrop", new MultidropButtonEvent());
         CoreClient.RegisterButtonEvent("reroll", new Reroll());
