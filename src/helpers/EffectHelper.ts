@@ -60,7 +60,7 @@ export default class EffectHelper {
         const effects = query[0];
         const count = query[1];
 
-        const isLastPage = Math.ceil(count / itemsPerPage) - 1 == page;
+        const totalPages = count > 0 ? Math.ceil(count / itemsPerPage) : 1;
 
         let description = "*none*";
 
@@ -71,7 +71,8 @@ export default class EffectHelper {
         const embed = new EmbedBuilder()
             .setTitle("Effects")
             .setDescription(description)
-            .setColor(EmbedColours.Ok);
+            .setColor(EmbedColours.Ok)
+            .setFooter({ text: `Page ${page} of ${totalPages}` });
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -79,12 +80,12 @@ export default class EffectHelper {
                     .setCustomId(`effects list ${page - 1}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page == 0),
+                    .setDisabled(page - 1 == 0),
                 new ButtonBuilder()
                     .setCustomId(`effects list ${page + 1}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(isLastPage),
+                    .setDisabled(page == totalPages),
             );
 
         return {
