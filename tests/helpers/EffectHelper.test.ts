@@ -279,3 +279,27 @@ describe("HasEffect", () => {
         });
     });
 });
+
+describe("GenerateEffectEmbed", () => {
+    test.todo("EXPECT UserEffect.FetchAllByUserIdPaginated to be called");
+
+    describe("GIVEN there are no effects returned", () => {
+        test.todo("EXPECT embed generated");
+
+        test.todo("EXPECT row generated");
+    });
+
+    describe("GIVEN there are effects returned", () => {
+        test.todo("EXPECT embed generated");
+
+        test.todo("EXPECT row generated");
+
+        describe("AND it is the first page", () => {
+            test.todo("EXPECT Previous button to be disabled");
+        });
+
+        describe("AND it is the last page", () => {
+            test.todo("EXPECT Next button to be disabled");
+        });
+    });
+});
