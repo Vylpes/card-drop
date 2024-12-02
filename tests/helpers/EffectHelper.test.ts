@@ -281,25 +281,87 @@ describe("HasEffect", () => {
 });
 
 describe("GenerateEffectEmbed", () => {
-    test.todo("EXPECT UserEffect.FetchAllByUserIdPaginated to be called");
+    beforeEach(async () => {
+        UserEffect.FetchAllByUserIdPaginated = jest.fn()
+            .mockResolvedValue([
+                [],
+                0,
+            ]);
+
+        await EffectHelper.GenerateEffectEmbed("userId", 1);
+    });
+
+    test("EXPECT UserEffect.FetchAllByUserIdPaginated to be called", () => {
+        expect(UserEffect.FetchAllByUserIdPaginated).toHaveBeenCalledTimes(1);
+        expect(UserEffect.FetchAllByUserIdPaginated).toHaveBeenCalledWith("userId", 0, 10);
+    });
 
     describe("GIVEN there are no effects returned", () => {
-        test.todo("EXPECT embed generated");
+        let result: any;
 
-        test.todo("EXPECT row generated");
+        beforeEach(async () => {
+            UserEffect.FetchAllByUserIdPaginated = jest.fn()
+                .mockResolvedValue([
+                    [],
+                    0,
+                ]);
+    
+            result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        });
+
+        test("EXPECT result returned", () => {
+            expect(result).toMatchSnapshot();
+        });
     });
 
     describe("GIVEN there are effects returned", () => {
-        test.todo("EXPECT embed generated");
+        let result: any;
 
-        test.todo("EXPECT row generated");
+        beforeEach(async () => {
+            UserEffect.FetchAllByUserIdPaginated = jest.fn()
+                .mockResolvedValue([
+                    [
+                        {
+                            Name: "name",
+                            Unused: 1,
+                        },
+                    ],
+                    1,
+                ]);
+    
+            result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        });
+
+        test("EXPECT result returned", () => {
+            expect(result).toMatchSnapshot();
+        });
 
         describe("AND it is the first page", () => {
-            test.todo("EXPECT Previous button to be disabled");
+            beforeEach(async () => {
+                result = await EffectHelper.GenerateEffectEmbed("userId", 1)
+            });
+
+            test("EXPECT Previous button to be disabled", () => {
+                const button = result.row.components[0].data;
+
+                expect(button).toBeDefined();
+                expect(button.label).toBe("Previous");
+                expect(button.disabled).toBe(true);
+            });
         });
 
         describe("AND it is the last page", () => {
-            test.todo("EXPECT Next button to be disabled");
+            beforeEach(async () => {
+                result = await EffectHelper.GenerateEffectEmbed("userId", 1)
+            });
+
+            test("EXPECT Next button to be disabled", () => {
+                const button = result.row.components[1].data;
+
+                expect(button).toBeDefined();
+                expect(button.label).toBe("Next");
+                expect(button.disabled).toBe(true);
+            });
         });
     });
 });
