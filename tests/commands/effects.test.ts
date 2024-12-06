@@ -1,3 +1,4 @@
+import {ChatInputCommandInteraction} from "discord.js";
 import Effects from "../../src/commands/effects";
 import EffectHelper from "../../src/helpers/EffectHelper";
 
@@ -15,18 +16,18 @@ describe("constructor", () => {
 
 describe("execute", () => {
     describe("GIVEN interaction is not a chat input command", () => {
-        let interaction: any;
+        let interaction: ChatInputCommandInteraction;
 
-        let listSpy: any;
+        let listSpy: jest.SpyInstance;
 
         beforeEach(async () => {
             interaction = {
                 isChatInputCommand: jest.fn().mockReturnValue(false),
-            };
+            } as unknown as ChatInputCommandInteraction;
 
             const effects = new Effects();
 
-            listSpy = jest.spyOn(effects as any, "List")
+            listSpy = jest.spyOn(effects as unknown as {"List": () => object}, "List")
                 .mockImplementation();
 
             await effects.execute(interaction);
@@ -42,9 +43,9 @@ describe("execute", () => {
     });
 
     describe("GIVEN subcommand is list", () => {
-        let interaction: any;
+        let interaction: ChatInputCommandInteraction;
 
-        let listSpy: any;
+        let listSpy: jest.SpyInstance;
 
         beforeEach(async () => {
             interaction = {
@@ -52,11 +53,11 @@ describe("execute", () => {
                 options: {
                     getSubcommand: jest.fn().mockReturnValue("list"),
                 },
-            };
+            } as unknown as ChatInputCommandInteraction;
 
             const effects = new Effects();
 
-            listSpy = jest.spyOn(effects as any, "List")
+            listSpy = jest.spyOn(effects as unknown as {"List": () => object}, "List")
                 .mockImplementation();
 
             await effects.execute(interaction);
@@ -74,8 +75,8 @@ describe("execute", () => {
 });
 
 describe("List", () => {
-   let effects: Effects = new Effects(); 
-   let interaction: any;
+   const effects: Effects = new Effects(); 
+   let interaction: ChatInputCommandInteraction;
 
    const embed = {
        name: "embed",
@@ -95,7 +96,7 @@ describe("List", () => {
            user: {
                id: "userId",
            },
-       };
+       } as unknown as ChatInputCommandInteraction;
 
        const effects = new Effects();
 
@@ -104,7 +105,7 @@ describe("List", () => {
            row,
        });
 
-       jest.spyOn(effects as any, "List")
+       jest.spyOn(effects as unknown as {"List": () => object}, "List")
            .mockImplementation();
    });
 

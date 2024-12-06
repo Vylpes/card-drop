@@ -1,3 +1,4 @@
+import {ActionRowBuilder, ButtonBuilder, EmbedBuilder} from "discord.js";
 import UserEffect from "../../src/database/entities/app/UserEffect";
 import EffectHelper from "../../src/helpers/EffectHelper";
 
@@ -297,7 +298,10 @@ describe("GenerateEffectEmbed", () => {
     });
 
     describe("GIVEN there are no effects returned", () => {
-        let result: any;
+        let result: {
+            embed: EmbedBuilder,
+            row: ActionRowBuilder<ButtonBuilder>,
+        };
 
         beforeEach(async () => {
             UserEffect.FetchAllByUserIdPaginated = jest.fn()
@@ -315,7 +319,10 @@ describe("GenerateEffectEmbed", () => {
     });
 
     describe("GIVEN there are effects returned", () => {
-        let result: any;
+        let result: {
+            embed: EmbedBuilder,
+            row: ActionRowBuilder<ButtonBuilder>,
+        };
 
         beforeEach(async () => {
             UserEffect.FetchAllByUserIdPaginated = jest.fn()
@@ -342,7 +349,10 @@ describe("GenerateEffectEmbed", () => {
             });
 
             test("EXPECT Previous button to be disabled", () => {
-                const button = result.row.components[0].data;
+                const button = result.row.components[0].data as unknown as {
+                    label: string,
+                    disabled: boolean
+                };
 
                 expect(button).toBeDefined();
                 expect(button.label).toBe("Previous");
@@ -356,7 +366,10 @@ describe("GenerateEffectEmbed", () => {
             });
 
             test("EXPECT Next button to be disabled", () => {
-                const button = result.row.components[1].data;
+                const button = result.row.components[1].data as unknown as {
+                    label: string,
+                    disabled: boolean
+                };
 
                 expect(button).toBeDefined();
                 expect(button.label).toBe("Next");

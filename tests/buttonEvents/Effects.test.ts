@@ -4,17 +4,17 @@ import EffectHelper from "../../src/helpers/EffectHelper";
 
 describe("execute", () => {
     describe("GIVEN action in custom id is list", () => {
-        let interaction = {
+        const interaction = {
             customId: "effects list",
         } as unknown as ButtonInteraction;
 
-        let listSpy: any;
+        let listSpy: jest.SpyInstance;
 
         beforeAll(async () => {
             const effects = new Effects();
 
-            listSpy = jest.spyOn(effects as any, "List")
-                .mockImplementation(() => {});
+            listSpy = jest.spyOn(effects as unknown as {"List": () => object}, "List")
+                .mockImplementation();
 
             await effects.execute(interaction);
         });
@@ -27,7 +27,7 @@ describe("execute", () => {
 });
 
 describe("List", () => {
-    let interaction: any;
+    let interaction: ButtonInteraction;
 
     const embed = {
         name: "Embed",
@@ -45,7 +45,7 @@ describe("List", () => {
             },
             update: jest.fn(),
             reply: jest.fn(),
-        };
+        } as unknown as ButtonInteraction;
     });
 
     describe("GIVEN page is a valid number", () => {
