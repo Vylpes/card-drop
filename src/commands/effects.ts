@@ -33,7 +33,7 @@ export default class Effects extends Command {
     private async List(interaction: CommandInteraction) {
         const pageOption = interaction.options.get("page");
 
-        const page = pageOption && Number(pageOption.value) ? Number(pageOption.value) : 1;
+        const page = !isNaN(Number(pageOption?.value)) ? Number(pageOption?.value) : 1;
 
         const result = await EffectHelper.GenerateEffectEmbed(interaction.user.id, page);
 

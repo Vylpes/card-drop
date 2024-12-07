@@ -80,7 +80,7 @@ export default class EffectHelper {
                     .setCustomId(`effects list ${page - 1}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page - 1 == 0),
+                    .setDisabled(page == 1),
                 new ButtonBuilder()
                     .setCustomId(`effects list ${page + 1}`)
                     .setLabel("Next")
