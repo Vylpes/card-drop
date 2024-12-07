@@ -7,6 +7,7 @@ import AllBalance from "./commands/allbalance";
 import Balance from "./commands/balance";
 import Daily from "./commands/daily";
 import Drop from "./commands/drop";
+import Effects from "./commands/effects";
 import Gdrivesync from "./commands/gdrivesync";
 import Give from "./commands/give";
 import Id from "./commands/id";
@@ -25,6 +26,7 @@ import Droprarity from "./commands/stage/droprarity";
 
 // Button Event Imports
 import Claim from "./buttonEvents/Claim";
+import EffectsButtonEvent from "./buttonEvents/Effects";
 import InventoryButtonEvent from "./buttonEvents/Inventory";
 import MultidropButtonEvent from "./buttonEvents/Multidrop";
 import Reroll from "./buttonEvents/Reroll";
@@ -44,6 +46,7 @@ export default class Registry {
         CoreClient.RegisterCommand("balance", new Balance());
         CoreClient.RegisterCommand("daily", new Daily());
         CoreClient.RegisterCommand("drop", new Drop());
+        CoreClient.RegisterCommand("effects", new Effects());
         CoreClient.RegisterCommand("gdrivesync", new Gdrivesync());
         CoreClient.RegisterCommand("give", new Give());
         CoreClient.RegisterCommand("id", new Id());
@@ -63,6 +66,7 @@ export default class Registry {
 
     public static RegisterButtonEvents() {
         CoreClient.RegisterButtonEvent("claim", new Claim());
+        CoreClient.RegisterButtonEvent("effects", new EffectsButtonEvent());
         CoreClient.RegisterButtonEvent("inventory", new InventoryButtonEvent());
         CoreClient.RegisterButtonEvent("multidrop", new MultidropButtonEvent());
         CoreClient.RegisterButtonEvent("reroll", new Reroll());

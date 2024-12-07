@@ -1,4 +1,6 @@
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from "discord.js";
 import UserEffect from "../database/entities/app/UserEffect";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class EffectHelper {
     public static async AddEffectToUserInventory(userId: string, name: string, quantity: number = 1) {
@@ -45,5 +47,50 @@ export default class EffectHelper {
         }
 
         return true;
+    }
+
+    public static async GenerateEffectEmbed(userId: string, page: number): Promise<{
+        embed: EmbedBuilder,
+        row: ActionRowBuilder<ButtonBuilder>,
+    }> {
+        const itemsPerPage = 10;
+
+        const query = await UserEffect.FetchAllByUserIdPaginated(userId, page - 1, itemsPerPage);
+
+        const effects = query[0];
+        const count = query[1];
+
+        const totalPages = count > 0 ? Math.ceil(count / itemsPerPage) : 1;
+
+        let description = "*none*";
+
+        if (effects.length > 0) {
+            description = effects.map(x => `${x.Name} x${x.Unused}`).join("\n");
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle("Effects")
+            .setDescription(description)
+            .setColor(EmbedColours.Ok)
+            .setFooter({ text: `Page ${page} of ${totalPages}` });
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`effects list ${page - 1}`)
+                    .setLabel("Previous")
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(page == 1),
+                new ButtonBuilder()
+                    .setCustomId(`effects list ${page + 1}`)
+                    .setLabel("Next")
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(page == totalPages),
+            );
+
+        return {
+            embed,
+            row,
+        };
     }
 }

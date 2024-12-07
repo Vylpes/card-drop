@@ -1,3 +1,4 @@
+import {ActionRowBuilder, ButtonBuilder, EmbedBuilder} from "discord.js";
 import UserEffect from "../../src/database/entities/app/UserEffect";
 import EffectHelper from "../../src/helpers/EffectHelper";
 
@@ -276,6 +277,104 @@ describe("HasEffect", () => {
 
         test("EXPECT false returned", () => {
             expect(result).toBe(false);
+        });
+    });
+});
+
+describe("GenerateEffectEmbed", () => {
+    beforeEach(async () => {
+        UserEffect.FetchAllByUserIdPaginated = jest.fn()
+            .mockResolvedValue([
+                [],
+                0,
+            ]);
+
+        await EffectHelper.GenerateEffectEmbed("userId", 1);
+    });
+
+    test("EXPECT UserEffect.FetchAllByUserIdPaginated to be called", () => {
+        expect(UserEffect.FetchAllByUserIdPaginated).toHaveBeenCalledTimes(1);
+        expect(UserEffect.FetchAllByUserIdPaginated).toHaveBeenCalledWith("userId", 0, 10);
+    });
+
+    describe("GIVEN there are no effects returned", () => {
+        let result: {
+            embed: EmbedBuilder,
+            row: ActionRowBuilder<ButtonBuilder>,
+        };
+
+        beforeEach(async () => {
+            UserEffect.FetchAllByUserIdPaginated = jest.fn()
+                .mockResolvedValue([
+                    [],
+                    0,
+                ]);
+    
+            result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        });
+
+        test("EXPECT result returned", () => {
+            expect(result).toMatchSnapshot();
+        });
+    });
+
+    describe("GIVEN there are effects returned", () => {
+        let result: {
+            embed: EmbedBuilder,
+            row: ActionRowBuilder<ButtonBuilder>,
+        };
+
+        beforeEach(async () => {
+            UserEffect.FetchAllByUserIdPaginated = jest.fn()
+                .mockResolvedValue([
+                    [
+                        {
+                            Name: "name",
+                            Unused: 1,
+                        },
+                    ],
+                    1,
+                ]);
+    
+            result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        });
+
+        test("EXPECT result returned", () => {
+            expect(result).toMatchSnapshot();
+        });
+
+        describe("AND it is the first page", () => {
+            beforeEach(async () => {
+                result = await EffectHelper.GenerateEffectEmbed("userId", 1)
+            });
+
+            test("EXPECT Previous button to be disabled", () => {
+                const button = result.row.components[0].data as unknown as {
+                    label: string,
+                    disabled: boolean
+                };
+
+                expect(button).toBeDefined();
+                expect(button.label).toBe("Previous");
+                expect(button.disabled).toBe(true);
+            });
+        });
+
+        describe("AND it is the last page", () => {
+            beforeEach(async () => {
+                result = await EffectHelper.GenerateEffectEmbed("userId", 1)
+            });
+
+            test("EXPECT Next button to be disabled", () => {
+                const button = result.row.components[1].data as unknown as {
+                    label: string,
+                    disabled: boolean
+                };
+
+                expect(button).toBeDefined();
+                expect(button.label).toBe("Next");
+                expect(button.disabled).toBe(true);
+            });
         });
     });
 });
