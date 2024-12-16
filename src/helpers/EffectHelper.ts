@@ -1,6 +1,7 @@
 import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from "discord.js";
 import UserEffect from "../database/entities/app/UserEffect";
 import EmbedColours from "../constants/EmbedColours";
+import {EffectDetails} from "../constants/EffectDetails";
 
 export default class EffectHelper {
     public static async AddEffectToUserInventory(userId: string, name: string, quantity: number = 1) {
@@ -23,7 +24,13 @@ export default class EffectHelper {
             return false;
         }
 
-        if (effect.WhenExpires && now < effect.WhenExpires) {
+        const effectDetail = EffectDetails.get(effect.Id);
+
+        if (!effectDetail) {
+            return false;
+        }
+
+        if (effect.WhenExpires && now < new Date(effect.WhenExpires.getMilliseconds() + effectDetail.cooldown)) {
             return false;
         }
 

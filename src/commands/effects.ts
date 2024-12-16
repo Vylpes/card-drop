@@ -93,6 +93,6 @@ export default class Effects extends Command {
             return;
         }
 
-        await interaction.reply("Unable to use effect! Please make sure you have it in your inventory");
+        await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
     }
 }
