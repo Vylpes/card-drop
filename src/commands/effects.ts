@@ -2,6 +2,7 @@ import {CommandInteraction, EmbedBuilder, SlashCommandBuilder} from "discord.js"
 import {Command} from "../type/command";
 import EffectHelper from "../helpers/EffectHelper";
 import {EffectDetails} from "../constants/EffectDetails";
+import UserEffect from "../database/entities/app/UserEffect";
 
 export default class Effects extends Command {
     constructor() {
@@ -67,32 +68,29 @@ export default class Effects extends Command {
             return;
         }
 
-        const now = new Date();
-        const whenExpires = new Date(now.getMilliseconds() + effectDetail.duration);
+        const canUseEffect = await EffectHelper.CanUseEffect(interaction.user.id, id)
 
-        const result = await EffectHelper.UseEffect(interaction.user.id, id, whenExpires);
-
-        if (result) {
-            const embed = new EmbedBuilder()
-                .setTitle("Effect Used")
-                .setDescription("You now have an active effect!")
-                .addFields([
-                    {
-                        name: "Effect",
-                        value: effectDetail.friendlyName,
-                        inline: true,
-                    },
-                    {
-                        name: "Expires",
-                        value: `<t:${whenExpires.getMilliseconds()}:f>`,
-                        inline: true,
-                    },
-                ]);
-
-            await interaction.reply({ embeds: [ embed ] });
+        if (!canUseEffect) {
+            await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
             return;
         }
 
-        await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
+        const embed = new EmbedBuilder()
+            .setTitle("Effect Confirmation")
+            .setDescription("Would you like to use this effect?")
+            .addFields([
+                {
+                    name: "Effect",
+                    value: effectDetail.friendlyName,
+                    inline: true,
+                },
+                {
+                    name: "Length",
+                    value: "",
+                    inline: true,
+                },
+            ]);
+
+        await interaction.reply({ embeds: [ embed ] });
     }
 }

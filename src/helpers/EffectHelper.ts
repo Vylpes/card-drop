@@ -17,6 +17,22 @@ export default class EffectHelper {
     }
 
     public static async UseEffect(userId: string, name: string, whenExpires: Date): Promise<boolean> {
+        const canUseEffect = await this.CanUseEffect(userId, name);
+
+        if (!canUseEffect) return false;
+
+        const effect = await UserEffect.FetchOneByUserIdAndName(userId, name);
+
+        if (!effect) return false;
+
+        effect.UseEffect(whenExpires);
+
+        await effect.Save(UserEffect, effect);
+
+        return true;
+    }
+
+    public static async CanUseEffect(userId: string, name: string): Promise<boolean> {
         const effect = await UserEffect.FetchOneByUserIdAndName(userId, name);
         const now = new Date();
 
@@ -33,10 +49,6 @@ export default class EffectHelper {
         if (effect.WhenExpires && now < new Date(effect.WhenExpires.getMilliseconds() + effectDetail.cooldown)) {
             return false;
         }
-
-        effect.UseEffect(whenExpires);
-
-        await effect.Save(UserEffect, effect);
 
         return true;
     }

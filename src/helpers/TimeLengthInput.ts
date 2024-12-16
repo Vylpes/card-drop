@@ -118,4 +118,7 @@ export default class TimeLengthInput {
 
         return desNumber;
     }
+
+    public static ConvertFromMilliseconds(ms: number): TimeLengthInput {
+    }
 }
