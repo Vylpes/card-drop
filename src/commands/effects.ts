@@ -1,8 +1,9 @@
-import {CommandInteraction, EmbedBuilder, SlashCommandBuilder} from "discord.js";
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder} from "discord.js";
 import {Command} from "../type/command";
 import EffectHelper from "../helpers/EffectHelper";
 import {EffectDetails} from "../constants/EffectDetails";
 import UserEffect from "../database/entities/app/UserEffect";
+import TimeLengthInput from "../helpers/TimeLengthInput";
 
 export default class Effects extends Command {
     constructor() {
@@ -68,12 +69,14 @@ export default class Effects extends Command {
             return;
         }
 
-        const canUseEffect = await EffectHelper.CanUseEffect(interaction.user.id, id)
+        const canUseEffect = await EffectHelper.CanUseEffect(interaction.user.id, id);
 
         if (!canUseEffect) {
             await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
             return;
         }
+
+        const timeLengthInput = TimeLengthInput.ConvertFromMilliseconds(effectDetail.duration);
 
         const embed = new EmbedBuilder()
             .setTitle("Effect Confirmation")
@@ -86,11 +89,22 @@ export default class Effects extends Command {
                 },
                 {
                     name: "Length",
-                    value: "",
+                    value: timeLengthInput.GetLengthShort(),
                     inline: true,
                 },
             ]);
 
-        await interaction.reply({ embeds: [ embed ] });
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents([
+                new ButtonBuilder()
+                    .setLabel("Confirm")
+                    .setCustomId(`effects use confirm ${effectDetail.id}`)
+                    .setStyle(ButtonStyle.Primary),
+            ]);
+
+        await interaction.reply({
+            embeds: [ embed ],
+            components: [ row ],
+        });
     }
 }
