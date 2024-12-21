@@ -4,6 +4,7 @@ import EffectHelper from "../helpers/EffectHelper";
 import {EffectDetails} from "../constants/EffectDetails";
 import UserEffect from "../database/entities/app/UserEffect";
 import TimeLengthInput from "../helpers/TimeLengthInput";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class Effects extends Command {
     constructor() {
@@ -81,6 +82,7 @@ export default class Effects extends Command {
         const embed = new EmbedBuilder()
             .setTitle("Effect Confirmation")
             .setDescription("Would you like to use this effect?")
+            .setColor(EmbedColours.Ok)
             .addFields([
                 {
                     name: "Effect",
@@ -100,6 +102,10 @@ export default class Effects extends Command {
                     .setLabel("Confirm")
                     .setCustomId(`effects use confirm ${effectDetail.id}`)
                     .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+                    .setLabel("Cancel")
+                    .setCustomId(`effects use cancel ${effectDetail.id}`)
+                    .setStyle(ButtonStyle.Danger),
             ]);
 
         await interaction.reply({
