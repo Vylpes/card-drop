@@ -11,6 +11,8 @@ import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
 import ErrorMessages from "../constants/ErrorMessages";
+import { DropResult } from "../contracts/SeriesMetadata";
+import EffectHelper from "../helpers/EffectHelper";
 
 export default class Drop extends Command {
     constructor() {
@@ -47,7 +49,15 @@ export default class Drop extends Command {
             return;
         }
 
-        const randomCard = CardDropHelperMetadata.GetRandomCard();
+        let randomCard: DropResult | undefined;
+
+        const hasChanceUpEffect = await EffectHelper.HasEffect(interaction.user.id, "unclaimed");
+
+        if (hasChanceUpEffect && Math.random() <= CardConstants.UnusedChanceUpChance) {
+            randomCard = await CardDropHelperMetadata.GetRandomCardUnclaimed(interaction.user.id);
+        } else {
+            randomCard = CardDropHelperMetadata.GetRandomCard();
+        }
 
         if (!randomCard) {
             AppLogger.LogWarn("Commands/Drop", ErrorMessages.UnableToFetchCard);
