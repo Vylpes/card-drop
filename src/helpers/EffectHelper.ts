@@ -37,16 +37,19 @@ export default class EffectHelper {
         const now = new Date();
 
         if (!effect || effect.Unused == 0) {
+            console.log(1);
             return false;
         }
 
-        const effectDetail = EffectDetails.get(effect.Id);
+        const effectDetail = EffectDetails.get(effect.Name);
 
         if (!effectDetail) {
+            console.log(2);
             return false;
         }
 
         if (effect.WhenExpires && now < new Date(effect.WhenExpires.getMilliseconds() + effectDetail.cooldown)) {
+            console.log(3);
             return false;
         }
 
