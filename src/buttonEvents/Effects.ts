@@ -61,7 +61,8 @@ export default class Effects extends ButtonEvent {
         }
 
         const now = new Date();
-        const whenExpires = new Date(now.getMilliseconds() + effectDetail.duration);
+
+        const whenExpires = new Date(now.getTime() + effectDetail.duration);
 
         const result = await EffectHelper.UseEffect(interaction.user.id, id, whenExpires);
 
@@ -78,7 +79,7 @@ export default class Effects extends ButtonEvent {
                     },
                     {
                         name: "Expires",
-                        value: `<t:${whenExpires.getMilliseconds()}:f>`,
+                        value: `<t:${Math.round(whenExpires.getTime() / 1000)}:f>`,
                         inline: true,
                     },
                 ]);

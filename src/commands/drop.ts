@@ -53,8 +53,6 @@ export default class Drop extends Command {
 
         const hasChanceUpEffect = await EffectHelper.HasEffect(interaction.user.id, "unclaimed");
 
-        console.log(hasChanceUpEffect);
-
         if (hasChanceUpEffect && Math.random() <= CardConstants.UnusedChanceUpChance) {
             randomCard = await CardDropHelperMetadata.GetRandomCardUnclaimed(interaction.user.id);
         } else {
