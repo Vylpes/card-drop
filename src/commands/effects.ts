@@ -2,7 +2,6 @@ import {ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedB
 import {Command} from "../type/command";
 import EffectHelper from "../helpers/EffectHelper";
 import {EffectDetails} from "../constants/EffectDetails";
-import UserEffect from "../database/entities/app/UserEffect";
 import TimeLengthInput from "../helpers/TimeLengthInput";
 import EmbedColours from "../constants/EmbedColours";
 
