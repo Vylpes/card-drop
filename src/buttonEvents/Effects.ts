@@ -19,7 +19,7 @@ export default class Effects extends ButtonEvent {
         }
     }
 
-    private async List(interaction: ButtonInteraction) {
+    public async List(interaction: ButtonInteraction) {
         const pageOption = interaction.customId.split(" ")[2];
 
         const page = Number(pageOption);
@@ -37,7 +37,7 @@ export default class Effects extends ButtonEvent {
         });
     }
 
-    private async Use(interaction: ButtonInteraction) {
+    public async Use(interaction: ButtonInteraction) {
         const subaction = interaction.customId.split(" ")[2];
 
         switch (subaction) {
@@ -50,7 +50,7 @@ export default class Effects extends ButtonEvent {
         }
     }
 
-    private async UseConfirm(interaction: ButtonInteraction) {
+    public async UseConfirm(interaction: ButtonInteraction) {
         const id = interaction.customId.split(" ")[3];
 
         const effectDetail = EffectDetails.get(id);
@@ -108,7 +108,7 @@ export default class Effects extends ButtonEvent {
         await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
     }
 
-    private async UseCancel(interaction: ButtonInteraction) {
+    public async UseCancel(interaction: ButtonInteraction) {
         const id = interaction.customId.split(" ")[3];
 
         const effectDetail = EffectDetails.get(id);
