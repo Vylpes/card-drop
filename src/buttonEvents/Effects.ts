@@ -56,7 +56,7 @@ export default class Effects extends ButtonEvent {
         const effectDetail = EffectDetails.get(id);
 
         if (!effectDetail) {
-            await interaction.reply("Unable to find effect!");
+            await interaction.reply("Effect not found in system!");
             return;
         }
 
@@ -114,7 +114,7 @@ export default class Effects extends ButtonEvent {
         const effectDetail = EffectDetails.get(id);
 
         if (!effectDetail) {
-            await interaction.reply("Unable to find effect!");
+            await interaction.reply("Effect not found in system!");
             return;
         }
 

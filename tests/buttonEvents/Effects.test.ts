@@ -80,14 +80,14 @@ describe("Effects", () => {
         interaction.customId = "effects use confirm invalid";
         await effects.UseConfirm(interaction);
 
-        expect(interaction.reply).toHaveBeenCalledWith("Unable to find effect!");
+        expect(interaction.reply).toHaveBeenCalledWith("Effect not found in system!");
     });
 
     it("should reply with error message when effect detail is not found in UseCancel", async () => {
         interaction.customId = "effects use cancel invalid";
         await effects.UseCancel(interaction);
 
-        expect(interaction.reply).toHaveBeenCalledWith("Unable to find effect!");
+        expect(interaction.reply).toHaveBeenCalledWith("Effect not found in system!");
     });
 
     it("should update interaction with embed and row when effect is used successfully", async () => {
