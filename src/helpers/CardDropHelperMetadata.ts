@@ -97,6 +97,8 @@ export default class CardDropHelperMetadata {
             .filter(x => x.type == rarity)
             .filter(x => !claimedCards.find(y => y.CardNumber == x.id));
 
+        if (!allCards) return undefined;
+
         const randomCardIndex = Math.floor(Math.random() * allCards.length);
 
         const card = allCards[randomCardIndex];
