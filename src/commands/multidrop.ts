@@ -6,10 +6,11 @@ import Config from "../database/entities/app/Config";
 import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import { readFileSync } from "fs";
 import path from "path";
 import Inventory from "../database/entities/app/Inventory";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
+import MultidropEmbedHelper from "../helpers/DropHelpers/MultidropEmbedHelper";
 
 export default class Multidrop extends Command {
     constructor() {
@@ -49,7 +50,7 @@ export default class Multidrop extends Command {
         user.RemoveCurrency(CardConstants.MultidropCost);
         await user.Save(User, user);
 
-        const randomCard = CardDropHelperMetadata.GetRandomCard();
+        const randomCard = GetCardsHelper.GetRandomCard();
         const cardsRemaining = CardConstants.MultidropQuantity - 1;
 
         if (!randomCard) {
@@ -69,9 +70,9 @@ export default class Multidrop extends Command {
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = CardDropHelperMetadata.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
+            const embed = MultidropEmbedHelper.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
 
-            const row = CardDropHelperMetadata.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id);
+            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id);
 
             await interaction.editReply({
                 embeds: [ embed ],

@@ -4,9 +4,10 @@ import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
 import { default as eClaim } from "../database/entities/app/Claim";
 import AppLogger from "../client/appLogger";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
+import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -69,7 +70,7 @@ export default class Claim extends ButtonEvent {
 
         await claim.Save(eClaim, claim);
 
-        const card = CardDropHelperMetadata.GetCardByCardNumber(cardNumber);
+        const card = GetCardsHelper.GetCardByCardNumber(cardNumber);
 
         if (!card) {
             return;
@@ -77,8 +78,8 @@ export default class Claim extends ButtonEvent {
 
         const imageFileName = card.card.path.split("/").pop()!;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username, user.Currency);
-        const row = CardDropHelperMetadata.GenerateDropButtons(card, claimId, interaction.user.id, true);
+        const embed = DropEmbedHelper.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username, user.Currency);
+        const row = DropEmbedHelper.GenerateDropButtons(card, claimId, interaction.user.id, true);
 
         await interaction.editReply({
             embeds: [ embed ],

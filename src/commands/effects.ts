@@ -1,9 +1,10 @@
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder} from "discord.js";
-import {Command} from "../type/command";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { Command } from "../type/command";
 import EffectHelper from "../helpers/EffectHelper";
-import {EffectDetails} from "../constants/EffectDetails";
+import { EffectDetails } from "../constants/EffectDetails";
 import TimeLengthInput from "../helpers/TimeLengthInput";
 import EmbedColours from "../constants/EmbedColours";
+import AppLogger from "../client/appLogger";
 
 export default class Effects extends Command {
     constructor() {
@@ -65,6 +66,8 @@ export default class Effects extends Command {
         const effectDetail = EffectDetails.get(id);
 
         if (!effectDetail) {
+            AppLogger.LogWarn("Commands/Effects", `Unable to find effect details for ${id}`);
+
             await interaction.reply("Unable to find effect!");
             return;
         }

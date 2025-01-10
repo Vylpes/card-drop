@@ -9,5 +9,5 @@ export default class CardConstants {
     public static readonly MultidropQuantity = 11;
 
     // Effects
-    public static readonly UnusedChanceUpChance = 1;
+    public static readonly UnusedChanceUpChance = 0.5;
 }
