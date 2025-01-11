@@ -73,6 +73,8 @@ export default class Claim extends ButtonEvent {
         const card = GetCardsHelper.GetCardByCardNumber(cardNumber);
 
         if (!card) {
+            AppLogger.LogError("Button/Claim", `Unable to find card, ${cardNumber}`);
+
             return;
         }
 

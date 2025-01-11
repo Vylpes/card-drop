@@ -3,6 +3,7 @@ import { EffectDetails } from "../../constants/EffectDetails";
 import EffectHelper from "../../helpers/EffectHelper";
 import EmbedColours from "../../constants/EmbedColours";
 import TimeLengthInput from "../../helpers/TimeLengthInput";
+import AppLogger from "../../client/appLogger";
 
 export default async function Use(interaction: ButtonInteraction) {
     const subaction = interaction.customId.split(" ")[2];
@@ -23,6 +24,8 @@ export async function UseConfirm(interaction: ButtonInteraction) {
     const effectDetail = EffectDetails.get(id);
 
     if (!effectDetail) {
+        AppLogger.LogError("Button/Effects/Use", `Effect not found, ${id}`);
+
         await interaction.reply("Effect not found in system!");
         return;
     }
@@ -33,46 +36,46 @@ export async function UseConfirm(interaction: ButtonInteraction) {
 
     const result = await EffectHelper.UseEffect(interaction.user.id, id, whenExpires);
 
-    if (result) {
-        const embed = new EmbedBuilder()
-            .setTitle("Effect Used")
-            .setDescription("You now have an active effect!")
-            .setColor(EmbedColours.Green)
-            .addFields([
-                {
-                    name: "Effect",
-                    value: effectDetail.friendlyName,
-                    inline: true,
-                },
-                {
-                    name: "Expires",
-                    value: `<t:${Math.round(whenExpires.getTime() / 1000)}:f>`,
-                    inline: true,
-                },
-            ]);
-
-        const row = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents([
-                new ButtonBuilder()
-                    .setLabel("Confirm")
-                    .setCustomId(`effects use confirm ${effectDetail.id}`)
-                    .setStyle(ButtonStyle.Primary)
-                    .setDisabled(true),
-                new ButtonBuilder()
-                    .setLabel("Cancel")
-                    .setCustomId(`effects use cancel ${effectDetail.id}`)
-                    .setStyle(ButtonStyle.Danger)
-                    .setDisabled(true),
-            ]);
-
-        await interaction.update({
-            embeds: [ embed ],
-            components: [ row ],
-        });
+    if (!result) {
+        await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
         return;
     }
 
-    await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
+    const embed = new EmbedBuilder()
+        .setTitle("Effect Used")
+        .setDescription("You now have an active effect!")
+        .setColor(EmbedColours.Green)
+        .addFields([
+            {
+                name: "Effect",
+                value: effectDetail.friendlyName,
+                inline: true,
+            },
+            {
+                name: "Expires",
+                value: `<t:${Math.round(whenExpires.getTime() / 1000)}:f>`,
+                inline: true,
+            },
+        ]);
+
+    const row = new ActionRowBuilder<ButtonBuilder>()
+        .addComponents([
+            new ButtonBuilder()
+                .setLabel("Confirm")
+                .setCustomId(`effects use confirm ${effectDetail.id}`)
+                .setStyle(ButtonStyle.Primary)
+                .setDisabled(true),
+            new ButtonBuilder()
+                .setLabel("Cancel")
+                .setCustomId(`effects use cancel ${effectDetail.id}`)
+                .setStyle(ButtonStyle.Danger)
+                .setDisabled(true),
+        ]);
+
+    await interaction.update({
+        embeds: [ embed ],
+        components: [ row ],
+    });
 }
 
 export async function UseCancel(interaction: ButtonInteraction) {
@@ -81,6 +84,8 @@ export async function UseCancel(interaction: ButtonInteraction) {
     const effectDetail = EffectDetails.get(id);
 
     if (!effectDetail) {
+        AppLogger.LogError("Button/Effects/Cancel", `Effect not found, ${id}`);
+
         await interaction.reply("Effect not found in system!");
         return;
     }
