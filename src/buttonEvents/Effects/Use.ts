@@ -5,126 +5,128 @@ import EmbedColours from "../../constants/EmbedColours";
 import TimeLengthInput from "../../helpers/TimeLengthInput";
 import AppLogger from "../../client/appLogger";
 
-export default async function Use(interaction: ButtonInteraction) {
-    const subaction = interaction.customId.split(" ")[2];
+export default class Use {
+    public static async Execute(interaction: ButtonInteraction) {
+        const subaction = interaction.customId.split(" ")[2];
 
-    switch (subaction) {
-        case "confirm":
-            await UseConfirm(interaction);
-            break;
-        case "cancel":
-            await UseCancel(interaction);
-            break;
-    }
-}
-
-export async function UseConfirm(interaction: ButtonInteraction) {
-    const id = interaction.customId.split(" ")[3];
-
-    const effectDetail = EffectDetails.get(id);
-
-    if (!effectDetail) {
-        AppLogger.LogError("Button/Effects/Use", `Effect not found, ${id}`);
-
-        await interaction.reply("Effect not found in system!");
-        return;
+        switch (subaction) {
+            case "confirm":
+                await this.UseConfirm(interaction);
+                break;
+            case "cancel":
+                await this.UseCancel(interaction);
+                break;
+        }
     }
 
-    const now = new Date();
+    private static async UseConfirm(interaction: ButtonInteraction) {
+        const id = interaction.customId.split(" ")[3];
 
-    const whenExpires = new Date(now.getTime() + effectDetail.duration);
+        const effectDetail = EffectDetails.get(id);
 
-    const result = await EffectHelper.UseEffect(interaction.user.id, id, whenExpires);
+        if (!effectDetail) {
+            AppLogger.LogError("Button/Effects/Use", `Effect not found, ${id}`);
 
-    if (!result) {
-        await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
-        return;
+            await interaction.reply("Effect not found in system!");
+            return;
+        }
+
+        const now = new Date();
+
+        const whenExpires = new Date(now.getTime() + effectDetail.duration);
+
+        const result = await EffectHelper.UseEffect(interaction.user.id, id, whenExpires);
+
+        if (!result) {
+            await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
+            return;
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle("Effect Used")
+            .setDescription("You now have an active effect!")
+            .setColor(EmbedColours.Green)
+            .addFields([
+                {
+                    name: "Effect",
+                    value: effectDetail.friendlyName,
+                    inline: true,
+                },
+                {
+                    name: "Expires",
+                    value: `<t:${Math.round(whenExpires.getTime() / 1000)}:f>`,
+                    inline: true,
+                },
+            ]);
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents([
+                new ButtonBuilder()
+                    .setLabel("Confirm")
+                    .setCustomId(`effects use confirm ${effectDetail.id}`)
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(true),
+                new ButtonBuilder()
+                    .setLabel("Cancel")
+                    .setCustomId(`effects use cancel ${effectDetail.id}`)
+                    .setStyle(ButtonStyle.Danger)
+                    .setDisabled(true),
+            ]);
+
+        await interaction.update({
+            embeds: [ embed ],
+            components: [ row ],
+        });
     }
 
-    const embed = new EmbedBuilder()
-        .setTitle("Effect Used")
-        .setDescription("You now have an active effect!")
-        .setColor(EmbedColours.Green)
-        .addFields([
-            {
-                name: "Effect",
-                value: effectDetail.friendlyName,
-                inline: true,
-            },
-            {
-                name: "Expires",
-                value: `<t:${Math.round(whenExpires.getTime() / 1000)}:f>`,
-                inline: true,
-            },
-        ]);
+    private static async UseCancel(interaction: ButtonInteraction) {
+        const id = interaction.customId.split(" ")[3];
 
-    const row = new ActionRowBuilder<ButtonBuilder>()
-        .addComponents([
-            new ButtonBuilder()
-                .setLabel("Confirm")
-                .setCustomId(`effects use confirm ${effectDetail.id}`)
-                .setStyle(ButtonStyle.Primary)
-                .setDisabled(true),
-            new ButtonBuilder()
-                .setLabel("Cancel")
-                .setCustomId(`effects use cancel ${effectDetail.id}`)
-                .setStyle(ButtonStyle.Danger)
-                .setDisabled(true),
-        ]);
+        const effectDetail = EffectDetails.get(id);
 
-    await interaction.update({
-        embeds: [ embed ],
-        components: [ row ],
-    });
-}
+        if (!effectDetail) {
+            AppLogger.LogError("Button/Effects/Cancel", `Effect not found, ${id}`);
 
-export async function UseCancel(interaction: ButtonInteraction) {
-    const id = interaction.customId.split(" ")[3];
+            await interaction.reply("Effect not found in system!");
+            return;
+        }
 
-    const effectDetail = EffectDetails.get(id);
+        const timeLengthInput = TimeLengthInput.ConvertFromMilliseconds(effectDetail.duration);
 
-    if (!effectDetail) {
-        AppLogger.LogError("Button/Effects/Cancel", `Effect not found, ${id}`);
+        const embed = new EmbedBuilder()
+            .setTitle("Effect Use Cancelled")
+            .setDescription("The effect from your inventory has not been used")
+            .setColor(EmbedColours.Grey)
+            .addFields([
+                {
+                    name: "Effect",
+                    value: effectDetail.friendlyName,
+                    inline: true,
+                },
+                {
+                    name: "Expires",
+                    value: timeLengthInput.GetLengthShort(),
+                    inline: true,
+                },
+            ]);
 
-        await interaction.reply("Effect not found in system!");
-        return;
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents([
+                new ButtonBuilder()
+                    .setLabel("Confirm")
+                    .setCustomId(`effects use confirm ${effectDetail.id}`)
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(true),
+                new ButtonBuilder()
+                    .setLabel("Cancel")
+                    .setCustomId(`effects use cancel ${effectDetail.id}`)
+                    .setStyle(ButtonStyle.Danger)
+                    .setDisabled(true),
+            ]);
+
+        await interaction.update({
+            embeds: [ embed ],
+            components: [ row ],
+        });
     }
-
-    const timeLengthInput = TimeLengthInput.ConvertFromMilliseconds(effectDetail.duration);
-
-    const embed = new EmbedBuilder()
-        .setTitle("Effect Use Cancelled")
-        .setDescription("The effect from your inventory has not been used")
-        .setColor(EmbedColours.Grey)
-        .addFields([
-            {
-                name: "Effect",
-                value: effectDetail.friendlyName,
-                inline: true,
-            },
-            {
-                name: "Expires",
-                value: timeLengthInput.GetLengthShort(),
-                inline: true,
-            },
-        ]);
-
-    const row = new ActionRowBuilder<ButtonBuilder>()
-        .addComponents([
-            new ButtonBuilder()
-                .setLabel("Confirm")
-                .setCustomId(`effects use confirm ${effectDetail.id}`)
-                .setStyle(ButtonStyle.Primary)
-                .setDisabled(true),
-            new ButtonBuilder()
-                .setLabel("Cancel")
-                .setCustomId(`effects use cancel ${effectDetail.id}`)
-                .setStyle(ButtonStyle.Danger)
-                .setDisabled(true),
-        ]);
-
-    await interaction.update({
-        embeds: [ embed ],
-        components: [ row ],
-    });
 }

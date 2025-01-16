@@ -12,7 +12,7 @@ export default class Effects extends ButtonEvent {
                 await List(interaction);
                 break;
             case "use":
-                await Use(interaction);
+                await Use.Execute(interaction);
                 break;
         }
     }
