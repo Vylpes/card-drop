@@ -10,7 +10,7 @@ import AppLogger from "../client/appLogger.js";
 interface ReturnedPage {
     embed: EmbedBuilder,
     row: ActionRowBuilder<ButtonBuilder>,
-    attachment: AttachmentBuilder,
+    attachments: AttachmentBuilder[],
     results: string[],
 }
 
@@ -36,19 +36,18 @@ export default class CardSearchHelper {
 
         if (!card) return undefined;
 
-        let image: Buffer;
-        const imageFileName = card.card.path.split("/").pop()!;
+        const attachments = [];
+        let imageFileName = "";
 
-        try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
-        } catch {
-            AppLogger.LogError("CardSearchHelper/GenerateSearchQuery", `Unable to fetch image for card ${card.card.id}.`);
-            
-            return undefined;
+        if (!(card.card.path.startsWith("http://") || card.card.path.startsWith("https://"))) {
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
+            imageFileName = card.card.path.split("/").pop()!;
+
+            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+            attachments.push(attachment);
         }
 
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
-        
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(userid, card.card.id);
         const quantityClaimed = inventory?.Quantity ?? 0;
 
@@ -67,7 +66,7 @@ export default class CardSearchHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(pages == 1));
 
-        return { embed, row, attachment, results };
+        return { embed, row, attachments, results };
     }
 
     public static async GenerateSearchPageFromQuery(results: string[], userid: string, page: number): Promise<ReturnedPage | undefined> {
@@ -81,18 +80,17 @@ export default class CardSearchHelper {
             return undefined;
         }
 
-        let image: Buffer;
-        const imageFileName = card.card.path.split("/").pop()!;
+        const attachments = [];
+        let imageFileName = "";
 
-        try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
-        } catch {
-            AppLogger.LogError("CardSearchHelper/GenerateSearchPageFromQuery", `Unable to fetch image for card ${card.card.id}.`);
+        if (!(card.card.path.startsWith("http://") || card.card.path.startsWith("https://"))) {
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
+            imageFileName = card.card.path.split("/").pop()!;
 
-            return undefined;
+            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+            attachments.push(attachment);
         }
-
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(userid, card.card.id);
         const quantityClaimed = inventory?.Quantity ?? 0;
@@ -112,6 +110,6 @@ export default class CardSearchHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page == results.length));
 
-        return { embed, row, attachment, results };
+        return { embed, row, attachments, results };
     }
 }
