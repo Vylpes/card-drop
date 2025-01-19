@@ -43,21 +43,19 @@ export default class View extends Command {
         const series = CoreClient.Cards
             .find(x => x.cards.includes(card))!;
 
-        let image: Buffer;
-        const imageFileName = card.path.split("/").pop()!;
+        const files = [];
+        let imageFileName = "";
 
-        try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.path));
-        } catch {
-            AppLogger.LogError("Commands/View", `Unable to fetch image for card ${card.id}.`);
+        if (!(card.path.startsWith("http://") || card.path.startsWith("https://"))) {
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.path));
+            imageFileName = card.path.split("/").pop()!;
 
-            await interaction.reply(`Unable to fetch image for card ${card.id}.`);
-            return;
+            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+            files.push(attachment);
         }
 
         await interaction.deferReply();
-
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
@@ -67,7 +65,7 @@ export default class View extends Command {
         try {
             await interaction.editReply({
                 embeds: [ embed ],
-                files: [ attachment ],
+                files: files,
             });
         } catch (e) {
             AppLogger.LogError("Commands/View", `Error sending view for card ${card.id}: ${e}`);

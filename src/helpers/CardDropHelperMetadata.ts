@@ -89,7 +89,7 @@ export default class CardDropHelperMetadata {
             const hexCode = Number("0x" + drop.card.colour);
 
             if (hexCode) {
-                colour = hexCode; 
+                colour = hexCode;
             } else {
                 AppLogger.LogWarn("CardDropHelperMetadata/GenerateDropEmbed", `Card's colour override is invalid: ${drop.card.id}, ${drop.card.colour}`);
             }
@@ -97,12 +97,18 @@ export default class CardDropHelperMetadata {
             AppLogger.LogWarn("CardDropHelperMetadata/GenerateDropEmbed", `Card's colour override is invalid: ${drop.card.id}, ${drop.card.colour}`);
         }
 
+        let imageUrl = `attachment://${imageFileName}`;
+
+        if (drop.card.path.startsWith("http://") || drop.card.path.startsWith("https://")) {
+            imageUrl = drop.card.path;
+        }
+
         const embed = new EmbedBuilder()
             .setTitle(drop.card.name)
             .setDescription(description)
             .setFooter({ text: `${CardRarityToString(drop.card.type)} · ${drop.card.id}` })
             .setColor(colour)
-            .setImage(`attachment://${imageFileName}`)
+            .setImage(imageUrl)
             .addFields([
                 {
                     name: "Claimed",
