@@ -1,4 +1,4 @@
-import { ButtonInteraction, EmbedBuilder, InteractionResponse } from "discord.js";
+import { ButtonInteraction, InteractionResponse, InteractionUpdateOptions, MessagePayload } from "discord.js";
 import Use from "../../../src/buttonEvents/Effects/Use";
 import { mock } from "jest-mock-extended";
 import AppLogger from "../../../src/client/appLogger";
@@ -82,7 +82,7 @@ describe("UseConfirm", () => {
         // Arrange
         interaction.customId += " unclaimed";
         interaction.user.id = "userId";
-        interaction.update.mockImplementation(async (opts: any) => {
+        interaction.update.mockImplementation(async (opts: string | MessagePayload | InteractionUpdateOptions) => {
             updatedWith = opts;
 
             return mock<InteractionResponse<boolean>>();
@@ -133,7 +133,7 @@ describe("UseCancel", () => {
         // Arrange
         interaction.customId += " unclaimed";
         interaction.user.id = "userId";
-        interaction.update.mockImplementation(async (opts: any) => {
+        interaction.update.mockImplementation(async (opts: string | MessagePayload | InteractionUpdateOptions) => {
             updatedWith = opts;
 
             return mock<InteractionResponse<boolean>>();

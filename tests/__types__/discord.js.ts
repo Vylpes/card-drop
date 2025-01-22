@@ -1,5 +1,5 @@
 export type ButtonInteraction = {
-    guild: {} | null,
+    guild: object | null,
     guildId: string | null,
     channel: {
         isSendable: jest.Func,
