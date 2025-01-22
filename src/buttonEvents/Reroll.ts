@@ -52,10 +52,17 @@ export default class Reroll extends ButtonEvent {
         try {
             AppLogger.LogVerbose("Button/Reroll", `Sending next drop: ${randomCard.card.id} (${randomCard.card.name})`);
 
-            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
-            const imageFileName = randomCard.card.path.split("/").pop()!;
+            const files = [];
+            let imageFileName = "";
 
-            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+            if (!(randomCard.card.path.startsWith("http://") || randomCard.card.path.startsWith("https://"))) {
+                const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
+                imageFileName = randomCard.card.path.split("/").pop()!;
+
+                const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+                files.push(attachment);
+            }
 
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
@@ -68,7 +75,7 @@ export default class Reroll extends ButtonEvent {
 
             await interaction.editReply({
                 embeds: [ embed ],
-                files: [ attachment ],
+                files: files,
                 components: [ row ],
             });
 

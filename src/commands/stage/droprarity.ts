@@ -47,19 +47,17 @@ export default class Droprarity extends Command {
             return;
         }
 
-        let image: Buffer;
-        const imageFileName = card.card.path.split("/").pop()!;
+        const files = [];
+        let imageFileName = "";
 
-        try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
-        } catch {
-            await interaction.reply(`Unable to fetch image for card ${card.card.id}`);
-            return;
+        if (!(card.card.path.startsWith("http://") || card.card.path.startsWith("https://"))) {
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.card.path));
+            imageFileName = card.card.path.split("/").pop()!;
+
+            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+            files.push(attachment);
         }
-
-        await interaction.deferReply();
-
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
 
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
@@ -73,7 +71,7 @@ export default class Droprarity extends Command {
         try {
             await interaction.editReply({
                 embeds: [ embed ],
-                files: [ attachment ],
+                files: files,
                 components: [ row ],
             });
         } catch (e) {

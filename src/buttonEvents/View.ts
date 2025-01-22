@@ -19,7 +19,7 @@ export default class View extends ButtonEvent {
         await interaction.editReply({
             embeds: [ searchResult.embed ],
             components: [ searchResult.row ],
-            files: [ searchResult.attachment ],
+            files: searchResult.attachments,
         });
     }
 }
