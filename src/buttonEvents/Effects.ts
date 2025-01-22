@@ -2,6 +2,7 @@ import { ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import List from "./Effects/List";
 import Use from "./Effects/Use";
+import AppLogger from "../client/appLogger";
 
 export default class Effects extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -14,6 +15,8 @@ export default class Effects extends ButtonEvent {
             case "use":
                 await Use.Execute(interaction);
                 break;
+            default:
+                AppLogger.LogError("Buttons/Effects", `Unknown action, ${action}`);
         }
     }
 }
