@@ -40,7 +40,7 @@ export default class Reroll extends ButtonEvent {
             return;
         }
 
-        const randomCard = GetCardsHelper.GetRandomCard();
+        const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
 
         if (!randomCard) {
             await interaction.reply("Unable to fetch card, please try again.");

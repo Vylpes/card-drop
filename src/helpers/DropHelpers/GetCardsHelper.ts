@@ -1,10 +1,23 @@
 import AppLogger from "../../client/appLogger";
 import { CoreClient } from "../../client/client";
+import CardConstants from "../../constants/CardConstants";
 import { CardRarity } from "../../constants/CardRarity";
 import CardRarityChances from "../../constants/CardRarityChances";
 import { DropResult } from "../../contracts/SeriesMetadata";
+import EffectHelper from "../EffectHelper";
+import GetUnclaimedCardsHelper from "./GetUnclaimedCardsHelper";
 
 export default class GetCardsHelper {
+    public static async FetchCard(userId: string): Promise<DropResult | undefined> {
+        const hasChanceUpEffect = await EffectHelper.HasEffect(userId, "unclaimed");
+
+        if (hasChanceUpEffect && Math.random() <= CardConstants.UnusedChanceUpChance) {
+            return await GetUnclaimedCardsHelper.GetRandomCardUnclaimed(userId);
+        }
+
+        return this.GetRandomCard();
+    }
+
     public static GetRandomCard(): DropResult | undefined {
         const randomRarity = Math.random() * 100;
 

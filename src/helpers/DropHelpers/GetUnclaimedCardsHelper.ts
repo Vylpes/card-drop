@@ -25,14 +25,10 @@ export default class GetUnclaimedCardsHelper {
 
         const randomCard = await this.GetRandomCardByRarityUnclaimed(cardRarity, userId);
 
-        AppLogger.LogSilly("CardDropHelperMetadata/GetRandomCardUnclaimed", `Random card: ${randomCard?.card.id} ${randomCard?.card.name}`);
-
         return randomCard;
     }
 
     public static async GetRandomCardByRarityUnclaimed(rarity: CardRarity, userId: string): Promise<DropResult | undefined> {
-        AppLogger.LogSilly("CardDropHelperMetadata/GetRandomCardByRarityUnclaimed", `Parameters: rarity=${rarity}, userId=${userId}`);
-
         const claimedCards = await Inventory.FetchAllByUserId(userId);
 
         if (!claimedCards) {
@@ -58,8 +54,6 @@ export default class GetUnclaimedCardsHelper {
 
             return undefined;
         }
-
-        AppLogger.LogSilly("CardDropHelperMetadata/GetRandomCardByRarityUnclaimed", `Random card: ${card.id} ${card.name}`);
 
         return {
             series: series,
