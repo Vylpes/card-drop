@@ -1,11 +1,12 @@
 import {ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from "discord.js";
 import Fuse from "fuse.js";
 import {CoreClient} from "../client/client.js";
-import CardDropHelperMetadata from "./CardDropHelperMetadata.js";
 import Inventory from "../database/entities/app/Inventory.js";
 import {readFileSync} from "fs";
 import path from "path";
 import AppLogger from "../client/appLogger.js";
+import GetCardsHelper from "./DropHelpers/GetCardsHelper.js";
+import DropEmbedHelper from "./DropHelpers/DropEmbedHelper.js";
 
 interface ReturnedPage {
     embed: EmbedBuilder,
@@ -32,7 +33,7 @@ export default class CardSearchHelper {
             return undefined;
         }
 
-        const card = CardDropHelperMetadata.GetCardByCardNumber(entry.item.id);
+        const card = GetCardsHelper.GetCardByCardNumber(entry.item.id);
 
         if (!card) return undefined;
 
@@ -51,7 +52,7 @@ export default class CardSearchHelper {
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(userid, card.card.id);
         const quantityClaimed = inventory?.Quantity ?? 0;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, quantityClaimed, imageFileName);
+        const embed = DropEmbedHelper.GenerateDropEmbed(card, quantityClaimed, imageFileName);
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -72,7 +73,7 @@ export default class CardSearchHelper {
     public static async GenerateSearchPageFromQuery(results: string[], userid: string, page: number): Promise<ReturnedPage | undefined> {
         const currentPageId = results[page - 1];
 
-        const card = CardDropHelperMetadata.GetCardByCardNumber(currentPageId);
+        const card = GetCardsHelper.GetCardByCardNumber(currentPageId);
 
         if (!card) {
             AppLogger.LogError("CardSearchHelper/GenerateSearchPageFromQuery", `Unable to find card by id: ${currentPageId}.`);
@@ -95,7 +96,7 @@ export default class CardSearchHelper {
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(userid, card.card.id);
         const quantityClaimed = inventory?.Quantity ?? 0;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, quantityClaimed, imageFileName);
+        const embed = DropEmbedHelper.GenerateDropEmbed(card, quantityClaimed, imageFileName);
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(

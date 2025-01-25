@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UseCancel GIVEN effectDetail is found, EXPECT interaction updated 1`] = `
+{
+  "components": [
+    {
+      "components": [
+        {
+          "custom_id": "effects use confirm unclaimed",
+          "disabled": true,
+          "emoji": undefined,
+          "label": "Confirm",
+          "style": 1,
+          "type": 2,
+        },
+        {
+          "custom_id": "effects use cancel unclaimed",
+          "disabled": true,
+          "emoji": undefined,
+          "label": "Cancel",
+          "style": 4,
+          "type": 2,
+        },
+      ],
+      "type": 1,
+    },
+  ],
+  "embeds": [
+    {
+      "color": 13882323,
+      "description": "The effect from your inventory has not been used",
+      "fields": [
+        {
+          "inline": true,
+          "name": "Effect",
+          "value": "Unclaimed Chance Up",
+        },
+        {
+          "inline": true,
+          "name": "Expires",
+          "value": "10m",
+        },
+      ],
+      "title": "Effect Use Cancelled",
+    },
+  ],
+}
+`;
+
+exports[`UseConfirm GIVEN EffectHelper.UseEffect succeeded, EXPECT interaction updated 1`] = `
+{
+  "components": [
+    {
+      "components": [
+        {
+          "custom_id": "effects use confirm unclaimed",
+          "disabled": true,
+          "emoji": undefined,
+          "label": "Confirm",
+          "style": 1,
+          "type": 2,
+        },
+        {
+          "custom_id": "effects use cancel unclaimed",
+          "disabled": true,
+          "emoji": undefined,
+          "label": "Cancel",
+          "style": 4,
+          "type": 2,
+        },
+      ],
+      "type": 1,
+    },
+  ],
+  "embeds": [
+    {
+      "color": 2263842,
+      "description": "You now have an active effect!",
+      "fields": [
+        {
+          "inline": true,
+          "name": "Effect",
+          "value": "Unclaimed Chance Up",
+        },
+        {
+          "inline": true,
+          "name": "Expires",
+          "value": "<t:600:f>",
+        },
+      ],
+      "title": "Effect Used",
+    },
+  ],
+}
+`;

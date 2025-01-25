@@ -5,8 +5,9 @@ import { readFileSync } from "fs";
 import Inventory from "../../database/entities/app/Inventory";
 import { v4 } from "uuid";
 import { CoreClient } from "../../client/client";
-import CardDropHelperMetadata from "../../helpers/CardDropHelperMetadata";
 import path from "path";
+import GetCardsHelper from "../../helpers/DropHelpers/GetCardsHelper";
+import DropEmbedHelper from "../../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Droprarity extends Command {
     constructor() {
@@ -39,7 +40,7 @@ export default class Droprarity extends Command {
             return;
         }
 
-        const card = await CardDropHelperMetadata.GetRandomCardByRarity(rarityType);
+        const card = await GetCardsHelper.GetRandomCardByRarity(rarityType);
 
         if (!card) {
             await interaction.reply("Card not found");
@@ -61,11 +62,11 @@ export default class Droprarity extends Command {
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, quantityClaimed, imageFileName);
+        const embed = DropEmbedHelper.GenerateDropEmbed(card, quantityClaimed, imageFileName);
 
         const claimId = v4();
 
-        const row = CardDropHelperMetadata.GenerateDropButtons(card, claimId, interaction.user.id);
+        const row = DropEmbedHelper.GenerateDropButtons(card, claimId, interaction.user.id);
 
         try {
             await interaction.editReply({

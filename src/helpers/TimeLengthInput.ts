@@ -118,4 +118,19 @@ export default class TimeLengthInput {
 
         return desNumber;
     }
+
+    public static ConvertFromMilliseconds(ms: number): TimeLengthInput {
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        const remainingSeconds = seconds % 60;
+        const remainingMinutes = minutes % 60;
+        const remainingHours = hours % 24;
+
+        const timeString = `${days}d ${remainingHours}h ${remainingMinutes}m ${remainingSeconds}s`;
+
+        return new TimeLengthInput(timeString);
+    }
 }

@@ -5,7 +5,7 @@ import Inventory from "../../database/entities/app/Inventory";
 import { v4 } from "uuid";
 import { CoreClient } from "../../client/client";
 import path from "path";
-import CardDropHelperMetadata from "../../helpers/CardDropHelperMetadata";
+import DropEmbedHelper from "../../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Dropnumber extends Command {
     constructor() {
@@ -60,11 +60,11 @@ export default class Dropnumber extends Command {
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed({ card, series }, quantityClaimed, imageFileName);
+        const embed = DropEmbedHelper.GenerateDropEmbed({ card, series }, quantityClaimed, imageFileName);
 
         const claimId = v4();
 
-        const row = CardDropHelperMetadata.GenerateDropButtons({ card, series }, claimId, interaction.user.id);
+        const row = DropEmbedHelper.GenerateDropButtons({ card, series }, claimId, interaction.user.id);
 
         try {
             await interaction.editReply({

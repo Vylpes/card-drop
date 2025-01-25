@@ -2,8 +2,8 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, CommandInterac
 import { Command } from "../type/command";
 import Inventory from "../database/entities/app/Inventory";
 import { CardRarityToString, GetSacrificeAmount } from "../constants/CardRarity";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import EmbedColours from "../constants/EmbedColours";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 
 export default class Sacrifice extends Command {
     constructor() {
@@ -41,7 +41,7 @@ export default class Sacrifice extends Command {
             return;
         }
 
-        const cardData = CardDropHelperMetadata.GetCardByCardNumber(cardnumber.value! as string);
+        const cardData = GetCardsHelper.GetCardByCardNumber(cardnumber.value! as string);
 
         if (!cardData) {
             await interaction.reply("Unable to find card in the database.");

@@ -2,10 +2,10 @@ import { CacheType, CommandInteraction, PermissionsBitField, SlashCommandBuilder
 import { Command } from "../type/command";
 import { CoreClient } from "../client/client";
 import Config from "../database/entities/app/Config";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import Inventory from "../database/entities/app/Inventory";
 import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 
 export default class Give extends Command {
     constructor() {
@@ -81,7 +81,7 @@ export default class Give extends Command {
 
         AppLogger.LogSilly("Commands/Give/GiveCard", `Parameters: cardNumber=${cardNumber.value}, user=${user.id}`);
 
-        const card = CardDropHelperMetadata.GetCardByCardNumber(cardNumber.value!.toString());
+        const card = GetCardsHelper.GetCardByCardNumber(cardNumber.value!.toString());
 
         if (!card) {
             await interaction.reply("Unable to fetch card, please try again.");

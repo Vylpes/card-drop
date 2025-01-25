@@ -1,6 +1,7 @@
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import UserEffect from "../database/entities/app/UserEffect";
 import EmbedColours from "../constants/EmbedColours";
+import { EffectDetails } from "../constants/EffectDetails";
 
 export default class EffectHelper {
     public static async AddEffectToUserInventory(userId: string, name: string, quantity: number = 1) {
@@ -16,6 +17,20 @@ export default class EffectHelper {
     }
 
     public static async UseEffect(userId: string, name: string, whenExpires: Date): Promise<boolean> {
+        const canUseEffect = await this.CanUseEffect(userId, name);
+
+        if (!canUseEffect) return false;
+
+        const effect = await UserEffect.FetchOneByUserIdAndName(userId, name);
+
+        effect!.UseEffect(whenExpires);
+
+        await effect!.Save(UserEffect, effect!);
+
+        return true;
+    }
+
+    public static async CanUseEffect(userId: string, name: string): Promise<boolean> {
         const effect = await UserEffect.FetchOneByUserIdAndName(userId, name);
         const now = new Date();
 
@@ -23,13 +38,15 @@ export default class EffectHelper {
             return false;
         }
 
-        if (effect.WhenExpires && now < effect.WhenExpires) {
+        const effectDetail = EffectDetails.get(effect.Name);
+
+        if (!effectDetail) {
             return false;
         }
 
-        effect.UseEffect(whenExpires);
-
-        await effect.Save(UserEffect, effect);
+        if (effect.WhenExpires && now < new Date(effect.WhenExpires.getTime() + effectDetail.cooldown)) {
+            return false;
+        }
 
         return true;
     }

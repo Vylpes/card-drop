@@ -5,11 +5,12 @@ import { v4 } from "uuid";
 import { CoreClient } from "../client/client";
 import Inventory from "../database/entities/app/Inventory";
 import Config from "../database/entities/app/Config";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import path from "path";
 import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
+import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -39,7 +40,7 @@ export default class Reroll extends ButtonEvent {
             return;
         }
 
-        const randomCard = CardDropHelperMetadata.GetRandomCard();
+        const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
 
         if (!randomCard) {
             await interaction.reply("Unable to fetch card, please try again.");
@@ -66,11 +67,11 @@ export default class Reroll extends ButtonEvent {
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
+            const embed = DropEmbedHelper.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
 
             const claimId = v4();
 
-            const row = CardDropHelperMetadata.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+            const row = DropEmbedHelper.GenerateDropButtons(randomCard, claimId, interaction.user.id);
 
             await interaction.editReply({
                 embeds: [ embed ],

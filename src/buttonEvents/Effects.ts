@@ -1,6 +1,8 @@
-import {ButtonInteraction} from "discord.js";
-import {ButtonEvent} from "../type/buttonEvent";
-import EffectHelper from "../helpers/EffectHelper";
+import { ButtonInteraction } from "discord.js";
+import { ButtonEvent } from "../type/buttonEvent";
+import List from "./Effects/List";
+import Use from "./Effects/Use";
+import AppLogger from "../client/appLogger";
 
 export default class Effects extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -8,26 +10,13 @@ export default class Effects extends ButtonEvent {
 
         switch (action) {
             case "list":
-                await this.List(interaction);
+                await List(interaction);
                 break;
+            case "use":
+                await Use.Execute(interaction);
+                break;
+            default:
+                AppLogger.LogError("Buttons/Effects", `Unknown action, ${action}`);
         }
-    }
-
-    private async List(interaction: ButtonInteraction) {
-        const pageOption = interaction.customId.split(" ")[2];
-
-        const page = Number(pageOption);
-
-        if (!page) {
-            await interaction.reply("Page option is not a valid number");
-            return;
-        }
-
-        const result = await EffectHelper.GenerateEffectEmbed(interaction.user.id, page);
-        
-        await interaction.update({
-            embeds: [ result.embed ],
-            components: [ result.row ],
-        });
     }
 }

@@ -1,127 +1,66 @@
-import {ButtonInteraction} from "discord.js";
+import { ButtonInteraction } from "discord.js";
 import Effects from "../../src/buttonEvents/Effects";
-import EffectHelper from "../../src/helpers/EffectHelper";
+import GenerateButtonInteractionMock from "../__functions__/discord.js/GenerateButtonInteractionMock";
+import { ButtonInteraction as ButtonInteractionType } from "../__types__/discord.js";
+import List from "../../src/buttonEvents/Effects/List";
+import Use from "../../src/buttonEvents/Effects/Use";
+import AppLogger from "../../src/client/appLogger";
 
-describe("execute", () => {
-    describe("GIVEN action in custom id is list", () => {
-        const interaction = {
-            customId: "effects list",
-        } as unknown as ButtonInteraction;
+jest.mock("../../src/client/appLogger");
+jest.mock("../../src/buttonEvents/Effects/List");
+jest.mock("../../src/buttonEvents/Effects/Use");
 
-        let listSpy: jest.SpyInstance;
+let interaction: ButtonInteractionType;
 
-        beforeAll(async () => {
-            const effects = new Effects();
+beforeEach(() => {
+    jest.resetAllMocks();
 
-            listSpy = jest.spyOn(effects as unknown as {"List": () => object}, "List")
-                .mockImplementation();
-
-            await effects.execute(interaction);
-        });
-
-        test("EXPECT list function to be called", () => {
-            expect(listSpy).toHaveBeenCalledTimes(1);
-            expect(listSpy).toHaveBeenCalledWith(interaction);
-        });
-    });
+    interaction = GenerateButtonInteractionMock();
+    interaction.customId = "effects";
 });
 
-describe("List", () => {
-    let interaction: ButtonInteraction;
+test("GIVEN action is list, EXPECT list function to be called", async () => {
+    // Arrange
+    interaction.customId = "effects list";
 
-    const embed = {
-        name: "Embed",
-    };
+    // Act
+    const effects = new Effects();
+    await effects.execute(interaction as unknown as ButtonInteraction);
 
-    const row = {
-        name: "Row",
-    };
+    // Assert
+    expect(List).toHaveBeenCalledTimes(1);
+    expect(List).toHaveBeenCalledWith(interaction);
 
-    beforeEach(() => {
-        interaction = {
-            customId: "effects list",
-            user: {
-                id: "userId",
-            },
-            update: jest.fn(),
-            reply: jest.fn(),
-        } as unknown as ButtonInteraction;
-    });
+    expect(Use.Execute).not.toHaveBeenCalled();
+});
 
-    describe("GIVEN page is a valid number", () => {
-        beforeEach(async () => {
-            interaction.customId += " 1";
+test("GIVEN action is use, EXPECT use function to be called", async () => {
+    // Arrange
+    interaction.customId = "effects use";
 
-            EffectHelper.GenerateEffectEmbed = jest.fn()
-                .mockResolvedValue({
-                    embed,
-                    row,
-                });
+    // Act
+    const effects = new Effects();
+    await effects.execute(interaction as unknown as ButtonInteraction);
 
-            const effects = new Effects();
+    // Assert
+    expect(Use.Execute).toHaveBeenCalledTimes(1);
+    expect(Use.Execute).toHaveBeenCalledWith(interaction);
 
-            await effects.execute(interaction);
-        });
+    expect(List).not.toHaveBeenCalled();
+});
 
-        test("EXPECT EffectHelper.GenerateEffectEmbed to be called", () => {
-            expect(EffectHelper.GenerateEffectEmbed).toHaveBeenCalledTimes(1);
-            expect(EffectHelper.GenerateEffectEmbed).toHaveBeenCalledWith("userId", 1);
-        });
+test("GIVEN action is invalid, EXPECT nothing to be called", async () => {
+    // Arrange
+    interaction.customId = "effects invalid";
 
-        test("EXPECT interaction to be updated", () => {
-            expect(interaction.update).toHaveBeenCalledTimes(1);
-            expect(interaction.update).toHaveBeenCalledWith({
-                embeds: [ embed ],
-                components: [ row ],
-            });
-        });
-    });
+    // Act
+    const effects = new Effects();
+    await effects.execute(interaction as unknown as ButtonInteraction);
 
-    describe("GIVEN page in custom id is not supplied", () => {
-        beforeEach(async () => {
-            EffectHelper.GenerateEffectEmbed = jest.fn()
-                .mockResolvedValue({
-                    embed,
-                    row,
-                });
+    // Assert
+    expect(List).not.toHaveBeenCalled();
+    expect(Use.Execute).not.toHaveBeenCalled();
 
-            const effects = new Effects();
-
-            await effects.execute(interaction);
-        });
-
-        test("EXPECT interaction to be replied with error", () => {
-            expect(interaction.reply).toHaveBeenCalledTimes(1);
-            expect(interaction.reply).toHaveBeenCalledWith("Page option is not a valid number");
-        });
-
-        test("EXPECT interaction to not be updated", () => {
-            expect(interaction.update).not.toHaveBeenCalled();
-        });
-    });
-
-    describe("GIVEN page in custom id is not a number", () => {
-        beforeEach(async () => {
-            interaction.customId += " test";
-
-            EffectHelper.GenerateEffectEmbed = jest.fn()
-                .mockResolvedValue({
-                    embed,
-                    row,
-                });
-
-            const effects = new Effects();
-
-            await effects.execute(interaction);
-        });
-
-        test("EXPECT interaction to be replied with error", () => {
-            expect(interaction.reply).toHaveBeenCalledTimes(1);
-            expect(interaction.reply).toHaveBeenCalledWith("Page option is not a valid number");
-        });
-
-        test("EXPECT interaction to not be updated", () => {
-            expect(interaction.update).not.toHaveBeenCalled();
-        });
-    });
+    expect(AppLogger.LogError).toHaveBeenCalledTimes(1);
+    expect(AppLogger.LogError).toHaveBeenCalledWith("Buttons/Effects", "Unknown action, invalid");
 });
