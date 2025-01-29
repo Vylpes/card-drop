@@ -24,7 +24,10 @@ describe("GenerateEffectEmbed", () => {
     });
 
     test("GIVEN user has more than 1 page of effects, EXPECT pagination enabled", async () => {
-        const effects: any[] = [];
+        const effects: {
+            Name: string,
+            Unused: number,
+        }[] = [];
 
         for (let i = 0; i < 15; i++) {
             effects.push({
@@ -47,7 +50,10 @@ describe("GenerateEffectEmbed", () => {
     });
 
     test("GIVEN user is on a page other than 1, EXPECT pagination enabled", async () => {
-        const effects: any[] = [];
+        const effects: {
+            Name: string,
+            Unused: number,
+        }[] = [];
 
         for (let i = 0; i < 15; i++) {
             effects.push({
