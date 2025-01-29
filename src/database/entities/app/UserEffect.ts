@@ -71,4 +71,16 @@ export default class UserEffect extends AppBaseEntity {
 
         return query;
     }
+
+    public static async FetchActiveEffectByUserId(userId: string): Promise<UserEffect | null> {
+        const repository = AppDataSource.getRepository(UserEffect);
+
+        const query = await repository.createQueryBuilder("effect")
+            .where("effect.UserId = :userId", { userId })
+            .where("effect.WhenExpires IS NOT NULL")
+                .andWhere("effect.WhenExpires > :now", { now: new Date() })
+            .getOne();
+
+        return query;
+    }
 }

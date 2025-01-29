@@ -73,6 +73,7 @@ export default class EffectHelper {
         const itemsPerPage = 10;
 
         const query = await UserEffect.FetchAllByUserIdPaginated(userId, page - 1, itemsPerPage);
+        const activeEffect = await UserEffect.FetchActiveEffectByUserId(userId);
 
         const effects = query[0];
         const count = query[1];
@@ -90,6 +91,15 @@ export default class EffectHelper {
             .setDescription(description)
             .setColor(EmbedColours.Ok)
             .setFooter({ text: `Page ${page} of ${totalPages}` });
+
+        if (activeEffect) {
+            embed.addFields([
+                {
+                    name: "Active",
+                    value: `${EffectDetails.get(activeEffect.Name)?.friendlyName} (Exp. <t:${Math.round(activeEffect.WhenExpires!.getTime() / 1000)}>)`,
+                }
+            ]);
+        }
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(

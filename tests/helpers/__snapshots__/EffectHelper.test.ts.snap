@@ -1,5 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`GenerateEffectEmbed GIVEN there is an active effect, EXPECT field added 1`] = `
+{
+  "embed": {
+    "color": 3166394,
+    "description": "Unclaimed Chance Up x1",
+    "fields": [
+      {
+        "name": "Active",
+        "value": "Unclaimed Chance Up (Exp. <t:1738174>)",
+      },
+    ],
+    "footer": {
+      "icon_url": undefined,
+      "text": "Page 1 of 1",
+    },
+    "title": "Effects",
+  },
+  "row": {
+    "components": [
+      {
+        "custom_id": "effects list 0",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Previous",
+        "style": 1,
+        "type": 2,
+      },
+      {
+        "custom_id": "effects list 2",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Next",
+        "style": 1,
+        "type": 2,
+      },
+    ],
+    "type": 1,
+  },
+}
+`;
+
 exports[`GenerateEffectEmbed GIVEN user does NOT have an effect, EXPECT empty embed to be returned 1`] = `
 {
   "embed": {

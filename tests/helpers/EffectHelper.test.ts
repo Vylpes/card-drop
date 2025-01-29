@@ -14,7 +14,7 @@ describe("GenerateEffectEmbed", () => {
                 }
             ],
             1,
-        ])
+        ]);
 
         // Act
         const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
@@ -37,7 +37,7 @@ describe("GenerateEffectEmbed", () => {
         (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
             effects,
             15,
-        ])
+        ]);
 
         // Act
         const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
@@ -60,7 +60,7 @@ describe("GenerateEffectEmbed", () => {
         (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
             effects,
             15,
-        ])
+        ]);
 
         // Act
         const result = await EffectHelper.GenerateEffectEmbed("userId", 2);
@@ -74,7 +74,31 @@ describe("GenerateEffectEmbed", () => {
         (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
             [],
             0,
-        ])
+        ]);
+
+        // Act
+        const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+
+        // Assert
+        expect(result).toMatchSnapshot();
+    });
+
+    test("GIVEN there is an active effect, EXPECT field added", async () => {
+        // Arrange
+        (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
+            [
+                {
+                    Name: "unclaimed",
+                    Unused: 1,
+                }
+            ],
+            1,
+        ]);
+
+        (UserEffect.FetchActiveEffectByUserId as jest.Mock).mockResolvedValue({
+            Name: "unclaimed",
+            WhenExpires: new Date(1738174052),
+        });
 
         // Act
         const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
