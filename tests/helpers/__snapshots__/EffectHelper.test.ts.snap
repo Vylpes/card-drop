@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GenerateEffectEmbed GIVEN user does NOT have an effect, EXPECT empty embed to be returned 1`] = `
+{
+  "embed": {
+    "color": 3166394,
+    "description": "*none*",
+    "footer": {
+      "icon_url": undefined,
+      "text": "Page 1 of 1",
+    },
+    "title": "Effects",
+  },
+  "row": {
+    "components": [
+      {
+        "custom_id": "effects list 0",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Previous",
+        "style": 1,
+        "type": 2,
+      },
+      {
+        "custom_id": "effects list 2",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Next",
+        "style": 1,
+        "type": 2,
+      },
+    ],
+    "type": 1,
+  },
+}
+`;
+
+exports[`GenerateEffectEmbed GIVEN user has an effect, EXPECT detailed embed to be returned 1`] = `
+{
+  "embed": {
+    "color": 3166394,
+    "description": "Unclaimed Chance Up x1",
+    "footer": {
+      "icon_url": undefined,
+      "text": "Page 1 of 1",
+    },
+    "title": "Effects",
+  },
+  "row": {
+    "components": [
+      {
+        "custom_id": "effects list 0",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Previous",
+        "style": 1,
+        "type": 2,
+      },
+      {
+        "custom_id": "effects list 2",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Next",
+        "style": 1,
+        "type": 2,
+      },
+    ],
+    "type": 1,
+  },
+}
+`;
+
+exports[`GenerateEffectEmbed GIVEN user has more than 1 page of effects, EXPECT pagination enabled 1`] = `
+{
+  "embed": {
+    "color": 3166394,
+    "description": "Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1",
+    "footer": {
+      "icon_url": undefined,
+      "text": "Page 1 of 2",
+    },
+    "title": "Effects",
+  },
+  "row": {
+    "components": [
+      {
+        "custom_id": "effects list 0",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Previous",
+        "style": 1,
+        "type": 2,
+      },
+      {
+        "custom_id": "effects list 2",
+        "disabled": false,
+        "emoji": undefined,
+        "label": "Next",
+        "style": 1,
+        "type": 2,
+      },
+    ],
+    "type": 1,
+  },
+}
+`;
+
+exports[`GenerateEffectEmbed GIVEN user is on a page other than 1, EXPECT pagination enabled 1`] = `
+{
+  "embed": {
+    "color": 3166394,
+    "description": "Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1
+Unclaimed Chance Up x1",
+    "footer": {
+      "icon_url": undefined,
+      "text": "Page 2 of 2",
+    },
+    "title": "Effects",
+  },
+  "row": {
+    "components": [
+      {
+        "custom_id": "effects list 1",
+        "disabled": false,
+        "emoji": undefined,
+        "label": "Previous",
+        "style": 1,
+        "type": 2,
+      },
+      {
+        "custom_id": "effects list 3",
+        "disabled": true,
+        "emoji": undefined,
+        "label": "Next",
+        "style": 1,
+        "type": 2,
+      },
+    ],
+    "type": 1,
+  },
+}
+`;

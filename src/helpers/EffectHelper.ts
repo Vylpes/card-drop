@@ -82,7 +82,7 @@ export default class EffectHelper {
         let description = "*none*";
 
         if (effects.length > 0) {
-            description = effects.map(x => `${x.Name} x${x.Unused}`).join("\n");
+            description = effects.map(x => `${EffectDetails.get(x.Name)?.friendlyName} x${x.Unused}`).join("\n");
         }
 
         const embed = new EmbedBuilder()
