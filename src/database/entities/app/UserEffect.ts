@@ -63,7 +63,7 @@ export default class UserEffect extends AppBaseEntity {
 
         const query = await repository.createQueryBuilder("effect")
             .where("effect.UserId = :userId", { userId })
-            .where("effect.Unused > 0")
+            .andWhere("effect.Unused > 0")
             .orderBy("effect.Name", "ASC")
             .skip(page * itemsPerPage)
             .take(itemsPerPage)
@@ -77,8 +77,8 @@ export default class UserEffect extends AppBaseEntity {
 
         const query = await repository.createQueryBuilder("effect")
             .where("effect.UserId = :userId", { userId })
-            .where("effect.WhenExpires IS NOT NULL")
-                .andWhere("effect.WhenExpires > :now", { now: new Date() })
+            .andWhere("effect.WhenExpires IS NOT NULL")
+            .andWhere("effect.WhenExpires > :now", { now: new Date() })
             .getOne();
 
         return query;
