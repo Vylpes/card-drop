@@ -15,3 +15,10 @@ export type ButtonInteraction = {
     } | null,
     customId: string,
 }
+
+export type CommandInteraction = {
+    isChatInputCommand: jest.Func,
+    options: {
+        getSubcommand: jest.Func,
+    },
+}

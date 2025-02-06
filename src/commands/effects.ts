@@ -1,10 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
-import EffectHelper from "../helpers/EffectHelper";
-import { EffectDetails } from "../constants/EffectDetails";
-import TimeLengthInput from "../helpers/TimeLengthInput";
-import EmbedColours from "../constants/EmbedColours";
+import { EffectChoices } from "../constants/EffectDetails";
 import AppLogger from "../client/appLogger";
+import List from "./effects/List";
+import Use from "./effects/Use";
+import Buy from "./effects/Buy";
 
 export default class Effects extends Command {
     constructor() {
@@ -27,9 +27,19 @@ export default class Effects extends Command {
                     .setName("id")
                     .setDescription("The effect id to use")
                     .setRequired(true)
-                    .setChoices([
-                        { name: "Unclaimed Chance Up", value: "unclaimed" },
-                    ])));
+                    .setChoices(EffectChoices)))
+            .addSubcommand(x => x
+                .setName("buy")
+                .setDescription("Buy more effects")
+                .addStringOption(y => y
+                    .setName("id")
+                    .setDescription("The effect id to buy")
+                    .setRequired(true)
+                    .setChoices(EffectChoices))
+                .addNumberOption(y => y
+                    .setName("quantity")
+                    .setDescription("The amount to buy")
+                    .setMinValue(1)));
     }
 
     public override async execute(interaction: CommandInteraction) {
@@ -39,80 +49,16 @@ export default class Effects extends Command {
 
         switch (subcommand) {
             case "list":
-                await this.List(interaction);
+                await List(interaction);
                 break;
             case "use":
-                await this.Use(interaction);
+                await Use(interaction);
                 break;
+            case "buy":
+                await Buy(interaction);
+                break;
+            default:
+                AppLogger.LogError("Commands/Effects", `Invalid subcommand: ${subcommand}`);
         }
-    }
-
-    private async List(interaction: CommandInteraction) {
-        const pageOption = interaction.options.get("page");
-
-        const page = !isNaN(Number(pageOption?.value)) ? Number(pageOption?.value) : 1;
-
-        const result = await EffectHelper.GenerateEffectEmbed(interaction.user.id, page);
-
-        await interaction.reply({
-            embeds: [ result.embed ],
-            components: [ result.row ],
-        });
-    }
-
-    private async Use(interaction: CommandInteraction) {
-        const id = interaction.options.get("id", true).value!.toString();
-
-        const effectDetail = EffectDetails.get(id);
-
-        if (!effectDetail) {
-            AppLogger.LogWarn("Commands/Effects", `Unable to find effect details for ${id}`);
-
-            await interaction.reply("Unable to find effect!");
-            return;
-        }
-
-        const canUseEffect = await EffectHelper.CanUseEffect(interaction.user.id, id);
-
-        if (!canUseEffect) {
-            await interaction.reply("Unable to use effect! Please make sure you have it in your inventory and is not on cooldown");
-            return;
-        }
-
-        const timeLengthInput = TimeLengthInput.ConvertFromMilliseconds(effectDetail.duration);
-
-        const embed = new EmbedBuilder()
-            .setTitle("Effect Confirmation")
-            .setDescription("Would you like to use this effect?")
-            .setColor(EmbedColours.Ok)
-            .addFields([
-                {
-                    name: "Effect",
-                    value: effectDetail.friendlyName,
-                    inline: true,
-                },
-                {
-                    name: "Length",
-                    value: timeLengthInput.GetLengthShort(),
-                    inline: true,
-                },
-            ]);
-
-        const row = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents([
-                new ButtonBuilder()
-                    .setLabel("Confirm")
-                    .setCustomId(`effects use confirm ${effectDetail.id}`)
-                    .setStyle(ButtonStyle.Primary),
-                new ButtonBuilder()
-                    .setLabel("Cancel")
-                    .setCustomId(`effects use cancel ${effectDetail.id}`)
-                    .setStyle(ButtonStyle.Danger),
-            ]);
-
-        await interaction.reply({
-            embeds: [ embed ],
-            components: [ row ],
-        });
     }
 }
