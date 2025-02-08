@@ -6,7 +6,7 @@ export default async function List(interaction: CommandInteraction) {
 
     const page = !isNaN(Number(pageOption?.value)) ? Number(pageOption?.value) : 1;
 
-    const result = await EffectHelper.GenerateEffectEmbed(interaction.user.id, page);
+    const result = await EffectHelper.GenerateEffectListEmbed(interaction.user.id, page);
 
     await interaction.reply({
         embeds: [ result.embed ],

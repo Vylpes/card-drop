@@ -2,6 +2,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "disc
 import UserEffect from "../database/entities/app/UserEffect";
 import EmbedColours from "../constants/EmbedColours";
 import { EffectDetails } from "../constants/EffectDetails";
+import User from "../database/entities/app/User";
+import CardConstants from "../constants/CardConstants";
+import AppLogger from "../client/appLogger";
 
 export default class EffectHelper {
     public static async AddEffectToUserInventory(userId: string, name: string, quantity: number = 1) {
@@ -66,7 +69,7 @@ export default class EffectHelper {
         return true;
     }
 
-    public static async GenerateEffectEmbed(userId: string, page: number): Promise<{
+    public static async GenerateEffectListEmbed(userId: string, page: number): Promise<{
         embed: EmbedBuilder,
         row: ActionRowBuilder<ButtonBuilder>,
     }> {
@@ -125,5 +128,67 @@ export default class EffectHelper {
             embed,
             row,
         };
+    }
+
+    public static async GenerateEffectBuyEmbed(userId: string, id: string, quantity: number, disabled: boolean): Promise<{
+        embed: EmbedBuilder,
+        row: ActionRowBuilder<ButtonBuilder>,
+    } | string> {
+        const effectDetail = EffectDetails.get(id);
+
+        if (!effectDetail) {
+            return "Effect detail not found!";
+        }
+
+        const totalCost = effectDetail.cost * quantity;
+
+        let user = await User.FetchOneById(User, userId);
+
+        if (!user) {
+            user = new User(userId, CardConstants.StartingCurrency);
+            await user.Save(User, user);
+
+            AppLogger.LogInfo("EffectHelper", `Created initial user entity for : ${userId}`);
+        }
+
+        if (user.Currency < totalCost) {
+            return `You don't have enough currency to buy this! You have \`${user.Currency} Currency\` and need \`${totalCost} Currency\`!`;
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle("Buy Effect")
+            .setDescription(effectDetail.friendlyName)
+            .setColor(EmbedColours.Ok)
+            .addFields([
+                {
+                    name: "Cost",
+                    value: `${totalCost}`,
+                    inline: true,
+                },
+                {
+                    name: "Quantity",
+                    value: `${quantity}`,
+                    inline: true,
+                },
+            ]);
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents([
+                new ButtonBuilder()
+                    .setCustomId(`effects buy confirm ${id} ${quantity}`)
+                    .setLabel("Confirm")
+                    .setStyle(ButtonStyle.Success)
+                    .setDisabled(disabled),
+                new ButtonBuilder()
+                    .setCustomId(`effects buy cancel ${id} ${quantity}`)
+                    .setLabel("Cancel")
+                    .setStyle(ButtonStyle.Danger)
+                    .setDisabled(disabled),
+            ]);
+
+        return {
+            embed,
+            row,
+        }
     }
 }
