@@ -14,6 +14,8 @@ export type ButtonInteraction = {
         id: string,
     } | null,
     customId: string,
+    update: jest.Func,
+    reply: jest.Func,
 }
 
 export type CommandInteraction = {
