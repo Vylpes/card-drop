@@ -2,6 +2,8 @@ import {ButtonInteraction} from "discord.js";
 import AppLogger from "../../client/appLogger";
 import EffectHelper from "../../helpers/EffectHelper";
 import EmbedColours from "../../constants/EmbedColours";
+import User from "../../database/entities/app/User";
+import {EffectDetails} from "../../constants/EffectDetails";
 
 export default class Buy {
     public static async Execute(interaction: ButtonInteraction) {
@@ -27,6 +29,13 @@ export default class Buy {
             AppLogger.LogError("Buy Confirm", "Not enough parameters");
             return;
         }
+        
+        const effectDetail = EffectDetails.get(id);
+
+        if (!effectDetail) {
+            AppLogger.LogError("Buy Confirm", "Effect detail not found!");
+            return;
+        }
 
         const quantityNumber = Number(quantity);
         
@@ -34,6 +43,25 @@ export default class Buy {
             AppLogger.LogError("Buy Confirm", "Invalid number");
             return;
         }
+
+        const totalCost = effectDetail.cost * quantityNumber;
+
+        const user = await User.FetchOneById(User, interaction.user.id);
+
+        if (!user) {
+            AppLogger.LogError("Buy Confirm", "Unable to find user");
+            return;
+        }
+
+        if (user.Currency < totalCost) {
+            interaction.reply(`You don't have enough currency to buy this! You have \`${user.Currency} Currency\` and need \`${totalCost} Currency\`!`);
+            return;
+        }
+
+        user.RemoveCurrency(totalCost);
+        await user.Save(User, user);
+
+        await EffectHelper.AddEffectToUserInventory(interaction.user.id, id, quantityNumber);
 
         const generatedEmbed = await EffectHelper.GenerateEffectBuyEmbed(interaction.user.id, id, quantityNumber, true);
 

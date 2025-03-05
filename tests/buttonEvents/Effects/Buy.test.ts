@@ -244,6 +244,10 @@ describe("Confirm", () => {
         expect(interaction.update).not.toHaveBeenCalled();
     });
 
+    test.todo("GIVEN user is not found, EXPECT error");
+
+    test.todo("GIVEN user does not have enough currency, EXPECT error");
+
     test("GIVEN GenerateEffectBuyEmbed returns with a string, EXPECT error replied", async () => {
         // Assert
         interaction.customId += " id 1";
