@@ -151,21 +151,6 @@ describe("Confirm", () => {
     });
 
     test("GIVEN id is not supplied, EXPECT error", async () => {
-        // Assert
-        const embed = {
-            id: "embed",
-            setColor: jest.fn(),
-            setFooter: jest.fn(),
-        };
-        const row = {
-            id: "row",
-        };
-        
-        (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue({
-            embed,
-            row,
-        });
-
         // Act
         await Buy.Execute(interaction as unknown as ButtonInteraction);
 
@@ -181,20 +166,6 @@ describe("Confirm", () => {
     test("GIVEN quantity is not supplied, EXPECT error", async () => {
         // Assert
         interaction.customId += " unclaimed";
-
-        const embed = {
-            id: "embed",
-            setColor: jest.fn(),
-            setFooter: jest.fn(),
-        };
-        const row = {
-            id: "row",
-        };
-        
-        (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue({
-            embed,
-            row,
-        });
 
         // Act
         await Buy.Execute(interaction as unknown as ButtonInteraction);
@@ -212,20 +183,6 @@ describe("Confirm", () => {
         // Assert
         interaction.customId += " unclaimed invalid";
 
-        const embed = {
-            id: "embed",
-            setColor: jest.fn(),
-            setFooter: jest.fn(),
-        };
-        const row = {
-            id: "row",
-        };
-        
-        (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue({
-            embed,
-            row,
-        });
-
         // Act
         await Buy.Execute(interaction as unknown as ButtonInteraction);
 
@@ -241,20 +198,6 @@ describe("Confirm", () => {
     test("GIVEN quantity is 0, EXPECT error", async () => {
         // Assert
         interaction.customId += " unclaimed 0";
-
-        const embed = {
-            id: "embed",
-            setColor: jest.fn(),
-            setFooter: jest.fn(),
-        };
-        const row = {
-            id: "row",
-        };
-        
-        (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue({
-            embed,
-            row,
-        });
 
         // Act
         await Buy.Execute(interaction as unknown as ButtonInteraction);
