@@ -80,5 +80,41 @@ export default class Buy {
     }
 
     private static async Cancel(interaction: ButtonInteraction) {
+        const id = interaction.customId.split(" ")[3];
+        const quantity = interaction.customId.split(" ")[4];
+
+        if (!id || !quantity) {
+            AppLogger.LogError("Buy Cancel", "Not enough parameters");
+            return;
+        }
+        
+        const effectDetail = EffectDetails.get(id);
+
+        if (!effectDetail) {
+            AppLogger.LogError("Buy Cancel", "Effect detail not found!");
+            return;
+        }
+
+        const quantityNumber = Number(quantity);
+        
+        if (!quantityNumber || quantityNumber < 1) {
+            AppLogger.LogError("Buy Cancel", "Invalid number");
+            return;
+        }
+
+        const generatedEmbed = await EffectHelper.GenerateEffectBuyEmbed(interaction.user.id, id, quantityNumber, true);
+
+        if (typeof generatedEmbed == "string") {
+            await interaction.reply(generatedEmbed);
+            return;
+        }
+
+        generatedEmbed.embed.setColor(EmbedColours.Error);
+        generatedEmbed.embed.setFooter({ text: "Cancelled" });
+
+        await interaction.update({
+            embeds: [ generatedEmbed.embed ],
+            components: [ generatedEmbed.row ],
+        });
     }
 }
