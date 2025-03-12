@@ -326,3 +326,129 @@ describe("Confirm", () => {
         expect(AppLogger.LogError).not.toHaveBeenCalled();
     });
 });
+
+describe("Cancel", () => {
+    beforeEach(() => {
+        interaction.customId += " cancel";
+    });
+
+    test("EXPECT embed generated", async () => {
+        // Assert
+        interaction.customId += " unclaimed 1";
+
+        const embed = {
+            id: "embed",
+            setColor: jest.fn(),
+            setFooter: jest.fn(),
+        };
+        const row = {
+            id: "row",
+        };
+        
+        (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue({
+            embed,
+            row,
+        });
+
+        // Act
+        await Buy.Execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(interaction.update).toHaveBeenCalledTimes(1);
+        expect(interaction.update).toHaveBeenCalledWith({
+            embeds: [ embed ],
+            components: [ row ],
+        });
+
+        expect(EffectHelper.GenerateEffectBuyEmbed).toHaveBeenCalledTimes(1);
+        expect(EffectHelper.GenerateEffectBuyEmbed).toHaveBeenCalledWith("userId", "unclaimed", 1, true);
+
+        expect(embed.setColor).toHaveBeenCalledTimes(1);
+        expect(embed.setColor).toHaveBeenCalledWith(EmbedColours.Error);
+
+        expect(embed.setFooter).toHaveBeenCalledTimes(1);
+        expect(embed.setFooter).toHaveBeenCalledWith({ text: "Cancelled" });
+
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(AppLogger.LogError).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN id is not supplied, EXPECT error", async () => {
+        // Act
+        await Buy.Execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(AppLogger.LogError).toHaveBeenCalledTimes(1);
+        expect(AppLogger.LogError).toHaveBeenCalledWith("Buy Cancel", "Not enough parameters");
+
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(interaction.update).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN quantity is not supplied, EXPECT error", async () => {
+        // Assert
+        interaction.customId += " unclaimed";
+
+        // Act
+        await Buy.Execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(AppLogger.LogError).toHaveBeenCalledTimes(1);
+        expect(AppLogger.LogError).toHaveBeenCalledWith("Buy Cancel", "Not enough parameters");
+
+        expect(EffectHelper.GenerateEffectBuyEmbed).not.toHaveBeenCalled();
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(interaction.update).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN quantity is not a number, EXPECT error", async () => {
+        // Assert
+        interaction.customId += " unclaimed invalid";
+
+        // Act
+        await Buy.Execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(AppLogger.LogError).toHaveBeenCalledTimes(1);
+        expect(AppLogger.LogError).toHaveBeenCalledWith("Buy Cancel", "Invalid number");
+
+        expect(EffectHelper.GenerateEffectBuyEmbed).not.toHaveBeenCalled();
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(interaction.update).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN quantity is 0, EXPECT error", async () => {
+        // Assert
+        interaction.customId += " unclaimed 0";
+
+        // Act
+        await Buy.Execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(AppLogger.LogError).toHaveBeenCalledTimes(1);
+        expect(AppLogger.LogError).toHaveBeenCalledWith("Buy Cancel", "Invalid number");
+
+        expect(EffectHelper.GenerateEffectBuyEmbed).not.toHaveBeenCalled();
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(interaction.update).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN GenerateEffectBuyEmbed returns with a string, EXPECT error replied", async () => {
+        // Assert
+        interaction.customId += " unclaimed 1";
+        
+        (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue("Test error");
+
+        // Act
+        await Buy.Execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Test error");
+
+        expect(EffectHelper.GenerateEffectBuyEmbed).toHaveBeenCalledTimes(1);
+
+        expect(interaction.update).not.toHaveBeenCalled();
+        expect(AppLogger.LogError).not.toHaveBeenCalled();
+    });
+});
