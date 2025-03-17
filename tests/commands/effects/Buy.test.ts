@@ -1,6 +1,3 @@
-import Buy from "../../../src/commands/effects/Buy";
-import EffectHelper from "../../../src/helpers/EffectHelper";
-
 jest.mock("../../../src/helpers/EffectHelper");
 
 describe("Buy", () => {
