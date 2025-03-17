@@ -17,5 +17,7 @@ export default function GenerateButtonInteractionMock(): ButtonInteraction {
             id: "userId",
         },
         customId: "customId",
+        update: jest.fn(),
+        reply: jest.fn(),
     };
 }

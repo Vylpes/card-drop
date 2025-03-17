@@ -3,7 +3,7 @@ import UserEffect from "../../src/database/entities/app/UserEffect";
 
 jest.mock("../../src/database/entities/app/UserEffect");
 
-describe("GenerateEffectEmbed", () => {
+describe("GenerateEffectListEmbed", () => {
     test("GIVEN user has an effect, EXPECT detailed embed to be returned", async () => {
         // Arrange
         (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
@@ -17,7 +17,7 @@ describe("GenerateEffectEmbed", () => {
         ]);
 
         // Act
-        const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        const result = await EffectHelper.GenerateEffectListEmbed("userId", 1);
 
         // Assert
         expect(result).toMatchSnapshot();
@@ -43,7 +43,7 @@ describe("GenerateEffectEmbed", () => {
         ]);
 
         // Act
-        const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        const result = await EffectHelper.GenerateEffectListEmbed("userId", 1);
 
         // Assert
         expect(result).toMatchSnapshot();
@@ -69,7 +69,7 @@ describe("GenerateEffectEmbed", () => {
         ]);
 
         // Act
-        const result = await EffectHelper.GenerateEffectEmbed("userId", 2);
+        const result = await EffectHelper.GenerateEffectListEmbed("userId", 2);
 
         // Assert
         expect(result).toMatchSnapshot();
@@ -83,7 +83,7 @@ describe("GenerateEffectEmbed", () => {
         ]);
 
         // Act
-        const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        const result = await EffectHelper.GenerateEffectListEmbed("userId", 1);
 
         // Assert
         expect(result).toMatchSnapshot();
@@ -107,9 +107,21 @@ describe("GenerateEffectEmbed", () => {
         });
 
         // Act
-        const result = await EffectHelper.GenerateEffectEmbed("userId", 1);
+        const result = await EffectHelper.GenerateEffectListEmbed("userId", 1);
 
         // Assert
         expect(result).toMatchSnapshot();
     });
+});
+
+describe("GenerateEffectBuyEmbed", () => {
+    test.todo("GIVEN Effect Details are not found, EXPECT error");
+
+    test.todo("GIVEN user is not in database, EXPECT blank user created");
+
+    test.todo("GIVEN user does not have enough currency, EXPECT error");
+
+    test.todo("GIVEN user does have enough currency, EXPECT embed returned");
+
+    test.todo("GIVEN disabled boolean is true, EXPECT buttons to be disabled");
 });

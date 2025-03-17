@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EXPECT CommandBuilder to be defined 1`] = `
+{
+  "contexts": undefined,
+  "default_member_permissions": undefined,
+  "default_permission": undefined,
+  "description": "Effects",
+  "description_localizations": undefined,
+  "dm_permission": undefined,
+  "integration_types": undefined,
+  "name": "effects",
+  "name_localizations": undefined,
+  "nsfw": undefined,
+  "options": [
+    {
+      "description": "List all effects I have",
+      "description_localizations": undefined,
+      "name": "list",
+      "name_localizations": undefined,
+      "options": [
+        {
+          "autocomplete": undefined,
+          "choices": undefined,
+          "description": "The page number",
+          "description_localizations": undefined,
+          "max_value": undefined,
+          "min_value": 1,
+          "name": "page",
+          "name_localizations": undefined,
+          "required": false,
+          "type": 10,
+        },
+      ],
+      "type": 1,
+    },
+    {
+      "description": "Use an effect in your inventory",
+      "description_localizations": undefined,
+      "name": "use",
+      "name_localizations": undefined,
+      "options": [
+        {
+          "autocomplete": undefined,
+          "choices": [
+            {
+              "name": "Unclaimed Chance Up",
+              "name_localizations": undefined,
+              "value": "unclaimed",
+            },
+          ],
+          "description": "The effect id to use",
+          "description_localizations": undefined,
+          "max_length": undefined,
+          "min_length": undefined,
+          "name": "id",
+          "name_localizations": undefined,
+          "required": true,
+          "type": 3,
+        },
+      ],
+      "type": 1,
+    },
+    {
+      "description": "Buy more effects",
+      "description_localizations": undefined,
+      "name": "buy",
+      "name_localizations": undefined,
+      "options": [
+        {
+          "autocomplete": undefined,
+          "choices": [
+            {
+              "name": "Unclaimed Chance Up",
+              "name_localizations": undefined,
+              "value": "unclaimed",
+            },
+          ],
+          "description": "The effect id to buy",
+          "description_localizations": undefined,
+          "max_length": undefined,
+          "min_length": undefined,
+          "name": "id",
+          "name_localizations": undefined,
+          "required": true,
+          "type": 3,
+        },
+        {
+          "autocomplete": undefined,
+          "choices": undefined,
+          "description": "The amount to buy",
+          "description_localizations": undefined,
+          "max_value": undefined,
+          "min_value": 1,
+          "name": "quantity",
+          "name_localizations": undefined,
+          "required": false,
+          "type": 10,
+        },
+      ],
+      "type": 1,
+    },
+  ],
+  "type": 1,
+}
+`;

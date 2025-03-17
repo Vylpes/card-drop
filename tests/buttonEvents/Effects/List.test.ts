@@ -10,7 +10,7 @@ let interaction: ReturnType<typeof mock<ButtonInteraction>>;
 beforeEach(() => {
     jest.resetAllMocks();
 
-    (EffectHelper.GenerateEffectEmbed as jest.Mock).mockResolvedValue({
+    (EffectHelper.GenerateEffectListEmbed as jest.Mock).mockResolvedValue({
         embed: mock<EmbedBuilder>(),
         row: mock<ActionRowBuilder<ButtonBuilder>>(),
     });
@@ -31,7 +31,7 @@ test("GIVEN pageOption is NOT a number, EXPECT error", async () => {
     expect(interaction.reply).toHaveBeenCalledTimes(1);
     expect(interaction.reply).toHaveBeenCalledWith("Page option is not a valid number")
 
-    expect(EffectHelper.GenerateEffectEmbed).not.toHaveBeenCalled();
+    expect(EffectHelper.GenerateEffectListEmbed).not.toHaveBeenCalled();
     expect(interaction.update).not.toHaveBeenCalled();
 });
 
@@ -43,8 +43,8 @@ test("GIVEN pageOption is a number, EXPECT interaction updated", async () => {
     await List(interaction);
 
     // Assert
-    expect(EffectHelper.GenerateEffectEmbed).toHaveBeenCalledTimes(1);
-    expect(EffectHelper.GenerateEffectEmbed).toHaveBeenCalledWith("userId", 1);
+    expect(EffectHelper.GenerateEffectListEmbed).toHaveBeenCalledTimes(1);
+    expect(EffectHelper.GenerateEffectListEmbed).toHaveBeenCalledWith("userId", 1);
 
     expect(interaction.update).toHaveBeenCalledTimes(1);
 });

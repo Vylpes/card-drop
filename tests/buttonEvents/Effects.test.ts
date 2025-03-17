@@ -49,6 +49,8 @@ test("GIVEN action is use, EXPECT use function to be called", async () => {
     expect(List).not.toHaveBeenCalled();
 });
 
+test.todo("GIVEN action is buy, EXPECT buy function to be called");
+
 test("GIVEN action is invalid, EXPECT nothing to be called", async () => {
     // Arrange
     interaction.customId = "effects invalid";
