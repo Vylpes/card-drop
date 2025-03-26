@@ -11,7 +11,7 @@ export default async function List(interaction: ButtonInteraction) {
         return;
     }
 
-    const result = await EffectHelper.GenerateEffectEmbed(interaction.user.id, page);
+    const result = await EffectHelper.GenerateEffectListEmbed(interaction.user.id, page);
 
     await interaction.update({
         embeds: [ result.embed ],
