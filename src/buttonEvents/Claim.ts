@@ -23,10 +23,10 @@ export default class Claim extends ButtonEvent {
         const userId = interaction.user.id;
 
         const whenDropped = interaction.message.createdAt;
-        const lastClaimableDate = new Date(Date.now() - (1000 * 60 * 5)); // 5 minutes ago
+        const lastClaimableDate = new Date(Date.now() - (1000 * 60 * 2)); // 2 minutes ago
 
         if (whenDropped < lastClaimableDate) {
-            await interaction.channel.send(`${interaction.user}, Cards can only be claimed within 5 minutes of it being dropped!`);
+            await interaction.channel.send(`${interaction.user}, Cards can only be claimed within 2 minutes of it being dropped!`);
             return;
         }
 
