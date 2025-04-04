@@ -36,11 +36,6 @@ export default class Claim extends ButtonEvent {
 
         AppLogger.LogSilly("Button/Claim", `${user.Id} has ${user.Currency} currency`);
 
-        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
-            await interaction.channel.send(`${interaction.user}, Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
-            return;
-        }
-
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
@@ -52,8 +47,6 @@ export default class Claim extends ButtonEvent {
             await interaction.channel.send(`${interaction.user}, The latest dropped card can only be claimed by the user who dropped it!`);
             return;
         }
-
-        await user.Save(User, user);
 
         let inventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 

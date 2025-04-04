@@ -35,10 +35,12 @@ export default class Reroll extends ButtonEvent {
             AppLogger.LogInfo("Commands/Drop", `New user (${interaction.user.id}) saved to the database`);
         }
 
-        if (user.Currency < CardConstants.ClaimCost) {
+        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
             await interaction.reply(`Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
             return;
         }
+
+        await user.Save(User, user);
 
         const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
 
