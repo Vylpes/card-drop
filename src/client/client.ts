@@ -31,7 +31,6 @@ export class CoreClient extends Client {
     private _webhooks: Webhooks;
     private _timerHelper: TimerHelper;
 
-    public static ClaimId: string;
     public static Environment: Environment;
     public static AllowDrops: boolean;
     public static Cards: SeriesMetadata[];

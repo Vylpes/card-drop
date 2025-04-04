@@ -1,7 +1,6 @@
 import { ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import Inventory from "../database/entities/app/Inventory";
-import { CoreClient } from "../client/client";
 import { default as eClaim } from "../database/entities/app/Claim";
 import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
@@ -40,11 +39,6 @@ export default class Claim extends ButtonEvent {
 
         if (claimed) {
             await interaction.channel.send(`${interaction.user}, This card has already been claimed!`);
-            return;
-        }
-
-        if (claimId == CoreClient.ClaimId && userId != droppedBy) {
-            await interaction.channel.send(`${interaction.user}, The latest dropped card can only be claimed by the user who dropped it!`);
             return;
         }
 

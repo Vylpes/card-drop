@@ -81,7 +81,5 @@ export default class Droprarity extends Command {
             AppLogger.CatchError("Droprarity", e);
             await interaction.editReply("Unable to send next drop. Please try again, and report this if it keeps happening");
         }
-
-        CoreClient.ClaimId = claimId;
     }
 }

@@ -80,8 +80,6 @@ export default class Reroll extends ButtonEvent {
                 files: files,
                 components: [ row ],
             });
-
-            CoreClient.ClaimId = claimId;
         } catch (e) {
             AppLogger.LogError("Button/Reroll", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
 

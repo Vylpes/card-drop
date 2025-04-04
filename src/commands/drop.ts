@@ -88,8 +88,6 @@ export default class Drop extends Command {
                 components: [ row ],
             });
 
-            CoreClient.ClaimId = claimId;
-
         } catch (e) {
             AppLogger.LogError("Commands/Drop", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
 
