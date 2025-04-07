@@ -1,9 +1,8 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { DropResult } from "../../contracts/SeriesMetadata";
 import AppLogger from "../../client/appLogger";
-import { CardRarityToColour, CardRarityToString, GetSacrificeAmount } from "../../constants/CardRarity";
+import { CardRarityToColour, CardRarityToString } from "../../constants/CardRarity";
 import StringTools from "../StringTools";
-import CardConstants from "../../constants/CardConstants";
 
 export default class DropEmbedHelper {
     public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string, currency?: number): EmbedBuilder {

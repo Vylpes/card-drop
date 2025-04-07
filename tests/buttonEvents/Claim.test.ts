@@ -1,7 +1,6 @@
 import { ButtonInteraction, TextChannel } from "discord.js";
 import Claim from "../../src/buttonEvents/Claim";
 import { ButtonInteraction as ButtonInteractionType } from "../__types__/discord.js";
-import User from "../../src/database/entities/app/User";
 import GenerateButtonInteractionMock from "../__functions__/discord.js/GenerateButtonInteractionMock";
 
 jest.mock("../../src/client/appLogger");
