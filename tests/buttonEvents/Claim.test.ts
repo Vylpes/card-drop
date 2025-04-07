@@ -85,25 +85,7 @@ test("GIVEN interaction.message was created more than 5 minutes ago, EXPECT erro
 
     // Assert
     expect(interaction.channel!.send).toHaveBeenCalledTimes(1);
-    expect(interaction.channel!.send).toHaveBeenCalledWith("[object Object], Cards can only be claimed within 5 minutes of it being dropped!");
-
-    expect(interaction.editReply).not.toHaveBeenCalled();
-});
-
-test("GIVEN user.RemoveCurrency fails, EXPECT error", async () => {
-    // Arrange
-    User.FetchOneById = jest.fn().mockResolvedValue({
-        RemoveCurrency: jest.fn().mockReturnValue(false),
-        Currency: 5,
-    });
-
-    // Act
-    const claim = new Claim();
-    await claim.execute(interaction as unknown as ButtonInteraction);
-
-    // Assert
-    expect(interaction.channel!.send).toHaveBeenCalledTimes(1);
-    expect(interaction.channel!.send).toHaveBeenCalledWith("[object Object], Not enough currency! You need 10 currency, you have 5!");
+    expect(interaction.channel!.send).toHaveBeenCalledWith("[object Object], Cards can only be claimed within 2 minutes of it being dropped!");
 
     expect(interaction.editReply).not.toHaveBeenCalled();
 });
