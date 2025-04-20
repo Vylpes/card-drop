@@ -3,7 +3,8 @@ import path from "path";
 import AppLogger from "../client/appLogger";
 import {existsSync} from "fs";
 import Inventory from "../database/entities/app/Inventory";
-import Jimp from "jimp";
+import { Bitmap, Jimp } from "jimp";
+import axios from "axios";
 
 interface CardInput {
     id: string;
@@ -29,14 +30,24 @@ export default class ImageHelper {
 
             const filePath = path.join(process.env.DATA_DIR!, "cards", card.path);
 
-            const exists = existsSync(filePath);
+            let bitmap: Bitmap;
 
-            if (!exists) {
+            if (existsSync(filePath)) {
+                const data = await Jimp.read(filePath);
+
+                bitmap = data.bitmap;
+            } else if (card.path.startsWith("http://") || card.path.startsWith("https://")) {
+                const response = await axios.get(card.path, { responseType: "arraybuffer" });
+                const buffer = Buffer.from(response.data);
+                const data = await Jimp.fromBuffer(buffer);
+
+                bitmap = data.bitmap;
+            } else {
                 AppLogger.LogError("ImageHelper/GenerateCardImageGrid", `Failed to load image from path ${card.path}`);
                 continue;
             }
 
-            const imageData = await Jimp.read(filePath);
+            const imageData = Jimp.fromBitmap(bitmap);
 
             if (userId != null) {
                 const claimed = await Inventory.FetchOneByCardNumberAndUserId(userId, card.id);
@@ -46,7 +57,7 @@ export default class ImageHelper {
                 }
             }
 
-            const image = await loadImage(await imageData.getBufferAsync("image/png"));
+            const image = await loadImage(await imageData.getBuffer("image/png"));
 
             const x = i % gridWidth;
             const y = Math.floor(i / gridWidth);
