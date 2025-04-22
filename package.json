@@ -1,6 +1,6 @@
 {
   "name": "card-drop",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "main": "./dist/bot.js",
   "typings": "./dist",
   "scripts": {
@@ -30,6 +30,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/uuid": "^10.0.0",
+    "axios": "^1.8.4",
     "body-parser": "^1.20.2",
     "canvas": "^2.11.2",
     "clone-deep": "^4.0.1",
@@ -42,6 +43,7 @@
     "jest": "^29.0.0",
     "jest-mock-extended": "^3.0.0",
     "jimp": "^1.6.0",
+    "minimatch": "9.0.5",
     "mysql": "^2.18.1",
     "ts-jest": "^29.0.0",
     "typeorm": "0.3.20",

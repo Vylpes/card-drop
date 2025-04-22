@@ -1,4 +1,4 @@
-import { AttachmentBuilder, CacheType, CommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, CacheType, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
 import { readFileSync } from "fs";
 import Inventory from "../../database/entities/app/Inventory";
@@ -6,6 +6,7 @@ import { v4 } from "uuid";
 import { CoreClient } from "../../client/client";
 import path from "path";
 import DropEmbedHelper from "../../helpers/DropHelpers/DropEmbedHelper";
+import AppLogger from "../../client/appLogger";
 
 export default class Dropnumber extends Command {
     constructor() {
@@ -40,9 +41,10 @@ export default class Dropnumber extends Command {
             return;
         }
 
-        const series = CoreClient.Cards
-            .find(x => x.cards.includes(card))!;
+        const claimId = v4();
+        await interaction.deferReply();
 
+    try {
         const files = [];
         let imageFileName = "";
 
@@ -55,31 +57,24 @@ export default class Dropnumber extends Command {
             files.push(attachment);
         }
 
-        await interaction.deferReply();
+        const series = CoreClient.Cards
+            .find(x => x.cards.includes(card))!;
 
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
         const embed = DropEmbedHelper.GenerateDropEmbed({ card, series }, quantityClaimed, imageFileName);
 
-        const claimId = v4();
-
         const row = DropEmbedHelper.GenerateDropButtons({ card, series }, claimId, interaction.user.id);
 
-        try {
-            await interaction.editReply({
-                embeds: [ embed ],
-                files: files,
-                components: [ row ],
-            });
+        await interaction.editReply({
+            embeds: [ embed ],
+            files: files,
+            components: [ row ],
+        });
         } catch (e) {
-            console.error(e);
-
-            if (e instanceof DiscordAPIError) {
-                await interaction.editReply(`Unable to send next drop. Please try again, and report this if it keeps happening. Code: ${e.code}`);
-            } else {
-                await interaction.editReply("Unable to send next drop. Please try again, and report this if it keeps happening. Code: UNKNOWN");
-            }
+            AppLogger.CatchError("Dropnumber", e);
+            await interaction.editReply("Unable to send next drop. Please try again, and report this if it keeps happening");
         }
 
         CoreClient.ClaimId = claimId;
