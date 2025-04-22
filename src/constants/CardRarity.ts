@@ -9,6 +9,29 @@ export enum CardRarity {
     Legendary,
 }
 
+export const CardRarityChoices = [
+    {
+        name: "Bronze",
+        value: "bronze",
+    },
+    {
+        name: "Silver",
+        value: "silver",
+    },
+    {
+        name: "Gold",
+        value: "gold",
+    },
+    {
+        name: "Manga",
+        value: "manga",
+    },
+    {
+        name: "Legendary",
+        value: "legendary",
+    },
+];
+
 export function CardRarityToString(rarity: CardRarity): string {
     switch (rarity) {
     case CardRarity.Unknown:
