@@ -19,8 +19,13 @@ export type ButtonInteraction = {
 }
 
 export type CommandInteraction = {
+    deferReply: jest.Func,
+    editReply: jest.Func,
     isChatInputCommand: jest.Func,
     options: {
         getSubcommand: jest.Func,
+    },
+    user: {
+        id: string,
     },
 }
