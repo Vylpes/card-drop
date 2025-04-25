@@ -68,7 +68,7 @@ export default class ImageHelper {
 
                 ctx.drawImage(image, imageX, imageY);
             }
-            catch (e) {
+            catch {
                 // TODO: Enable once we've investigated a fix
                 //AppLogger.CatchError("ImageHelper", e);
             }
