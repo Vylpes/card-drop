@@ -27,7 +27,7 @@ describe("execute", () => {
     describe("GIVEN user is in the database", () => {
         let interaction: CommandInteractionMock;
         let user: User;
-        let randomCard = {
+        const randomCard = {
             card: {
                 id: "cardId",
                 path: "https://google.com/",

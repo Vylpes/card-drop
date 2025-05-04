@@ -4,7 +4,6 @@ import { CardRarity, CardRarityChoices, CardRarityParse } from "../../constants/
 import { readFileSync } from "fs";
 import Inventory from "../../database/entities/app/Inventory";
 import { v4 } from "uuid";
-import { CoreClient } from "../../client/client";
 import path from "path";
 import GetCardsHelper from "../../helpers/DropHelpers/GetCardsHelper";
 import DropEmbedHelper from "../../helpers/DropHelpers/DropEmbedHelper";
@@ -42,7 +41,7 @@ export default class Droprarity extends Command {
             return;
         }
 
-        const card = await GetCardsHelper.GetRandomCardByRarity(rarityType);
+        const card = GetCardsHelper.GetRandomCardByRarity(rarityType);
 
         if (!card) {
             await interaction.reply("Card not found");
