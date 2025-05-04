@@ -9,12 +9,15 @@ import GetCardsHelper from "../../src/helpers/DropHelpers/GetCardsHelper";
 import Inventory from "../../src/database/entities/app/Inventory";
 import DropEmbedHelper from "../../src/helpers/DropHelpers/DropEmbedHelper";
 import CardConstants from "../../src/constants/CardConstants";
+import * as uuid from "uuid";
 
 jest.mock("../../src/database/entities/app/Config");
 jest.mock("../../src/database/entities/app/User");
 jest.mock("../../src/helpers/DropHelpers/GetCardsHelper");
 jest.mock("../../src/database/entities/app/Inventory");
 jest.mock("../../src/helpers/DropHelpers/DropEmbedHelper");
+
+jest.mock("uuid");
 
 beforeEach(() => {
     (Config.GetValue as jest.Mock).mockResolvedValue("false");
@@ -24,6 +27,12 @@ describe("execute", () => {
     describe("GIVEN user is in the database", () => {
         let interaction: CommandInteractionMock;
         let user: User;
+        let randomCard = {
+            card: {
+                id: "cardId",
+                path: "https://google.com/",
+            }
+        };
 
         beforeAll(async () => {
             // Arrange
@@ -32,26 +41,25 @@ describe("execute", () => {
             interaction = GenerateCommandInteractionMock();
 
             user = {
+                Currency: 500,
                 RemoveCurrency: jest.fn().mockReturnValue(true),
                 Save: jest.fn(),
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);
-            (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue({
-                card: {
-                    path: "https://google.com/",
-                }
-            });
+            (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue(randomCard);
             (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({
                 Quantity: 1,
             });
-            (DropEmbedHelper.GenerateDropEmbed as jest.Mock).mockResolvedValue({
+            (DropEmbedHelper.GenerateDropEmbed as jest.Mock).mockReturnValue({
                 type: "Embed",
             });
-            (DropEmbedHelper.GenerateDropButtons as jest.Mock).mockResolvedValue({
+            (DropEmbedHelper.GenerateDropButtons as jest.Mock).mockReturnValue({
                 type: "Button",
             });
-            
+
+            (uuid.v4 as jest.Mock).mockReturnValue("uuid");
+
             // Act
             const drop = new Drop();
             await drop.execute(interaction as unknown as CommandInteraction);
@@ -67,19 +75,43 @@ describe("execute", () => {
             expect(user.RemoveCurrency).toHaveBeenCalledWith(CardConstants.ClaimCost);
         });
 
-        test.todo("EXPECT user to be saved");
+        test("EXPECT user to be saved", () => {
+            expect(user.Save).toHaveBeenCalledTimes(1);
+            expect(user.Save).toHaveBeenCalledWith(User, user);
+        });
 
-        test.todo("EXPECT random card to be fetched");
+        test("EXPECT random card to be fetched", () => {
+            expect(GetCardsHelper.FetchCard).toHaveBeenCalledTimes(1);
+            expect(GetCardsHelper.FetchCard).toHaveBeenCalledWith("userId");
+        });
 
-        test.todo("EXPECT interaction to be deferred");
+        test("EXPECT interaction to be deferred", () => {
+            expect(interaction.deferReply).toHaveBeenCalledTimes(1);
+        });
 
-        test.todo("EXPECT Inventory.FetchOneByCardNumberAndUserId to be called");
+        test("EXPECT Inventory.FetchOneByCardNumberAndUserId to be called", () => {
+            expect(Inventory.FetchOneByCardNumberAndUserId).toHaveBeenCalledTimes(1);
+            expect(Inventory.FetchOneByCardNumberAndUserId).toHaveBeenCalledWith("userId", "cardId");
+        });
 
-        test.todo("EXPECT DropEmbedHelper.GenerateDropEmbed to be called");
+        test("EXPECT DropEmbedHelper.GenerateDropEmbed to be called", () => {
+            expect(DropEmbedHelper.GenerateDropEmbed).toHaveBeenCalledTimes(1);
+            expect(DropEmbedHelper.GenerateDropEmbed).toHaveBeenCalledWith(randomCard, 1, "", undefined, 500);
+        });
 
-        test.todo("EXPECT DropEmbedHelper.GenerateDropButtons to be called");
+        test("EXPECT DropEmbedHelper.GenerateDropButtons to be called", () => {
+            expect(DropEmbedHelper.GenerateDropButtons).toHaveBeenCalledTimes(1);
+            expect(DropEmbedHelper.GenerateDropButtons).toHaveBeenCalledWith(randomCard, "uuid", "userId");
+        });
 
-        test.todo("EXPECT interaction to be edited");
+        test("EXPECT interaction to be edited", () => {
+            expect(interaction.editReply).toHaveBeenCalledTimes(1);
+            expect(interaction.editReply).toHaveBeenCalledWith({
+                embeds: [ { type: "Embed" } ],
+                files: [],
+                components: [ { type: "Button" } ],
+            });
+        });
 
         describe("AND randomCard path is not a url", () => {
             test.todo("EXPECT image read from file system");
