@@ -3,7 +3,6 @@ import { DropResult } from "../../contracts/SeriesMetadata";
 import AppLogger from "../../client/appLogger";
 import { CardRarityToColour, CardRarityToString } from "../../constants/CardRarity";
 import StringTools from "../StringTools";
-import CardConstants from "../../constants/CardConstants";
 
 export default class DropEmbedHelper {
     public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string, currency?: number): EmbedBuilder {
@@ -74,12 +73,16 @@ export default class DropEmbedHelper {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(`claim ${drop.card.id} ${claimId} ${userId}`)
-                    .setLabel(`Claim (${CardConstants.ClaimCost} 🪙)`)
-                    .setStyle(ButtonStyle.Primary)
+                    .setLabel("Claim")
+                    .setStyle(ButtonStyle.Success)
                     .setDisabled(disabled),
                 new ButtonBuilder()
+                    .setCustomId(`sacrifice confirm ${userId} ${drop.card.id} 1`)
+                    .setLabel(`Sacrifice`)
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
                     .setCustomId("reroll")
-                    .setLabel("Reroll")
-                    .setStyle(ButtonStyle.Secondary));
+                    .setEmoji("🔁")
+                    .setStyle(ButtonStyle.Primary),);
     }
 }

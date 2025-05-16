@@ -43,10 +43,12 @@ export default class Drop extends Command {
             AppLogger.LogInfo("Commands/Drop", `New user (${interaction.user.id}) saved to the database`);
         }
 
-        if (user.Currency < CardConstants.ClaimCost) {
+        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
             await interaction.reply(ErrorMessages.NotEnoughCurrency(CardConstants.ClaimCost, user.Currency));
             return;
         }
+
+        await user.Save(User, user);
 
         const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
 
@@ -85,8 +87,6 @@ export default class Drop extends Command {
                 files: files,
                 components: [ row ],
             });
-
-            CoreClient.ClaimId = claimId;
 
         } catch (e) {
             AppLogger.LogError("Commands/Drop", `Error sending next drop for card ${randomCard.card.id}: ${e}`);

@@ -1,7 +1,6 @@
 import { ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import Inventory from "../database/entities/app/Inventory";
-import { CoreClient } from "../client/client";
 import { default as eClaim } from "../database/entities/app/Claim";
 import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
@@ -23,10 +22,10 @@ export default class Claim extends ButtonEvent {
         const userId = interaction.user.id;
 
         const whenDropped = interaction.message.createdAt;
-        const lastClaimableDate = new Date(Date.now() - (1000 * 60 * 5)); // 5 minutes ago
+        const lastClaimableDate = new Date(Date.now() - (1000 * 60 * 2)); // 2 minutes ago
 
         if (whenDropped < lastClaimableDate) {
-            await interaction.channel.send(`${interaction.user}, Cards can only be claimed within 5 minutes of it being dropped!`);
+            await interaction.channel.send(`${interaction.user}, Cards can only be claimed within 2 minutes of it being dropped!`);
             return;
         }
 
@@ -36,24 +35,12 @@ export default class Claim extends ButtonEvent {
 
         AppLogger.LogSilly("Button/Claim", `${user.Id} has ${user.Currency} currency`);
 
-        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
-            await interaction.channel.send(`${interaction.user}, Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
-            return;
-        }
-
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
             await interaction.channel.send(`${interaction.user}, This card has already been claimed!`);
             return;
         }
-
-        if (claimId == CoreClient.ClaimId && userId != droppedBy) {
-            await interaction.channel.send(`${interaction.user}, The latest dropped card can only be claimed by the user who dropped it!`);
-            return;
-        }
-
-        await user.Save(User, user);
 
         let inventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 

@@ -76,7 +76,5 @@ export default class Dropnumber extends Command {
             AppLogger.CatchError("Dropnumber", e);
             await interaction.editReply("Unable to send next drop. Please try again, and report this if it keeps happening");
         }
-
-        CoreClient.ClaimId = claimId;
     }
 }
