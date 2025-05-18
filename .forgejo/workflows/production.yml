@@ -23,7 +23,7 @@ jobs:
     - run: yarn lint
 
     - name: "Copy files over to location"
-      run: cp -r . ${{ secrets.PROD_REPO_PATH }}
+      run: rsync -rvzP . ${{ secrets.PROD_REPO_PATH }}
 
   deploy:
     environment: prod

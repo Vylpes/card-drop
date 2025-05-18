@@ -1,12 +1,12 @@
 import { ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import Inventory from "../database/entities/app/Inventory";
-import { CoreClient } from "../client/client";
 import { default as eClaim } from "../database/entities/app/Claim";
 import AppLogger from "../client/appLogger";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
+import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Claim extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -22,10 +22,10 @@ export default class Claim extends ButtonEvent {
         const userId = interaction.user.id;
 
         const whenDropped = interaction.message.createdAt;
-        const lastClaimableDate = new Date(Date.now() - (1000 * 60 * 5)); // 5 minutes ago
+        const lastClaimableDate = new Date(Date.now() - (1000 * 60 * 2)); // 2 minutes ago
 
         if (whenDropped < lastClaimableDate) {
-            await interaction.channel.send(`${interaction.user}, Cards can only be claimed within 5 minutes of it being dropped!`);
+            await interaction.channel.send(`${interaction.user}, Cards can only be claimed within 2 minutes of it being dropped!`);
             return;
         }
 
@@ -35,24 +35,12 @@ export default class Claim extends ButtonEvent {
 
         AppLogger.LogSilly("Button/Claim", `${user.Id} has ${user.Currency} currency`);
 
-        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
-            await interaction.channel.send(`${interaction.user}, Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
-            return;
-        }
-
         const claimed = await eClaim.FetchOneByClaimId(claimId);
 
         if (claimed) {
             await interaction.channel.send(`${interaction.user}, This card has already been claimed!`);
             return;
         }
-
-        if (claimId == CoreClient.ClaimId && userId != droppedBy) {
-            await interaction.channel.send(`${interaction.user}, The latest dropped card can only be claimed by the user who dropped it!`);
-            return;
-        }
-
-        await user.Save(User, user);
 
         let inventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
@@ -69,16 +57,18 @@ export default class Claim extends ButtonEvent {
 
         await claim.Save(eClaim, claim);
 
-        const card = CardDropHelperMetadata.GetCardByCardNumber(cardNumber);
+        const card = GetCardsHelper.GetCardByCardNumber(cardNumber);
 
         if (!card) {
+            AppLogger.LogError("Button/Claim", `Unable to find card, ${cardNumber}`);
+
             return;
         }
 
         const imageFileName = card.card.path.split("/").pop()!;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username, user.Currency);
-        const row = CardDropHelperMetadata.GenerateDropButtons(card, claimId, interaction.user.id, true);
+        const embed = DropEmbedHelper.GenerateDropEmbed(card, inventory.Quantity, imageFileName, interaction.user.username, user.Currency);
+        const row = DropEmbedHelper.GenerateDropButtons(card, claimId, interaction.user.id, true);
 
         await interaction.editReply({
             embeds: [ embed ],

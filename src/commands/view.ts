@@ -34,7 +34,7 @@ export default class View extends Command {
         await interaction.editReply({
             embeds: [ searchResult.embed ],
             components: [ searchResult.row ],
-            files: [ searchResult.attachment ],
+            files: searchResult.attachments,
         });
     }
 }

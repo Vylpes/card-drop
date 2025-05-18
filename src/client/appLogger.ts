@@ -86,4 +86,12 @@ export default class AppLogger {
     public static LogSilly(label: string, message: string) {
         AppLogger.Logger.silly({ label, message });
     }
+
+    public static CatchError(label: string, error: unknown) {
+        if (error instanceof Error) {
+            AppLogger.Logger.error({ label, message: error.message });
+        } else {
+            AppLogger.Logger.error({ label, message: error });
+        }
+    }
 }

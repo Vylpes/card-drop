@@ -60,13 +60,18 @@ export default class Series extends Command {
             return;
         }
 
-        const embed = await SeriesHelper.GenerateSeriesViewPage(series.id, 0, interaction.user.id);
+        try {
+            const embed = await SeriesHelper.GenerateSeriesViewPage(series.id, 0, interaction.user.id);
 
-        await interaction.followUp({
-            embeds: [ embed!.embed ],
-            components: [ embed!.row ],
-            files: [ embed!.image ],
-        });
+            await interaction.followUp({
+                embeds: [ embed!.embed ],
+                components: [ embed!.row ],
+                files: [ embed!.image ],
+            });
+        } catch (e) {
+            await interaction.followUp("An error has occured generating the series grid.");
+            AppLogger.CatchError("Series", e);
+        }
     }
 
     private async ListSeries(interaction: CommandInteraction) {

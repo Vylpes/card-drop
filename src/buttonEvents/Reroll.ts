@@ -5,11 +5,12 @@ import { v4 } from "uuid";
 import { CoreClient } from "../client/client";
 import Inventory from "../database/entities/app/Inventory";
 import Config from "../database/entities/app/Config";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import path from "path";
 import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
+import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -34,12 +35,14 @@ export default class Reroll extends ButtonEvent {
             AppLogger.LogInfo("Commands/Drop", `New user (${interaction.user.id}) saved to the database`);
         }
 
-        if (user.Currency < CardConstants.ClaimCost) {
+        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
             await interaction.reply(`Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
             return;
         }
 
-        const randomCard = CardDropHelperMetadata.GetRandomCard();
+        await user.Save(User, user);
+
+        const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
 
         if (!randomCard) {
             await interaction.reply("Unable to fetch card, please try again.");
@@ -51,27 +54,32 @@ export default class Reroll extends ButtonEvent {
         try {
             AppLogger.LogVerbose("Button/Reroll", `Sending next drop: ${randomCard.card.id} (${randomCard.card.name})`);
 
-            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
-            const imageFileName = randomCard.card.path.split("/").pop()!;
+            const files = [];
+            let imageFileName = "";
 
-            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+            if (!(randomCard.card.path.startsWith("http://") || randomCard.card.path.startsWith("https://"))) {
+                const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
+                imageFileName = randomCard.card.path.split("/").pop()!;
+
+                const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+                files.push(attachment);
+            }
 
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
+            const embed = DropEmbedHelper.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
 
             const claimId = v4();
 
-            const row = CardDropHelperMetadata.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+            const row = DropEmbedHelper.GenerateDropButtons(randomCard, claimId, interaction.user.id);
 
             await interaction.editReply({
                 embeds: [ embed ],
-                files: [ attachment ],
+                files: files,
                 components: [ row ],
             });
-
-            CoreClient.ClaimId = claimId;
         } catch (e) {
             AppLogger.LogError("Button/Reroll", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
 

@@ -4,8 +4,8 @@ import { CoreClient } from "../client/client";
 import { readFileSync } from "fs";
 import path from "path";
 import Inventory from "../database/entities/app/Inventory";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import AppLogger from "../client/appLogger";
+import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Id extends Command {
     constructor() {
@@ -43,31 +43,29 @@ export default class Id extends Command {
         const series = CoreClient.Cards
             .find(x => x.cards.includes(card))!;
 
-        let image: Buffer;
-        const imageFileName = card.path.split("/").pop()!;
+        const files = [];
+        let imageFileName = "";
 
-        try {
-            image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.path));
-        } catch {
-            AppLogger.LogError("Commands/View", `Unable to fetch image for card ${card.id}.`);
+        if (!(card.path.startsWith("http://") || card.path.startsWith("https://"))) {
+            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", card.path));
+            imageFileName = card.path.split("/").pop()!;
 
-            await interaction.reply(`Unable to fetch image for card ${card.id}.`);
-            return;
+            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+            files.push(attachment);
         }
 
         await interaction.deferReply();
 
-        const attachment = new AttachmentBuilder(image, { name: imageFileName });
-
         const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, card.id);
         const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-        const embed = CardDropHelperMetadata.GenerateDropEmbed({ card, series }, quantityClaimed, imageFileName);
+        const embed = DropEmbedHelper.GenerateDropEmbed({ card, series }, quantityClaimed, imageFileName);
 
         try {
             await interaction.editReply({
                 embeds: [ embed ],
-                files: [ attachment ],
+                files: files,
             });
         } catch (e) {
             AppLogger.LogError("Commands/View", `Error sending view for card ${card.id}: ${e}`);

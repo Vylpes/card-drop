@@ -5,12 +5,13 @@ import { CoreClient } from "../client/client";
 import { v4 } from "uuid";
 import Inventory from "../database/entities/app/Inventory";
 import Config from "../database/entities/app/Config";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import path from "path";
 import AppLogger from "../client/appLogger";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
 import ErrorMessages from "../constants/ErrorMessages";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
+import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
 
 export default class Drop extends Command {
     constructor() {
@@ -42,12 +43,14 @@ export default class Drop extends Command {
             AppLogger.LogInfo("Commands/Drop", `New user (${interaction.user.id}) saved to the database`);
         }
 
-        if (user.Currency < CardConstants.ClaimCost) {
+        if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
             await interaction.reply(ErrorMessages.NotEnoughCurrency(CardConstants.ClaimCost, user.Currency));
             return;
         }
 
-        const randomCard = CardDropHelperMetadata.GetRandomCard();
+        await user.Save(User, user);
+
+        const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
 
         if (!randomCard) {
             AppLogger.LogWarn("Commands/Drop", ErrorMessages.UnableToFetchCard);
@@ -58,27 +61,32 @@ export default class Drop extends Command {
         await interaction.deferReply();
 
         try {
-            const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
-            const imageFileName = randomCard.card.path.split("/").pop()!;
+            const files = [];
+            let imageFileName = "";
 
-            const attachment = new AttachmentBuilder(image, { name: imageFileName });
+            if (!(randomCard.card.path.startsWith("http://") || randomCard.card.path.startsWith("https://"))) {
+                const image = readFileSync(path.join(process.env.DATA_DIR!, "cards", randomCard.card.path));
+                imageFileName = randomCard.card.path.split("/").pop()!;
+
+                const attachment = new AttachmentBuilder(image, { name: imageFileName });
+
+                files.push(attachment);
+            }
 
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = CardDropHelperMetadata.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
+            const embed = DropEmbedHelper.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
 
             const claimId = v4();
 
-            const row = CardDropHelperMetadata.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+            const row = DropEmbedHelper.GenerateDropButtons(randomCard, claimId, interaction.user.id);
 
             await interaction.editReply({
                 embeds: [ embed ],
-                files: [ attachment ],
+                files: files,
                 components: [ row ],
             });
-
-            CoreClient.ClaimId = claimId;
 
         } catch (e) {
             AppLogger.LogError("Commands/Drop", `Error sending next drop for card ${randomCard.card.id}: ${e}`);

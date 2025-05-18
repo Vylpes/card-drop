@@ -3,7 +3,8 @@ import path from "path";
 import AppLogger from "../client/appLogger";
 import {existsSync} from "fs";
 import Inventory from "../database/entities/app/Inventory";
-import {Jimp} from "jimp";
+import { Bitmap, Jimp } from "jimp";
+import axios from "axios";
 
 interface CardInput {
     id: string;
@@ -25,36 +26,52 @@ export default class ImageHelper {
         const ctx = canvas.getContext("2d");
 
         for (let i = 0; i < cards.length; i++) {
-            const card = cards[i];
+            try {
+                const card = cards[i];
 
-            const filePath = path.join(process.env.DATA_DIR!, "cards", card.path);
+                const filePath = path.join(process.env.DATA_DIR!, "cards", card.path);
 
-            const exists = existsSync(filePath);
+                let bitmap: Bitmap;
 
-            if (!exists) {
-                AppLogger.LogError("ImageHelper/GenerateCardImageGrid", `Failed to load image from path ${card.path}`);
-                continue;
-            }
+                if (existsSync(filePath)) {
+                    const data = await Jimp.read(filePath);
 
-            const imageData = await Jimp.read(filePath);
+                    bitmap = data.bitmap;
+                } else if (card.path.startsWith("http://") || card.path.startsWith("https://")) {
+                    const response = await axios.get(card.path, { responseType: "arraybuffer" });
+                    const buffer = Buffer.from(response.data);
+                    const data = await Jimp.fromBuffer(buffer);
 
-            if (userId != null) {
-                const claimed = await Inventory.FetchOneByCardNumberAndUserId(userId, card.id);
-
-                if (!claimed || claimed.Quantity == 0) {
-                    imageData.greyscale();
+                    bitmap = data.bitmap;
+                } else {
+                    AppLogger.LogError("ImageHelper/GenerateCardImageGrid", `Failed to load image from path ${card.path}`);
+                    continue;
                 }
+
+                const imageData = Jimp.fromBitmap(bitmap);
+
+                if (userId != null) {
+                    const claimed = await Inventory.FetchOneByCardNumberAndUserId(userId, card.id);
+
+                    if (!claimed || claimed.Quantity == 0) {
+                        imageData.greyscale();
+                    }
+                }
+
+                const image = await loadImage(await imageData.getBuffer("image/png"));
+
+                const x = i % gridWidth;
+                const y = Math.floor(i / gridWidth);
+
+                const imageX = imageWidth * x;
+                const imageY = imageHeight * y;
+
+                ctx.drawImage(image, imageX, imageY);
             }
-
-            const image = await loadImage(await imageData.getBuffer("image/png"));
-
-            const x = i % gridWidth;
-            const y = Math.floor(i / gridWidth);
-
-            const imageX = imageWidth * x;
-            const imageY = imageHeight * y;
-
-            ctx.drawImage(image, imageX, imageY);
+            catch {
+                // TODO: Enable once we've investigated a fix
+                //AppLogger.CatchError("ImageHelper", e);
+            }
         }
 
         return canvas.toBuffer();

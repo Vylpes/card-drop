@@ -1,7 +1,6 @@
 import { AttachmentBuilder, ButtonInteraction, EmbedBuilder } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppLogger from "../client/appLogger";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import Inventory from "../database/entities/app/Inventory";
 import EmbedColours from "../constants/EmbedColours";
 import { readFileSync } from "fs";
@@ -9,6 +8,8 @@ import path from "path";
 import ErrorMessages from "../constants/ErrorMessages";
 import User from "../database/entities/app/User";
 import { GetSacrificeAmount } from "../constants/CardRarity";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
+import MultidropEmbedHelper from "../helpers/DropHelpers/MultidropEmbedHelper";
 
 export default class Multidrop extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -37,7 +38,7 @@ export default class Multidrop extends ButtonEvent {
             return;
         }
 
-        const card = CardDropHelperMetadata.GetCardByCardNumber(cardNumber);
+        const card = GetCardsHelper.GetCardByCardNumber(cardNumber);
 
         if (!card) {
             await interaction.reply("Unable to find card.");
@@ -85,7 +86,7 @@ export default class Multidrop extends ButtonEvent {
         }
 
         // Drop next card
-        const randomCard = CardDropHelperMetadata.GetRandomCard();
+        const randomCard = GetCardsHelper.GetRandomCard();
         cardsRemaining -= 1;
 
         if (!randomCard) {
@@ -105,9 +106,9 @@ export default class Multidrop extends ButtonEvent {
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = CardDropHelperMetadata.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
+            const embed = MultidropEmbedHelper.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
 
-            const row = CardDropHelperMetadata.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id, cardsRemaining < 0);
+            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id, cardsRemaining < 0);
 
             await interaction.editReply({
                 embeds: [ embed ],
@@ -131,7 +132,7 @@ export default class Multidrop extends ButtonEvent {
             return;
         }
 
-        const card = CardDropHelperMetadata.GetCardByCardNumber(cardNumber);
+        const card = GetCardsHelper.GetCardByCardNumber(cardNumber);
 
         if (!card) {
             await interaction.reply("Unable to find card.");
@@ -175,7 +176,7 @@ export default class Multidrop extends ButtonEvent {
         }
 
         // Drop next card
-        const randomCard = CardDropHelperMetadata.GetRandomCard();
+        const randomCard = GetCardsHelper.GetRandomCard();
         cardsRemaining -= 1;
 
         if (!randomCard) {
@@ -195,9 +196,9 @@ export default class Multidrop extends ButtonEvent {
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = CardDropHelperMetadata.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
+            const embed = MultidropEmbedHelper.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
 
-            const row = CardDropHelperMetadata.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id, cardsRemaining < 0);
+            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id, cardsRemaining < 0);
 
             await interaction.editReply({
                 embeds: [ embed ],

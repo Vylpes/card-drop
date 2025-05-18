@@ -1,10 +1,10 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import Inventory from "../database/entities/app/Inventory";
-import CardDropHelperMetadata from "../helpers/CardDropHelperMetadata";
 import { CardRarityToString, GetSacrificeAmount } from "../constants/CardRarity";
 import EmbedColours from "../constants/EmbedColours";
 import User from "../database/entities/app/User";
+import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 
 export default class Sacrifice extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -42,7 +42,7 @@ export default class Sacrifice extends ButtonEvent {
             return;
         }
 
-        const cardData = CardDropHelperMetadata.GetCardByCardNumber(cardNumber);
+        const cardData = GetCardsHelper.GetCardByCardNumber(cardNumber);
 
         if (!cardData) {
             await interaction.reply("Unable to find card in the database.");
@@ -124,7 +124,7 @@ export default class Sacrifice extends ButtonEvent {
             return;
         }
 
-        const cardData = CardDropHelperMetadata.GetCardByCardNumber(cardNumber);
+        const cardData = GetCardsHelper.GetCardByCardNumber(cardNumber);
 
         if (!cardData) {
             await interaction.reply("Unable to find card in the database.");
