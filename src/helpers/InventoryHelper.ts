@@ -115,17 +115,48 @@ export default class InventoryHelper {
 
         let pageNum = 0;
 
+        const maxLength = 25; // Discord API limit
+
+        const allPageOptions = pages.map(x =>
+            new StringSelectMenuOptionBuilder()
+                .setLabel(`${x.name} (${x.seriesSubpage + 1})`.substring(0, 100))
+                .setDescription(`Page ${pageNum + 1}`)
+                .setDefault(currentPage.id == x.id)
+                .setValue(`${userid} ${pageNum++}`));
+
+        const currentPageIndex = allPageOptions.indexOf(allPageOptions.find(x => x.data.default)!);
+
+        let pageOptions: StringSelectMenuOptionBuilder[] = [];
+
+        if (allPageOptions.length <= maxLength) {
+            pageOptions = allPageOptions;
+        } else {
+            let startIndex = currentPageIndex - Math.floor((maxLength - 1) / 2);
+            let endIndexOffset = 0;
+
+            if (startIndex < 0) {
+                endIndexOffset = 0 - startIndex;
+
+                startIndex = 0;
+            }
+
+            let endIndex = currentPageIndex + Math.floor((maxLength - 1) / 2) + endIndexOffset;
+
+            if (endIndex + 1 > allPageOptions.length) {
+                endIndex = allPageOptions.length;
+            }
+
+            for (let i = startIndex; i < endIndex; i++) {
+                pageOptions.push(allPageOptions[i]);
+            }
+        }
+
         const row2 = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(
                 new StringSelectMenuBuilder()
                     .setCustomId("inventory")
                     .setPlaceholder(`${currentPage.name} (${currentPage.seriesSubpage + 1})`)
-                    .addOptions(...pages.map(x =>
-                        new StringSelectMenuOptionBuilder()
-                            .setLabel(`${x.name} (${x.seriesSubpage + 1})`.substring(0, 100))
-                            .setDescription(`Page ${pageNum + 1}`)
-                            .setDefault(currentPage.id == x.id)
-                            .setValue(`${userid} ${pageNum++}`))));
+                    .addOptions(pageOptions));
 
         const buffer = await ImageHelper.GenerateCardImageGrid(currentPage.cards.map(x => ({ id: x.id, path: x.path })));
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
