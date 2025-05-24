@@ -12,6 +12,7 @@ import CardConstants from "../constants/CardConstants";
 import ErrorMessages from "../constants/ErrorMessages";
 import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
+import {DropResult} from "../contracts/SeriesMetadata";
 
 export default class Drop extends Command {
     constructor() {
@@ -48,9 +49,16 @@ export default class Drop extends Command {
             return;
         }
 
-        await user.Save(User, user);
+        let randomCard: DropResult | undefined;
 
-        const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
+        try {
+            randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
+        } catch (e) {
+            AppLogger.CatchError("Commands/Drop", e);
+
+            await interaction.reply(ErrorMessages.UnableToFetchCard);
+        }
+
 
         if (!randomCard) {
             AppLogger.LogWarn("Commands/Drop", ErrorMessages.UnableToFetchCard);
@@ -81,6 +89,9 @@ export default class Drop extends Command {
             const claimId = v4();
 
             const row = DropEmbedHelper.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+
+            await user.Save(User, user);
+
 
             await interaction.editReply({
                 embeds: [ embed ],

@@ -11,6 +11,7 @@ import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
 import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
+import {DropResult} from "../contracts/SeriesMetadata";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -32,7 +33,7 @@ export default class Reroll extends ButtonEvent {
             user = new User(interaction.user.id, CardConstants.StartingCurrency);
             await user.Save(User, user);
 
-            AppLogger.LogInfo("Commands/Drop", `New user (${interaction.user.id}) saved to the database`);
+            AppLogger.LogInfo("Button/Reroll", `New user (${interaction.user.id}) saved to the database`);
         }
 
         if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
@@ -40,9 +41,15 @@ export default class Reroll extends ButtonEvent {
             return;
         }
 
-        await user.Save(User, user);
+        let randomCard: DropResult | undefined;
 
-        const randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
+        try {
+            randomCard = await GetCardsHelper.FetchCard(interaction.user.id);
+        } catch (e) {
+            AppLogger.CatchError("Button/Reroll", e);
+
+            await interaction.reply("Unable to fetch card, please try again.");
+        }
 
         if (!randomCard) {
             await interaction.reply("Unable to fetch card, please try again.");
@@ -74,6 +81,8 @@ export default class Reroll extends ButtonEvent {
             const claimId = v4();
 
             const row = DropEmbedHelper.GenerateDropButtons(randomCard, claimId, interaction.user.id);
+
+            await user.Save(User, user);
 
             await interaction.editReply({
                 embeds: [ embed ],

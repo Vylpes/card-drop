@@ -31,7 +31,7 @@ export default class GetUnclaimedCardsHelper {
     public static async GetRandomCardByRarityUnclaimed(rarity: CardRarity, userId: string): Promise<DropResult | undefined> {
         const claimedCards = await Inventory.FetchAllByUserId(userId);
 
-        if (!claimedCards) {
+        if (!claimedCards || claimedCards.length == 0) {
             // They don't have any cards, so safe to get any random card
             return GetCardsHelper.GetRandomCardByRarity(rarity);
         }
@@ -41,16 +41,27 @@ export default class GetUnclaimedCardsHelper {
             .filter(x => x.type == rarity)
             .filter(x => !claimedCards.find(y => y.CardNumber == x.id));
 
-        if (!allCards) return undefined;
+        if (!allCards) {
+            AppLogger.LogError("CardDropHelperMetadata/GetRandomCardByRarityUnclaimed", `No cards found to randomise from, User Id: ${userId}, rarity: ${rarity}`);
+
+            return undefined;
+        };
 
         const randomCardIndex = Math.floor(Math.random() * allCards.length);
 
         const card = allCards[randomCardIndex];
+
+        if (!card) {
+            AppLogger.LogError("CardDropHelperMetadata/GetRandomCardByRarityUnclaimed", `Card not found in index, ${randomCardIndex} of ${allCards.length}, User Id: ${userId}, rarity: ${rarity}`);
+
+            return undefined;
+        }
+
         const series = CoreClient.Cards
             .find(x => x.cards.includes(card));
 
         if (!series) {
-            AppLogger.LogWarn("CardDropHelperMetadata/GetRandomCardByRarityUnclaimed", `Series not found for card ${card.id}`);
+            AppLogger.LogError("CardDropHelperMetadata/GetRandomCardByRarityUnclaimed", `Series not found for card ${card.id}, User Id: ${userId}, rarity: ${rarity}`);
 
             return undefined;
         }
