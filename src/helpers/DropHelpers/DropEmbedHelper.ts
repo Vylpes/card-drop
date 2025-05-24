@@ -77,7 +77,7 @@ export default class DropEmbedHelper {
                     .setStyle(ButtonStyle.Success)
                     .setDisabled(disabled),
                 new ButtonBuilder()
-                    .setCustomId(`sacrifice confirm ${userId} ${drop.card.id} 1`)
+                    .setCustomId(`sacrifice give ${userId} ${drop.card.id} 1`)
                     .setLabel(`Sacrifice`)
                     .setStyle(ButtonStyle.Danger),
                 new ButtonBuilder()
