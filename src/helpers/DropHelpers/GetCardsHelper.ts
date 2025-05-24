@@ -55,7 +55,7 @@ export default class GetCardsHelper {
             .find(x => x.cards.includes(card));
 
         if (!series) {
-            AppLogger.LogWarn("CardDropHelperMetadata/GetRandomCardByRarity", `Series not found for card ${card.id}`);
+            AppLogger.LogError("CardDropHelperMetadata/GetRandomCardByRarity", `Series not found for card ${card.id}`);
 
             return undefined;
         }
