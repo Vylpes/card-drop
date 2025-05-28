@@ -39,12 +39,11 @@ export default class GetUnclaimedCardsHelper {
         const allCards = CoreClient.Cards
             .flatMap(x => x.cards)
             .filter(x => x.type == rarity)
-            .filter(x => !claimedCards.find(y => y.CardNumber == x.id));
+            .filter(x => !claimedCards.find(y => y.CardNumber == x.id && y.Quantity > 0));
 
-        if (!allCards) {
-            AppLogger.LogError("CardDropHelperMetadata/GetRandomCardByRarityUnclaimed", `No cards found to randomise from, User Id: ${userId}, rarity: ${rarity}`);
-
-            return undefined;
+        if (!allCards || allCards.length == 0) {
+            // There is no card left unclaimed, fallback to any card
+            return GetCardsHelper.GetRandomCardByRarity(rarity);
         };
 
         const randomCardIndex = Math.floor(Math.random() * allCards.length);
