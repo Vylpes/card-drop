@@ -151,7 +151,7 @@ export default class EffectHelper {
             AppLogger.LogInfo("EffectHelper", `Created initial user entity for : ${userId}`);
         }
 
-        if (user.Currency < totalCost) {
+        if (!disabled && user.Currency < totalCost) {
             return `You don't have enough currency to buy this! You have \`${user.Currency} Currency\` and need \`${totalCost} Currency\`!`;
         }
 
