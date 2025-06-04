@@ -82,7 +82,7 @@ describe("UseConfirm", () => {
         // Arrange
         interaction.customId += " unclaimed";
         interaction.user.id = "userId";
-        interaction.update.mockImplementation(async (opts: string | MessagePayload | InteractionUpdateOptions) => {
+        (interaction.update as jest.Mock).mockImplementation(async (opts: string | MessagePayload | InteractionUpdateOptions) => {
             updatedWith = opts;
 
             return mock<InteractionResponse<boolean>>();
@@ -133,7 +133,7 @@ describe("UseCancel", () => {
         // Arrange
         interaction.customId += " unclaimed";
         interaction.user.id = "userId";
-        interaction.update.mockImplementation(async (opts: string | MessagePayload | InteractionUpdateOptions) => {
+        (interaction.update as jest.Mock).mockImplementation(async (opts: string | MessagePayload | InteractionUpdateOptions) => {
             updatedWith = opts;
 
             return mock<InteractionResponse<boolean>>();
