@@ -1,7 +1,7 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import EffectHelper from "../../helpers/EffectHelper";
 
-export default async function Buy(interaction: CommandInteraction) {
+export default async function Buy(interaction: ChatInputCommandInteraction) {
     const id = interaction.options.get("id", true).value!;
     const quantity = interaction.options.get("quantity")?.value ?? 1;
 

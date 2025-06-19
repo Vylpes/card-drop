@@ -1,4 +1,4 @@
-import { AttachmentBuilder, CacheType, CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
 import { readFileSync } from "fs";
 import Inventory from "../../database/entities/app/Inventory";
@@ -22,9 +22,7 @@ export default class Dropnumber extends Command {
                     .setRequired(true));
     }
 
-    public override async execute(interaction: CommandInteraction<CacheType>) {
-        if (!interaction.isChatInputCommand()) return;
-
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const cardNumber = interaction.options.get("cardnumber");
 
         if (!cardNumber || !cardNumber.value) {

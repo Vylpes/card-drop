@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import AppLogger from "../client/appLogger";
 import CardSearchHelper from "../helpers/CardSearchHelper";
@@ -17,7 +17,7 @@ export default class View extends Command {
                     .setRequired(true));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const name = interaction.options.get("name", true);
 
         AppLogger.LogSilly("Commands/View", `Parameters: name=${name.value}`);

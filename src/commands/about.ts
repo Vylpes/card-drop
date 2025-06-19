@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
 
@@ -11,7 +11,7 @@ export default class About extends Command {
             .setDescription("About Bot");
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const fundingLink = process.env.ABOUT_FUNDING;
         const repoLink = process.env.ABOUT_REPO;
 

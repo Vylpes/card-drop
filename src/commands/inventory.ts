@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import InventoryHelper from "../helpers/InventoryHelper";
 import AppLogger from "../client/appLogger";
@@ -20,7 +20,7 @@ export default class Inventory extends Command {
                     .setDescription("The user to view (Defaults to yourself)"));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const page = interaction.options.get("page");
         const userOption = interaction.options.get("user");
 

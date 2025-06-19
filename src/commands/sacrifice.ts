@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import Inventory from "../database/entities/app/Inventory";
 import { CardRarityToString, GetSacrificeAmount } from "../constants/CardRarity";
@@ -23,7 +23,7 @@ export default class Sacrifice extends Command {
                     .setDescription("The amount to sacrifice (default 1)"));
     }
 
-    public override async execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+    public override async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const cardnumber = interaction.options.get("cardnumber", true);
         const quantityInput = interaction.options.get("quantity")?.value ?? 1;
 

@@ -18,7 +18,7 @@ export type ButtonInteraction = {
     reply: jest.Func,
 }
 
-export type CommandInteraction = {
+export type ChatInputCommandInteraction = {
     deferReply: jest.Func,
     editReply: jest.Func,
     isChatInputCommand: jest.Func,
