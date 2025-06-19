@@ -1,4 +1,4 @@
-import {CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder} from "discord.js";
+import {ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder} from "discord.js";
 import {Command} from "../type/command";
 import {CoreClient} from "../client/client";
 import {CardRarity} from "../constants/CardRarity";
@@ -14,7 +14,7 @@ export default class Stats extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const allCards = CoreClient.Cards.flatMap(x => x.cards);
 
         const totalCards = allCards.length;

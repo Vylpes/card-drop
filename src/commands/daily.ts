@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import User from "../database/entities/app/User";
 import CardConstants from "../constants/CardConstants";
@@ -13,7 +13,7 @@ export default class Daily extends Command {
             .setDescription("Gain bonus currency, once a day");
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const user = await User.FetchOneById(User, interaction.user.id) ?? new User(interaction.user.id, CardConstants.StartingCurrency);
 
         const dayAgo = new Date(Date.now() - (1000 * 60 * 60 * 24));

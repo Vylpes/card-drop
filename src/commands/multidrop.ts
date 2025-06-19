@@ -1,4 +1,4 @@
-import { AttachmentBuilder, CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { CoreClient } from "../client/client";
 import ErrorMessages from "../constants/ErrorMessages";
@@ -21,7 +21,7 @@ export default class Multidrop extends Command {
             .setDescription("Drop 11 cards for the price of 10!");
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!CoreClient.AllowDrops) {
             await interaction.reply(ErrorMessages.BotSyncing);
             return;

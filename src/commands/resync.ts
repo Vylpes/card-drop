@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import Config from "../database/entities/app/Config";
 import CardMetadataFunction from "../Functions/CardMetadataFunction";
@@ -14,7 +14,7 @@ export default class Resync extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
-    public override async execute(interaction: CommandInteraction<CacheType>) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         const whitelistedUsers = process.env.BOT_ADMINS!.split(",");

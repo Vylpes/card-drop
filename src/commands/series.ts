@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { CoreClient } from "../client/client";
 import AppLogger from "../client/appLogger";
@@ -26,9 +26,7 @@ export default class Series extends Command {
                     .setDescription("List all series")) as SlashCommandBuilder;
     }
 
-    public override async execute(interaction: CommandInteraction) {
-        if (!interaction.isChatInputCommand()) return;
-
+    public override async execute(interaction: ChatInputCommandInteraction) {
         switch (interaction.options.getSubcommand()) {
         case "view":
             await this.ViewSeries(interaction);
@@ -42,7 +40,7 @@ export default class Series extends Command {
         }
     }
 
-    private async ViewSeries(interaction: CommandInteraction) {
+    private async ViewSeries(interaction: ChatInputCommandInteraction) {
         const id = interaction.options.get("id");
 
         AppLogger.LogSilly("Commands/Series/View", `Parameters: id=${id?.value}`);
@@ -74,7 +72,7 @@ export default class Series extends Command {
         }
     }
 
-    private async ListSeries(interaction: CommandInteraction) {
+    private async ListSeries(interaction: ChatInputCommandInteraction) {
         const embed = SeriesHelper.GenerateSeriesListPage(0);
 
         await interaction.reply({ embeds: [ embed!.embed ], components: [ embed!.row ]});

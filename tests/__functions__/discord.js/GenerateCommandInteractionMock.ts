@@ -1,8 +1,8 @@
-import { CommandInteraction } from "../../__types__/discord.js";
+import { ChatInputCommandInteraction } from "../../__types__/discord.js";
 
 export default function GenerateCommandInteractionMock(options?: {
     subcommand?: string,
-}): CommandInteraction {
+}): ChatInputCommandInteraction{
     return {
         deferReply: jest.fn(),
         editReply: jest.fn(),

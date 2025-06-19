@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
 import User from "../database/entities/app/User";
@@ -13,7 +13,7 @@ export default class AllBalance extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const users = await User.FetchAll(User);
 
         const filteredUsers = users.filter(x => x.Currency > 0)

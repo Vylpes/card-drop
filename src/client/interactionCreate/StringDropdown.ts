@@ -4,8 +4,6 @@ import AppLogger from "../appLogger";
 
 export default class StringDropdown {
     public static async onStringDropdownSelected(interaction: StringSelectMenuInteraction) {
-        if (!interaction.isStringSelectMenu()) return;
-
         const item = CoreClient.stringDropdowns.find(x => x.DropdownId == interaction.customId.split(" ")[0]);
 
         if (!item) {

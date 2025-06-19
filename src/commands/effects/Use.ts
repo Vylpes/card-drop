@@ -1,11 +1,11 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { EffectDetails } from "../../constants/EffectDetails";
 import AppLogger from "../../client/appLogger";
 import EffectHelper from "../../helpers/EffectHelper";
 import TimeLengthInput from "../../helpers/TimeLengthInput";
 import EmbedColours from "../../constants/EmbedColours";
 
-export default async function Use(interaction: CommandInteraction) {
+export default async function Use(interaction: ChatInputCommandInteraction) {
     const id = interaction.options.get("id", true).value!.toString();
 
     const effectDetail = EffectDetails.get(id);

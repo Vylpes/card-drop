@@ -1,4 +1,4 @@
-import { AttachmentBuilder, CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { readFileSync } from "fs";
 import { CoreClient } from "../client/client";
@@ -23,7 +23,7 @@ export default class Drop extends Command {
             .setDescription("Summon a new card drop");
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!CoreClient.AllowDrops) {
             await interaction.reply(ErrorMessages.BotSyncing);
             return;
