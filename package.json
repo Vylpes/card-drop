@@ -1,6 +1,6 @@
 {
   "name": "card-drop",
-2 "version": "0.9.3",
+  "version": "0.9.3",
   "main": "./dist/bot.js",
   "typings": "./dist",
   "scripts": {
