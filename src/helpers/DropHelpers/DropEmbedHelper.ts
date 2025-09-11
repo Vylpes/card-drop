@@ -66,7 +66,7 @@ export default class DropEmbedHelper {
         return embed;
     }
 
-    public static GenerateDropButtons(drop: DropResult, claimId: string, userId: string, disabled: boolean = false): ActionRowBuilder<ButtonBuilder> {
+    public static GenerateDropButtons(drop: DropResult, claimId: string, userId: string, disabled: boolean = false, doSacrifice: boolean = true): ActionRowBuilder<ButtonBuilder> {
         AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropButtons", `Parameters: drop=${drop.card.id}, claimId=${claimId}, userId=${userId}`);
 
         return new ActionRowBuilder<ButtonBuilder>()
@@ -79,9 +79,10 @@ export default class DropEmbedHelper {
                 new ButtonBuilder()
                     .setCustomId(`sacrifice give ${userId} ${drop.card.id} 1`)
                     .setLabel(`Sacrifice`)
-                    .setStyle(ButtonStyle.Danger),
+                    .setStyle(ButtonStyle.Danger)
+                    .setDisabled(disabled),
                 new ButtonBuilder()
-                    .setCustomId("reroll")
+                    .setCustomId(`reroll ${drop.card.id} ${doSacrifice}`)
                     .setEmoji("🔁")
                     .setStyle(ButtonStyle.Primary),);
     }

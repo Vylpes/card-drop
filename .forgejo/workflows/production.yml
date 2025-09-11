@@ -2,8 +2,8 @@ name: Deploy To Production
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -43,7 +43,7 @@ jobs:
         DB_DATA_LOCATION: ${{ secrets.PROD_DB_DATA_LOCATION }}
         SERVER_PATH: ${{ secrets.PROD_SSH_SERVER_PATH }}
         BOT_TOKEN: ${{ secrets.PROD_BOT_TOKEN }}
-        BOT_VER: ${{ vars.PROD_BOT_VER }}
+        BOT_VER: ${{ github.REF_NAME }}
         BOT_AUTHOR: ${{ vars.PROD_BOT_AUTHOR }}
         BOT_OWNERID: ${{ vars.PROD_BOT_OWNERID }}
         BOT_CLIENTID: ${{ vars.PROD_BOT_CLIENTID }}

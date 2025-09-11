@@ -12,9 +12,18 @@ import CardConstants from "../constants/CardConstants";
 import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 import DropEmbedHelper from "../helpers/DropHelpers/DropEmbedHelper";
 import {DropResult} from "../contracts/SeriesMetadata";
+import {GetSacrificeAmount} from "../constants/CardRarity";
 
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
+        const cardId = interaction.customId.split(" ")[1];
+        const doSacrifice = interaction.customId.split(" ")[2] == "true";
+
+        if (!cardId) {
+            AppLogger.LogError("Button/Reroll", "cardId is undefined");
+            return;
+        }
+
         if (!CoreClient.AllowDrops) {
             await interaction.reply("Bot is currently syncing, please wait until its done.");
             return;
@@ -36,6 +45,26 @@ export default class Reroll extends ButtonEvent {
             AppLogger.LogInfo("Button/Reroll", `New user (${interaction.user.id}) saved to the database`);
         }
 
+        // Sacrifice current card
+        if (doSacrifice) {
+            const cardData = GetCardsHelper.GetCardByCardNumber(cardId);
+
+            if (!cardData) {
+                await interaction.reply("Unable to find card in the database.");
+                return;
+            }
+
+            const oldRow = DropEmbedHelper.GenerateDropButtons(cardData, "", interaction.user.id, true, false);
+
+            interaction.message.edit({
+                components: [ oldRow ],
+            });
+
+            const sacrificeAmount = GetSacrificeAmount(cardData.card.type);
+            user.AddCurrency(sacrificeAmount);
+        }
+
+        // Generate new card
         if (!user.RemoveCurrency(CardConstants.ClaimCost)) {
             await interaction.reply(`Not enough currency! You need ${CardConstants.ClaimCost} currency, you have ${user.Currency}!`);
             return;

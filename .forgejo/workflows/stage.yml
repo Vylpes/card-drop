@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - develop
+      - hotfix/*
+      - release/*
 
 jobs:
   build:
@@ -43,7 +45,7 @@ jobs:
         DB_DATA_LOCATION: ${{ secrets.STAGE_DB_DATA_LOCATION }}
         SERVER_PATH: ${{ secrets.STAGE_SSH_SERVER_PATH }}
         BOT_TOKEN: ${{ secrets.STAGE_BOT_TOKEN }}
-        BOT_VER: ${{ vars.STAGE_BOT_VER }}
+        BOT_VER: ${{ github.REF_NAME }}
         BOT_AUTHOR: ${{ vars.STAGE_BOT_AUTHOR }}
         BOT_OWNERID: ${{ vars.STAGE_BOT_OWNERID }}
         BOT_CLIENTID: ${{ vars.STAGE_BOT_CLIENTID }}
