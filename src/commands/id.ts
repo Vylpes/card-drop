@@ -1,4 +1,4 @@
-import { AttachmentBuilder, CommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, DiscordAPIError, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { CoreClient } from "../client/client";
 import { readFileSync } from "fs";
@@ -21,7 +21,7 @@ export default class Id extends Command {
                     .setRequired(true));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const cardNumber = interaction.options.get("cardnumber");
 
         AppLogger.LogSilly("Commands/View", `Parameters: cardNumber=${cardNumber?.value}`);

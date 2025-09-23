@@ -1,7 +1,7 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import EffectHelper from "../../helpers/EffectHelper";
 
-export default async function List(interaction: CommandInteraction) {
+export default async function List(interaction: ChatInputCommandInteraction) {
     const pageOption = interaction.options.get("page");
 
     const page = !isNaN(Number(pageOption?.value)) ? Number(pageOption?.value) : 1;

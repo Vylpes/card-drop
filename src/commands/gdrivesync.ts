@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction,  PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { ExecException, exec } from "child_process";
 import { CoreClient } from "../client/client";
@@ -16,9 +16,7 @@ export default class Gdrivesync extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
-    public override async execute(interaction: CommandInteraction<CacheType>) {
-        if (!interaction.isChatInputCommand()) return;
-
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const whitelistedUsers = process.env.BOT_ADMINS!.split(",");
 
         if (!whitelistedUsers.find(x => x == interaction.user.id)) {

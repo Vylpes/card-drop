@@ -1,12 +1,10 @@
-import { Interaction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import { CoreClient } from "../client";
 import ICommandItem from "../../contracts/ICommandItem";
 import AppLogger from "../appLogger";
 
 export default class ChatInputCommand {
-    public static async onChatInput(interaction: Interaction) {
-        if (!interaction.isChatInputCommand()) return;
-
+    public static async onChatInput(interaction: ChatInputCommandInteraction) {
         const item = CoreClient.commandItems.find(x => x.Name == interaction.commandName && !x.ServerId);
         const itemForServer = CoreClient.commandItems.find(x => x.Name == interaction.commandName && x.ServerId == interaction.guildId);
 

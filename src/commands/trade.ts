@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import Inventory from "../database/entities/app/Inventory";
 import { CoreClient } from "../client/client";
@@ -37,7 +37,7 @@ export default class Trade extends Command {
                     .setDescription("Amount to receive"));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const user = interaction.options.get("user", true).user!;
         const give = interaction.options.get("give", true);
         const receive = interaction.options.get("receive", true);
@@ -122,7 +122,7 @@ export default class Trade extends Command {
         await interaction.reply({ content: `${user}`, embeds: [ tradeEmbed ], components: [ row ] });
     }
 
-    private async autoDecline(interaction: CommandInteraction, user1Username: string, user2Username: string, user1CardNumber: string, user2CardNumber: string, user1CardName: string, user2CardName: string, user1Quantity: number, user2Quantity: number) {
+    private async autoDecline(interaction: ChatInputCommandInteraction, user1Username: string, user2Username: string, user1CardNumber: string, user2CardNumber: string, user1CardName: string, user2CardName: string, user1Quantity: number, user2Quantity: number) {
         AppLogger.LogSilly("Commands/Trade/AutoDecline", `Auto declining trade between ${user1Username} and ${user2Username}`);
 
         const tradeEmbed = new EmbedBuilder()

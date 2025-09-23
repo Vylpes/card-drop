@@ -1,7 +1,7 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import Drop from "../../src/commands/drop";
 import GenerateCommandInteractionMock from "../__functions__/discord.js/GenerateCommandInteractionMock";
-import { CommandInteraction as CommandInteractionMock } from "../__types__/discord.js";
+import { ChatInputCommandInteraction as ChatInputCommandInteractionMock } from "../__types__/discord.js";
 import { CoreClient } from "../../src/client/client";
 import Config from "../../src/database/entities/app/Config";
 import User from "../../src/database/entities/app/User";
@@ -25,7 +25,7 @@ beforeEach(() => {
 
 describe("execute", () => {
     describe("GIVEN user is in the database", () => {
-        let interaction: CommandInteractionMock;
+        let interaction: ChatInputCommandInteractionMock;
         let user: User;
         const randomCard = {
             card: {
@@ -62,7 +62,7 @@ describe("execute", () => {
 
             // Act
             const drop = new Drop();
-            await drop.execute(interaction as unknown as CommandInteraction);
+            await drop.execute(interaction as unknown as ChatInputCommandInteraction);
         });
 
         test("EXPECT user to be fetched", () => {

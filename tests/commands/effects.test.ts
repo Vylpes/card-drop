@@ -4,7 +4,7 @@ import Use from "../../src/commands/effects/Use";
 import Buy from "../../src/commands/effects/Buy";
 import AppLogger from "../../src/client/appLogger";
 import GenerateCommandInteractionMock from "../__functions__/discord.js/GenerateCommandInteractionMock";
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 
 jest.mock("../../src/commands/effects/List");
 jest.mock("../../src/commands/effects/Use");
@@ -32,7 +32,7 @@ describe("execute", () => {
 
         // Act
         const effects = new Effects();
-        await effects.execute(interaction as unknown as CommandInteraction);
+        await effects.execute(interaction as unknown as ChatInputCommandInteraction);
 
         // Assert
         expect(List).toHaveBeenCalledTimes(1);
@@ -52,7 +52,7 @@ describe("execute", () => {
 
         // Act
         const effects = new Effects();
-        await effects.execute(interaction as unknown as CommandInteraction);
+        await effects.execute(interaction as unknown as ChatInputCommandInteraction);
 
         // Assert
         expect(Use).toHaveBeenCalledTimes(1);
@@ -72,7 +72,7 @@ describe("execute", () => {
 
         // Act
         const effects = new Effects();
-        await effects.execute(interaction as unknown as CommandInteraction);
+        await effects.execute(interaction as unknown as ChatInputCommandInteraction);
 
         // Assert
         expect(Buy).toHaveBeenCalledTimes(1);
@@ -92,7 +92,7 @@ describe("execute", () => {
 
         // Act
         const effects = new Effects();
-        await effects.execute(interaction as unknown as CommandInteraction);
+        await effects.execute(interaction as unknown as ChatInputCommandInteraction);
 
         // Assert
         expect(AppLogger.LogError).toHaveBeenCalledTimes(1);

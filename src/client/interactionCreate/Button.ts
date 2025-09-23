@@ -4,8 +4,6 @@ import AppLogger from "../appLogger";
 
 export default class Button {
     public static async onButtonClicked(interaction: ButtonInteraction) {
-        if (!interaction.isButton) return;
-
         const item = CoreClient.buttonEvents.find(x => x.ButtonId == interaction.customId.split(" ")[0]);
 
         if (!item) {

@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import User from "../database/entities/app/User";
 import EmbedColours from "../constants/EmbedColours";
@@ -12,7 +12,7 @@ export default class Balance extends Command {
             .setDescription("Get your currency balance");
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const user = await User.FetchOneById(User, interaction.user.id);
 
         const userBalance = user != null ? user.Currency : 0;

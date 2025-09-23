@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { CoreClient } from "../client/client";
 import Config from "../database/entities/app/Config";
@@ -45,9 +45,7 @@ export default class Give extends Command {
                             .setRequired(true)));
     }
 
-    public override async execute(interaction: CommandInteraction<CacheType>) {
-        if (!interaction.isChatInputCommand()) return;
-
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const whitelistedUsers = process.env.BOT_ADMINS!.split(",");
 
         if (!whitelistedUsers.find(x => x == interaction.user.id)) {
@@ -65,7 +63,7 @@ export default class Give extends Command {
         }
     }
 
-    private async GiveCard(interaction: CommandInteraction) {
+    private async GiveCard(interaction: ChatInputCommandInteraction) {
         if (!CoreClient.AllowDrops) {
             await interaction.reply("Bot is currently syncing, please wait until its done.");
             return;
@@ -101,7 +99,7 @@ export default class Give extends Command {
         await interaction.reply(`Card ${card.card.name} given to ${user.username}, they now have ${inventory.Quantity}`);
     }
 
-    private async GiveCurrency(interaction: CommandInteraction) {
+    private async GiveCurrency(interaction: ChatInputCommandInteraction) {
         const amount = interaction.options.get("amount", true);
         const user = interaction.options.get("user", true).user!;
 

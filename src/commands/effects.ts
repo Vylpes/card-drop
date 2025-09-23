@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { EffectChoices } from "../constants/EffectDetails";
 import AppLogger from "../client/appLogger";
@@ -42,9 +42,7 @@ export default class Effects extends Command {
                     .setMinValue(1)));
     }
 
-    public override async execute(interaction: CommandInteraction) {
-        if (!interaction.isChatInputCommand()) return;
-
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const subcommand = interaction.options.getSubcommand();
 
         switch (subcommand) {
