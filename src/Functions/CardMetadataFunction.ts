@@ -6,6 +6,7 @@ import { SeriesMetadata } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 import AppLogger from "../client/appLogger";
 import {CardRarity} from "../constants/CardRarity";
+import {all} from "axios";
 
 export interface CardMetadataResult {
     IsSuccess: boolean;
@@ -87,6 +88,20 @@ export default class CardMetadataFunction {
                 const jsonFile = readFileSync(jsonPath);
                 const parsedJson: SeriesMetadata[] = JSON.parse(jsonFile.toString());
 
+                if (parsedJson.length == 0) {
+                    AppLogger.LogWarn("Functions/CardMetadataFunction", `No series found in file: ${jsonPath}`);
+                } else if (parsedJson[0].cards == undefined) {
+                    AppLogger.LogError("Functions/CardMetadataFunction", `No cards found in series: ${jsonPath}`);
+
+                    return {
+                        IsSuccess: false,
+                        Error: {
+                            File: jsonPath,
+                            Message: "No cards found in series",
+                        },
+                    }
+                }
+``
                 res.push(...parsedJson);
             } catch (e) {
                 AppLogger.LogError("Functions/CardMetadataFunction", `Error reading file ${jsonPath}: ${e}`);
