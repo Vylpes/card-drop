@@ -88,8 +88,6 @@ export default class Reroll extends ButtonEvent {
         await interaction.deferReply();
 
         try {
-            AppLogger.LogVerbose("Button/Reroll", `Sending next drop: ${randomCard.card.id} (${randomCard.card.name})`);
-
             const files = [];
             let imageFileName = "";
 

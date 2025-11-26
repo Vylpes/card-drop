@@ -10,8 +10,6 @@ export default class Inventory extends StringDropdownEvent {
         const userid = interaction.values[0].split(" ")[0];
         const page = interaction.values[0].split(" ")[1];
 
-        AppLogger.LogDebug("StringDropdown/Inventory", `Parameters: userid=${userid}, page=${page}`);
-
         await interaction.deferUpdate();
 
         const member = interaction.guild.members.cache.find(x => x.id == userid) || await interaction.guild.members.fetch(userid);

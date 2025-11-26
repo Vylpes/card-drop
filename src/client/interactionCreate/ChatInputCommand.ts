@@ -12,8 +12,6 @@ export default class ChatInputCommand {
 
         if (!itemForServer) {
             if (!item) {
-                AppLogger.LogVerbose("ChatInputCommand", `Command not found: ${interaction.commandName}`);
-
                 await interaction.reply("Command not found");
                 return;
             }
@@ -24,8 +22,6 @@ export default class ChatInputCommand {
         }
 
         try {
-            AppLogger.LogDebug("Command", `Executing ${interaction.commandName}`);
-
             itemToUse.Command.execute(interaction);
         } catch (e) {
             AppLogger.LogError("ChatInputCommand", `Error occurred while executing command: ${interaction.commandName}`);

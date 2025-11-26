@@ -82,7 +82,6 @@ export default class GetCardsHelper {
         AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Series: ${series?.id} ${series?.name}`);
 
         if (!card || !series) {
-            AppLogger.LogVerbose("CardDropHelperMetadata/GetCardByCardNumber", `Unable to find card metadata: ${cardNumber}`);
             return undefined;
         }
 

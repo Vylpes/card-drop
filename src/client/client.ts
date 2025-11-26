@@ -121,8 +121,6 @@ export class CoreClient extends Client {
 
         if ((environment & CoreClient.Environment) == CoreClient.Environment) {
             CoreClient._commandItems.push(item);
-
-            AppLogger.LogVerbose("Client", `Registered Command: ${name}`);
         }
     }
 
@@ -145,8 +143,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Channel Create Event");
     }
 
     public static RegisterChannelDeleteEvent(fn: (channel: DMChannel | NonThreadGuildBasedChannel) => void) {
@@ -168,8 +164,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Channel Delete Event");
     }
 
     public static RegisterChannelUpdateEvent(fn: (channel: DMChannel | NonThreadGuildBasedChannel) => void) {
@@ -191,8 +185,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Channel Update Event");
     }
 
     public static RegisterGuildBanAddEvent(fn: (ban: GuildBan) => void) {
@@ -214,8 +206,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Guild Ban Add Event");
     }
 
     public static RegisterGuildBanRemoveEvent(fn: (channel: GuildBan) => void) {
@@ -237,8 +227,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Guild Ban Remove Event");
     }
 
     public static RegisterGuildCreateEvent(fn: (guild: Guild) => void) {
@@ -260,8 +248,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Guild Create Event");
     }
 
     public static RegisterGuildMemberAddEvent(fn: (member: GuildMember) => void) {
@@ -283,8 +269,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Guild Member Add Event");
     }
 
     public static RegisterGuildMemberRemoveEvent(fn: (member: GuildMember | PartialGuildMember) => void) {
@@ -306,8 +290,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Guild Member Remove Event");
     }
 
     public static GuildMemebrUpdate(fn: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => void) {
@@ -329,8 +311,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Guild Member Update Event");
     }
 
     public static RegisterMessageCreateEvent(fn: (message: Message<boolean>) => void) {
@@ -352,8 +332,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Message Create Event");
     }
 
     public static RegisterMessageDeleteEvent(fn: (message: Message<boolean> | PartialMessage) => void) {
@@ -375,8 +353,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Message Delete Event");
     }
 
     public static RegisterMessageUpdateEvent(fn: (oldMessage: Message<boolean> | PartialMessage, newMessage: Message<boolean> | PartialMessage) => void) {
@@ -398,8 +374,6 @@ export class CoreClient extends Client {
                 MessageUpdate: [ fn ],
             };
         }
-
-        AppLogger.LogVerbose("Client", "Registered Message Update Event");
     }
 
     public static RegisterButtonEvent(buttonId: string, event: ButtonEvent, environment: Environment = Environment.All) {
@@ -411,8 +385,6 @@ export class CoreClient extends Client {
 
         if ((environment & CoreClient.Environment) == CoreClient.Environment) {
             CoreClient._buttonEvents.push(item);
-
-            AppLogger.LogVerbose("Client", `Registered Button Event: ${buttonId}`);
         }
     }
 
@@ -425,8 +397,6 @@ export class CoreClient extends Client {
 
         if ((environment & CoreClient.Environment) == CoreClient.Environment) {
             CoreClient._stringDropdowns.push(item);
-
-            AppLogger.LogVerbose("Client", `Registered String Dropdown Event: ${dropdownId}`);
         }
     }
 }

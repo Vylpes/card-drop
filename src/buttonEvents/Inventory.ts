@@ -22,8 +22,6 @@ export default class Inventory extends ButtonEvent {
         }
 
         try {
-            AppLogger.LogVerbose("Button/Inventory", `Generating inventory page ${page} for ${member.user.username} with id ${member.user.id}`);
-
             const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
 
             if (!embed) {

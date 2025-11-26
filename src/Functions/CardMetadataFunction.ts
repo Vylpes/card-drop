@@ -83,7 +83,6 @@ export default class CardMetadataFunction {
 
         for (const jsonPath of seriesJSONs) {
             try {
-                AppLogger.LogVerbose("Functions/CardMetadataFunction", `Reading file ${jsonPath}`);
                 const jsonFile = readFileSync(jsonPath);
                 const parsedJson: SeriesMetadata[] = JSON.parse(jsonFile.toString());
 
