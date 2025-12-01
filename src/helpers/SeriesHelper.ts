@@ -16,7 +16,6 @@ export default class SeriesHelper {
             .find(x => x.id == seriesId);
 
         if (!series) {
-            AppLogger.LogVerbose("Helpers/SeriesHelper", `Unable to find series: ${seriesId}`);
             return null;
         }
 
@@ -24,7 +23,6 @@ export default class SeriesHelper {
         const totalCards = series.cards.length;
 
         if (page > totalPages) {
-            AppLogger.LogVerbose("Helpers/SeriesHelper", `Trying to find page greater than what exists for this series. Page: ${page} but there are only ${totalPages} pages`);
             return null;
         }
 
@@ -71,7 +69,6 @@ export default class SeriesHelper {
         const totalPages = Math.ceil(series.length / itemsPerPage);
 
         if (page > totalPages) {
-            AppLogger.LogVerbose("Helpers/SeriesHelper", `Trying to find page greater than what exists for this series. Page: ${page} but there are only ${totalPages} pages`);
             return null;
         }
 

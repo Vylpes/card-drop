@@ -7,15 +7,11 @@ export default class StringDropdown {
         const item = CoreClient.stringDropdowns.find(x => x.DropdownId == interaction.customId.split(" ")[0]);
 
         if (!item) {
-            AppLogger.LogVerbose("StringDropdown", `Event not found: ${interaction.customId}`);
-
             await interaction.reply("Event not found");
             return;
         }
 
         try {
-            AppLogger.LogDebug("StringDropdown", `Executing ${interaction.customId}`);
-
             item.Event.execute(interaction);
         } catch (e) {
             AppLogger.LogError("StringDropdown", `Error occurred while executing event: ${interaction.customId}`);

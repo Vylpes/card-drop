@@ -52,8 +52,6 @@ export default class Series extends Command {
         const series = CoreClient.Cards.find(x => x.id == id.value);
 
         if (!series) {
-            AppLogger.LogVerbose("Commands/Series/View", "Series not found.");
-
             await interaction.followUp("Series not found.");
             return;
         }

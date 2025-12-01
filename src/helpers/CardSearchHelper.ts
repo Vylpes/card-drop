@@ -28,8 +28,6 @@ export default class CardSearchHelper {
             .flatMap(x => x.item.id);
 
         if (!entry) {
-            AppLogger.LogVerbose("CardSearchHelper/GenerateSearchQuery", `Unable to find entry: ${query}`);
-
             return undefined;
         }
 
