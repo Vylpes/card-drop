@@ -99,7 +99,7 @@ export class CoreClient extends Client {
             });
 
         super.on("interactionCreate", this._events.onInteractionCreate);
-        super.on("ready", this._events.onReady);
+        super.on("clientReady", this._events.onReady);
 
         await CardMetadataFunction.Execute(true);
 
