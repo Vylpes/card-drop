@@ -9,8 +9,9 @@ export default class Inventory extends StringDropdownEvent {
 
         const userid = interaction.values[0].split(" ")[0];
         const page = interaction.values[0].split(" ")[1];
+        const sortBy = InventoryHelper.ParseSortBy(interaction.values[0].split(" ")[2]);
 
-        AppLogger.LogDebug("StringDropdown/Inventory", `Parameters: userid=${userid}, page=${page}`);
+        AppLogger.LogDebug("StringDropdown/Inventory", `Parameters: userid=${userid}, page=${page}, sortBy=${sortBy}`);
 
         await interaction.deferUpdate();
 
@@ -22,7 +23,7 @@ export default class Inventory extends StringDropdownEvent {
         }
 
         try {
-            const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
+            const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page), sortBy);
 
             if (!embed) {
                 await interaction.followUp("No page for user found.");
