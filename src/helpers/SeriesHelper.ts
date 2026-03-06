@@ -7,8 +7,8 @@ import { CardRarityToString } from "../constants/CardRarity";
 import ImageHelper from "./ImageHelper";
 
 export default class SeriesHelper {
-    public static async GenerateSeriesViewPage(seriesId: number, page: number, userId: string): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder>, image: AttachmentBuilder } | null> {
-        AppLogger.LogSilly("Helpers/SeriesHelper", `Parameters: seriesId=${seriesId}, page=${page}`);
+    public static async GenerateSeriesViewPage(seriesId: number, page: number, userId: string, disableColourFilter: boolean = false): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder>, image: AttachmentBuilder } | null> {
+        AppLogger.LogSilly("Helpers/SeriesHelper", `Parameters: seriesId=${seriesId}, page=${page}, disableColourFilter=${disableColourFilter}`);
 
         const itemsPerPage = 9;
 
@@ -44,17 +44,17 @@ export default class SeriesHelper {
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`series view ${seriesId} ${page - 1}`)
+                    .setCustomId(`series view ${seriesId} ${page - 1} ${disableColourFilter ? 1 : 0}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page == 0),
                 new ButtonBuilder()
-                    .setCustomId(`series view ${seriesId} ${page + 1}`)
+                    .setCustomId(`series view ${seriesId} ${page + 1} ${disableColourFilter ? 1 : 0}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page + 1 == totalPages));
 
-        const buffer = await ImageHelper.GenerateCardImageGrid(cardsOnPage.map(x => ({id: x.id, path: x.path})), userId);
+        const buffer = await ImageHelper.GenerateCardImageGrid(cardsOnPage.map(x => ({id: x.id, path: x.path})), userId, disableColourFilter);
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
 
         return { embed, row, image };
