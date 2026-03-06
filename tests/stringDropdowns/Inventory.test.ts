@@ -1,6 +1,7 @@
 import { StringSelectMenuInteraction } from "discord.js";
 import InventoryDropdown from "../../src/stringDropdowns/Inventory";
 import InventoryHelper from "../../src/helpers/InventoryHelper";
+import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder } from "discord.js";
 
 jest.mock("../../src/client/appLogger");
 
@@ -18,7 +19,7 @@ function GenerateStringDropdownInteractionMock(value: string) {
                 },
                 fetch: jest.fn(),
             },
-        } as any,
+        } as unknown,
         values: [ value ],
         deferUpdate: jest.fn(),
         editReply: jest.fn(),
@@ -37,10 +38,10 @@ describe("execute", () => {
 
         const parseSortSpy = jest.spyOn(InventoryHelper, "ParseSortBy").mockReturnValue("type");
         const generateSpy = jest.spyOn(InventoryHelper, "GenerateInventoryPage").mockResolvedValue({
-            embed: {} as any,
-            image: {} as any,
-            row1: {} as any,
-            row2: {} as any,
+            embed: {} as unknown as EmbedBuilder,
+            image: {} as unknown as AttachmentBuilder,
+            row1: {} as unknown as ActionRowBuilder<ButtonBuilder>,
+            row2: {} as unknown as ActionRowBuilder<StringSelectMenuBuilder>,
         });
 
         const inventory = new InventoryDropdown();
@@ -61,10 +62,10 @@ describe("execute", () => {
 
         const parseSortSpy = jest.spyOn(InventoryHelper, "ParseSortBy").mockReturnValue("id");
         const generateSpy = jest.spyOn(InventoryHelper, "GenerateInventoryPage").mockResolvedValue({
-            embed: {} as any,
-            image: {} as any,
-            row1: {} as any,
-            row2: {} as any,
+            embed: {} as unknown as EmbedBuilder,
+            image: {} as unknown as AttachmentBuilder,
+            row1: {} as unknown as ActionRowBuilder<ButtonBuilder>,
+            row2: {} as unknown as ActionRowBuilder<StringSelectMenuBuilder>,
         });
 
         const inventory = new InventoryDropdown();

@@ -76,8 +76,11 @@ describe("GenerateInventoryPage", () => {
         const row1 = result!.row1.toJSON();
         const row2 = result!.row2.toJSON();
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((row1.components[0] as any).custom_id).toContain(" name");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((row1.components[1] as any).custom_id).toContain(" name");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((row2.components[0] as any).options?.[0].value).toContain(" name");
     });
 

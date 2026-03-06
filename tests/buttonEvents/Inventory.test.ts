@@ -3,6 +3,7 @@ import InventoryButton from "../../src/buttonEvents/Inventory";
 import InventoryHelper from "../../src/helpers/InventoryHelper";
 import GenerateButtonInteractionMock from "../__functions__/discord.js/GenerateButtonInteractionMock";
 import { ButtonInteraction as ButtonInteractionType } from "../__types__/discord.js";
+import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder } from "discord.js";
 
 jest.mock("../../src/client/appLogger");
 
@@ -35,10 +36,10 @@ describe("execute", () => {
 
         const parseSortSpy = jest.spyOn(InventoryHelper, "ParseSortBy").mockReturnValue("name");
         const generateSpy = jest.spyOn(InventoryHelper, "GenerateInventoryPage").mockResolvedValue({
-            embed: {} as any,
-            image: {} as any,
-            row1: {} as any,
-            row2: {} as any,
+            embed: {} as unknown as EmbedBuilder,
+            image: {} as unknown as AttachmentBuilder,
+            row1: {} as unknown as ActionRowBuilder<ButtonBuilder>,
+            row2: {} as unknown as ActionRowBuilder<StringSelectMenuBuilder>,
         });
 
         const inventory = new InventoryButton();
@@ -59,10 +60,10 @@ describe("execute", () => {
 
         const parseSortSpy = jest.spyOn(InventoryHelper, "ParseSortBy").mockReturnValue("id");
         const generateSpy = jest.spyOn(InventoryHelper, "GenerateInventoryPage").mockResolvedValue({
-            embed: {} as any,
-            image: {} as any,
-            row1: {} as any,
-            row2: {} as any,
+            embed: {} as unknown as EmbedBuilder,
+            image: {} as unknown as AttachmentBuilder,
+            row1: {} as unknown as ActionRowBuilder<ButtonBuilder>,
+            row2: {} as unknown as ActionRowBuilder<StringSelectMenuBuilder>,
         });
 
         const inventory = new InventoryButton();
