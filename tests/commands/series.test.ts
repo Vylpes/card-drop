@@ -4,6 +4,7 @@ import GenerateCommandInteractionMock from "../__functions__/discord.js/Generate
 import { ChatInputCommandInteraction as ChatInputCommandInteractionMock } from "../__types__/discord.js";
 import SeriesHelper from "../../src/helpers/SeriesHelper";
 import { CoreClient } from "../../src/client/client";
+import { SeriesMetadata } from "../../src/contracts/SeriesMetadata.js";
 
 jest.mock("../../src/client/appLogger");
 jest.mock("../../src/helpers/SeriesHelper");
@@ -42,7 +43,7 @@ beforeEach(() => {
             name: "Series 1",
             cards: [],
         },
-    ] as any;
+    ] as unknown as SeriesMetadata[];
 
     (SeriesHelper.GenerateSeriesViewPage as jest.Mock).mockResolvedValue({
         embed: { type: "Embed" },
