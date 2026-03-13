@@ -21,9 +21,12 @@ export type ButtonInteraction = {
 export type ChatInputCommandInteraction = {
     deferReply: jest.Func,
     editReply: jest.Func,
+    followUp: jest.Func,
+    reply: jest.Func,
     isChatInputCommand: jest.Func,
     options: {
         getSubcommand: jest.Func,
+        get: jest.Func,
     },
     user: {
         id: string,
