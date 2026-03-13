@@ -4,6 +4,7 @@ import CardConstants from "../../constants/CardConstants";
 import { CardRarity } from "../../constants/CardRarity";
 import CardRarityChances from "../../constants/CardRarityChances";
 import { DropResult } from "../../contracts/SeriesMetadata";
+import Inventory from "../../database/entities/app/Inventory";
 import EffectHelper from "../EffectHelper";
 import GetUnclaimedCardsHelper from "./GetUnclaimedCardsHelper";
 
@@ -11,11 +12,35 @@ export default class GetCardsHelper {
     public static async FetchCard(userId: string): Promise<DropResult | undefined> {
         const hasChanceUpEffect = await EffectHelper.HasEffect(userId, "unclaimed");
 
-        if (hasChanceUpEffect && Math.random() <= CardConstants.UnusedChanceUpChance) {
-            return await GetUnclaimedCardsHelper.GetRandomCardUnclaimed(userId);
+        if (hasChanceUpEffect) {
+            const dynamicChance = await this.GetDynamicUnclaimedChance(userId);
+            
+            if (Math.random() <= dynamicChance) {
+                return await GetUnclaimedCardsHelper.GetRandomCardUnclaimed(userId);
+            }
         }
 
         return this.GetRandomCard();
+    }
+
+    private static async GetDynamicUnclaimedChance(userId: string): Promise<number> {
+        const claimedCards = await Inventory.FetchAllByUserId(userId);
+        const totalCards = CoreClient.Cards.flatMap(x => x.cards).length;
+
+        if (totalCards === 0) {
+            return CardConstants.UnusedChanceUpMax;
+        }
+
+        const claimedCount = claimedCards.filter(x => x.Quantity > 0).length;
+        const unclaimedCount = totalCards - claimedCount;
+        const unclaimedPercentage = unclaimedCount / totalCards;
+
+        const dynamicChance = Math.max(
+            CardConstants.UnusedChanceUpMin,
+            Math.min(CardConstants.UnusedChanceUpMax, unclaimedPercentage)
+        );
+
+        return dynamicChance;
     }
 
     public static GetRandomCard(): DropResult | undefined {
