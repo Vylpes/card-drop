@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`UseCancel GIVEN effectDetail is found, EXPECT interaction updated 1`] = `
 {
