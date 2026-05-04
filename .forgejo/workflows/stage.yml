@@ -25,7 +25,15 @@ jobs:
     - run: yarn lint
 
     - name: "Copy files over to location"
-      run: rsync -rvzP . ${{ secrets.STAGE_REPO_PATH }}
+      uses: https://github.com/burnett01/rsync-deployments@v8
+      with:
+        switches: -avzP --delete
+        path: .
+        remote_path: ${{ secrets.STAGE_RSYNC_PATH }}
+        remote_host: ${{ secrets.STAGE_SSH_HOST }}
+        remote_port: ${{ secrets.STAGE_SSH_PORT }}
+        remote_user: ${{ secrets.STAGE_SSH_USER }}
+        remote_key: ${{ secrets.STAGE_SSH_KEY }}
 
   deploy:
     environment: prod
@@ -69,7 +77,7 @@ jobs:
         envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO,BOT_ENV,BOT_ADMINS,DATA_DIR,GDRIVESYNC_AUTO,SERVER_PATH,EXPRESS_PORT,BOT_LOGLEVEL,BOT_LOG_DISCORD_ENABLE,BOT_LOG_DISCORD_LEVEL,BOT_LOG_DISCORD_WEBHOOK,BOT_LOG_DISCORD_SERVICE
         script: |
           source .sshrc \
-          && cd /home/vylpes/apps/card-drop/card-drop_stage \
+          && cd ${{ secrets.STAGE_RSYNC_PATH }} \
           && docker compose down \
           && (pm2 stop card-drop_stage || true) \
           && (pm2 delete card-drop_stage || true) \
