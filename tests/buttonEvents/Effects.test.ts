@@ -4,11 +4,13 @@ import GenerateButtonInteractionMock from "../__functions__/discord.js/GenerateB
 import { ButtonInteraction as ButtonInteractionType } from "../__types__/discord.js";
 import List from "../../src/buttonEvents/Effects/List";
 import Use from "../../src/buttonEvents/Effects/Use";
+import Buy from "../../src/buttonEvents/Effects/Buy";
 import AppLogger from "../../src/client/appLogger";
 
 jest.mock("../../src/client/appLogger");
 jest.mock("../../src/buttonEvents/Effects/List");
 jest.mock("../../src/buttonEvents/Effects/Use");
+jest.mock("../../src/buttonEvents/Effects/Buy");
 
 let interaction: ButtonInteractionType;
 
@@ -49,7 +51,21 @@ test("GIVEN action is use, EXPECT use function to be called", async () => {
     expect(List).not.toHaveBeenCalled();
 });
 
-test.todo("GIVEN action is buy, EXPECT buy function to be called");
+test("GIVEN action is buy, EXPECT buy function to be called", async () => {
+    // Arrange
+    interaction.customId = "effects buy";
+
+    // Act
+    const effects = new Effects();
+    await effects.execute(interaction as unknown as ButtonInteraction);
+
+    // Assert
+    expect(Buy.Execute).toHaveBeenCalledTimes(1);
+    expect(Buy.Execute).toHaveBeenCalledWith(interaction);
+
+    expect(List).not.toHaveBeenCalled();
+    expect(Use.Execute).not.toHaveBeenCalled();
+});
 
 test("GIVEN action is invalid, EXPECT nothing to be called", async () => {
     // Arrange

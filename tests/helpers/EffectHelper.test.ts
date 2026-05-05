@@ -1,7 +1,13 @@
 import EffectHelper from "../../src/helpers/EffectHelper";
 import UserEffect from "../../src/database/entities/app/UserEffect";
+import User from "../../src/database/entities/app/User";
+import AppLogger from "../../src/client/appLogger";
+import CardConstants from "../../src/constants/CardConstants";
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 
 jest.mock("../../src/database/entities/app/UserEffect");
+jest.mock("../../src/database/entities/app/User");
+jest.mock("../../src/client/appLogger");
 
 describe("GenerateEffectListEmbed", () => {
     test("GIVEN user has an effect, EXPECT detailed embed to be returned", async () => {
@@ -115,13 +121,84 @@ describe("GenerateEffectListEmbed", () => {
 });
 
 describe("GenerateEffectBuyEmbed", () => {
-    test.todo("GIVEN Effect Details are not found, EXPECT error");
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
 
-    test.todo("GIVEN user is not in database, EXPECT blank user created");
+    test("GIVEN Effect Details are not found, EXPECT error", async () => {
+        // Act
+        const result = await EffectHelper.GenerateEffectBuyEmbed("userId", "invalid-effect", 1, false);
 
-    test.todo("GIVEN user does not have enough currency, EXPECT error");
+        // Assert
+        expect(result).toBe("Effect detail not found!");
+    });
 
-    test.todo("GIVEN user does have enough currency, EXPECT embed returned");
+    test("GIVEN user is not in database, EXPECT blank user created", async () => {
+        // Arrange
+        const newUser = {
+            Currency: CardConstants.StartingCurrency,
+            Save: jest.fn(),
+        };
 
-    test.todo("GIVEN disabled boolean is true, EXPECT buttons to be disabled");
+        (User.FetchOneById as jest.Mock).mockResolvedValue(null);
+        (User as unknown as jest.Mock).mockImplementation(() => newUser);
+
+        // Act
+        await EffectHelper.GenerateEffectBuyEmbed("userId", "unclaimed", 1, false);
+
+        // Assert
+        expect(User).toHaveBeenCalledTimes(1);
+        expect(User).toHaveBeenCalledWith("userId", CardConstants.StartingCurrency);
+        expect(newUser.Save).toHaveBeenCalledTimes(1);
+        expect(AppLogger.LogInfo).toHaveBeenCalledTimes(1);
+    });
+
+    test("GIVEN user does not have enough currency, EXPECT error", async () => {
+        // Arrange
+        (User.FetchOneById as jest.Mock).mockResolvedValue({
+            Currency: 0,
+        });
+
+        // Act
+        const result = await EffectHelper.GenerateEffectBuyEmbed("userId", "unclaimed", 1, false);
+
+        // Assert
+        expect(typeof result).toBe("string");
+        expect(result).toContain("don't have enough currency");
+    });
+
+    test("GIVEN user does have enough currency, EXPECT embed returned", async () => {
+        // Arrange
+        (User.FetchOneById as jest.Mock).mockResolvedValue({
+            Currency: 1000,
+        });
+
+        // Act
+        const result = await EffectHelper.GenerateEffectBuyEmbed("userId", "unclaimed", 1, false);
+
+        // Assert
+        expect(typeof result).toBe("object");
+        expect(result).toHaveProperty("embed");
+        expect(result).toHaveProperty("row");
+        expect((result as { embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder> }).embed).toBeInstanceOf(EmbedBuilder);
+        expect((result as { embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder> }).row).toBeInstanceOf(ActionRowBuilder);
+    });
+
+    test("GIVEN disabled boolean is true, EXPECT buttons to be disabled", async () => {
+        // Arrange
+        (User.FetchOneById as jest.Mock).mockResolvedValue({
+            Currency: 0,
+        });
+
+        // Act
+        const result = await EffectHelper.GenerateEffectBuyEmbed("userId", "unclaimed", 1, true);
+
+        // Assert
+        expect(typeof result).toBe("object");
+        const { row } = result as { embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder> };
+        expect(row).toBeInstanceOf(ActionRowBuilder);
+        row.components.forEach(button => {
+            expect((button as ButtonBuilder).data.disabled).toBe(true);
+        });
+    });
 });

@@ -6,9 +6,11 @@ export default function GenerateCommandInteractionMock(options?: {
     return {
         deferReply: jest.fn(),
         editReply: jest.fn(),
+        reply: jest.fn(),
         isChatInputCommand: jest.fn().mockReturnValue(true),
         options: {
             getSubcommand: jest.fn().mockReturnValue(options?.subcommand),
+            get: jest.fn(),
         },
         user: {
             id: "userId",
