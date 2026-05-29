@@ -14,49 +14,73 @@ export default class GetCardsHelper {
 
         if (hasChanceUpEffect) {
             const dynamicChance = await this.GetDynamicUnclaimedChance(userId);
-            
+
             if (Math.random() <= dynamicChance) {
                 return await GetUnclaimedCardsHelper.GetRandomCardUnclaimed(userId);
             }
         }
 
-        return this.GetRandomCard();
+        return await this.GetRandomCard(userId);
     }
 
-    private static async GetDynamicUnclaimedChance(userId: string): Promise<number> {
-        const claimedCards = await Inventory.FetchAllByUserId(userId);
-        const totalCards = CoreClient.Cards.flatMap(x => x.cards).length;
+    public static async GetRandomCard(userId?: string): Promise<DropResult | undefined> {
+        let bronzeChance = CardRarityChances.Bronze;
+        let silverChance = CardRarityChances.Silver;
+        let goldChance = CardRarityChances.Gold;
+        let mangaChance = CardRarityChances.Manga;
+        let legendaryChance = CardRarityChances.Legendary;
 
-        if (totalCards === 0) {
-            return CardConstants.UnusedChanceUpMax;
+        if (userId) {
+            const hasGoldEffect = await EffectHelper.HasEffect(userId, "goldchanceup");
+            const hasLegendaryEffect = await EffectHelper.HasEffect(userId, "legendarychanceup");
+            const hasMangaEffect = await EffectHelper.HasEffect(userId, "mangachanceup");
+
+            if (hasGoldEffect) {
+                const boostedChance = goldChance * 2;
+                const chanceToRemove = boostedChance - goldChance;
+                const chancePerOther = chanceToRemove / 4;
+
+                bronzeChance -= chancePerOther;
+                silverChance -= chancePerOther;
+                goldChance = boostedChance;
+                mangaChance -= chancePerOther;
+                legendaryChance -= chancePerOther;
+            } else if (hasLegendaryEffect) {
+                const boostedChance = legendaryChance * 2;
+                const chanceToRemove = boostedChance - legendaryChance;
+                const chancePerOther = chanceToRemove / 4;
+
+                bronzeChance -= chancePerOther;
+                silverChance -= chancePerOther;
+                goldChance -= chancePerOther;
+                mangaChance -= chancePerOther;
+                legendaryChance = boostedChance;
+            } else if (hasMangaEffect) {
+                const boostedChance = mangaChance * 2;
+                const chanceToRemove = boostedChance - mangaChance;
+                const chancePerOther = chanceToRemove / 4;
+
+                bronzeChance -= chancePerOther;
+                silverChance -= chancePerOther;
+                goldChance -= chancePerOther;
+                mangaChance = boostedChance;
+                legendaryChance -= chancePerOther;
+            }
         }
 
-        const claimedCount = claimedCards.filter(x => x.Quantity > 0).length;
-        const unclaimedCount = totalCards - claimedCount;
-        const unclaimedPercentage = unclaimedCount / totalCards;
-
-        const dynamicChance = Math.max(
-            CardConstants.UnusedChanceUpMin,
-            Math.min(CardConstants.UnusedChanceUpMax, unclaimedPercentage)
-        );
-
-        return dynamicChance;
-    }
-
-    public static GetRandomCard(): DropResult | undefined {
         const randomRarity = Math.random() * 100;
 
         let cardRarity: CardRarity;
 
-        const bronzeChance = CardRarityChances.Bronze;
-        const silverChance = bronzeChance + CardRarityChances.Silver;
-        const goldChance = silverChance + CardRarityChances.Gold;
-        const mangaChance = goldChance + CardRarityChances.Manga;
+        const bronzeThreshold = bronzeChance;
+        const silverThreshold = bronzeThreshold + silverChance;
+        const goldThreshold = silverThreshold + goldChance;
+        const mangaThreshold = goldThreshold + mangaChance;
 
-        if (randomRarity < bronzeChance) cardRarity = CardRarity.Bronze;
-        else if (randomRarity < silverChance) cardRarity = CardRarity.Silver;
-        else if (randomRarity < goldChance) cardRarity = CardRarity.Gold;
-        else if (randomRarity < mangaChance) cardRarity = CardRarity.Manga;
+        if (randomRarity < bronzeThreshold) cardRarity = CardRarity.Bronze;
+        else if (randomRarity < silverThreshold) cardRarity = CardRarity.Silver;
+        else if (randomRarity < goldThreshold) cardRarity = CardRarity.Gold;
+        else if (randomRarity < mangaThreshold) cardRarity = CardRarity.Manga;
         else cardRarity = CardRarity.Legendary;
 
         const randomCard = this.GetRandomCardByRarity(cardRarity);
@@ -111,5 +135,25 @@ export default class GetCardsHelper {
         }
 
         return { card, series };
+    }
+
+    private static async GetDynamicUnclaimedChance(userId: string): Promise<number> {
+        const claimedCards = await Inventory.FetchAllByUserId(userId);
+        const totalCards = CoreClient.Cards.flatMap(x => x.cards).length;
+
+        if (totalCards === 0) {
+            return CardConstants.UnusedChanceUpMax;
+        }
+
+        const claimedCount = claimedCards.filter(x => x.Quantity > 0).length;
+        const unclaimedCount = totalCards - claimedCount;
+        const unclaimedPercentage = unclaimedCount / totalCards;
+
+        const dynamicChance = Math.max(
+            CardConstants.UnusedChanceUpMin,
+            Math.min(CardConstants.UnusedChanceUpMax, unclaimedPercentage)
+        );
+
+        return dynamicChance;
     }
 }

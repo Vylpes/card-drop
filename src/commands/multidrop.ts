@@ -50,7 +50,7 @@ export default class Multidrop extends Command {
         user.RemoveCurrency(CardConstants.MultidropCost);
         await user.Save(User, user);
 
-        const randomCard = GetCardsHelper.GetRandomCard();
+        const randomCard = await GetCardsHelper.GetRandomCard(interaction.user.id);
         const cardsRemaining = CardConstants.MultidropQuantity - 1;
 
         if (!randomCard) {

@@ -86,7 +86,7 @@ export default class Multidrop extends ButtonEvent {
         }
 
         // Drop next card
-        const randomCard = GetCardsHelper.GetRandomCard();
+        const randomCard = await GetCardsHelper.GetRandomCard(interaction.user.id);
         cardsRemaining -= 1;
 
         if (!randomCard) {
@@ -184,7 +184,7 @@ export default class Multidrop extends ButtonEvent {
         }
 
         // Drop next card
-        const randomCard = GetCardsHelper.GetRandomCard();
+        const randomCard = await GetCardsHelper.GetRandomCard(interaction.user.id);
         cardsRemaining -= 1;
 
         if (!randomCard) {
