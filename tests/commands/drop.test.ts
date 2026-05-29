@@ -9,15 +9,22 @@ import GetCardsHelper from "../../src/helpers/DropHelpers/GetCardsHelper";
 import Inventory from "../../src/database/entities/app/Inventory";
 import DropEmbedHelper from "../../src/helpers/DropHelpers/DropEmbedHelper";
 import CardConstants from "../../src/constants/CardConstants";
+import AppLogger from "../../src/client/appLogger";
+import ErrorMessages from "../../src/constants/ErrorMessages";
 import * as uuid from "uuid";
+import * as fs from "fs";
 
 jest.mock("../../src/database/entities/app/Config");
 jest.mock("../../src/database/entities/app/User");
 jest.mock("../../src/helpers/DropHelpers/GetCardsHelper");
 jest.mock("../../src/database/entities/app/Inventory");
 jest.mock("../../src/helpers/DropHelpers/DropEmbedHelper");
-
+jest.mock("../../src/client/appLogger");
 jest.mock("uuid");
+jest.mock("fs", () => ({
+    ...jest.requireActual("fs"),
+    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image")),
+}));
 
 beforeEach(() => {
     (Config.GetValue as jest.Mock).mockResolvedValue("false");
@@ -114,29 +121,201 @@ describe("execute", () => {
         });
 
         describe("AND randomCard path is not a url", () => {
-            test.todo("EXPECT image read from file system");
+            let localInteraction: ChatInputCommandInteractionMock;
+            const localRandomCard = {
+                card: {
+                    id: "cardId",
+                    path: "series/card.png",
+                }
+            };
 
-            test.todo("EXPECT files on the embed to contain the image as an attachment");
+            beforeAll(async () => {
+                jest.resetAllMocks();
+                (Config.GetValue as jest.Mock).mockResolvedValue("false");
+
+                CoreClient.AllowDrops = true;
+                process.env.DATA_DIR = "/data";
+
+                localInteraction = GenerateCommandInteractionMock();
+
+                const localUser = {
+                    Currency: 500,
+                    RemoveCurrency: jest.fn().mockReturnValue(true),
+                    Save: jest.fn(),
+                } as unknown as User;
+
+                (User.FetchOneById as jest.Mock).mockResolvedValue(localUser);
+                (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue(localRandomCard);
+                (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({
+                    Quantity: 1,
+                });
+                (DropEmbedHelper.GenerateDropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
+                (DropEmbedHelper.GenerateDropButtons as jest.Mock).mockReturnValue({ type: "Button" });
+                (uuid.v4 as jest.Mock).mockReturnValue("uuid");
+
+                const drop = new Drop();
+                await drop.execute(localInteraction as unknown as ChatInputCommandInteraction);
+            });
+
+            test("EXPECT image read from file system", () => {
+                expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+                expect(fs.readFileSync).toHaveBeenCalledWith(
+                    expect.stringContaining("card.png")
+                );
+            });
+
+            test("EXPECT files on the embed to contain the image as an attachment", () => {
+                expect(localInteraction.editReply).toHaveBeenCalledTimes(1);
+                const callArgs = (localInteraction.editReply as jest.Mock).mock.calls[0][0];
+                expect(callArgs.files).toHaveLength(1);
+            });
         });
     });
 
     describe("GIVEN user is not in the database", () => {
-        test.todo("EXPECT new user to be created");
+        let interaction: ChatInputCommandInteractionMock;
+
+        beforeAll(async () => {
+            jest.resetAllMocks();
+            (Config.GetValue as jest.Mock).mockResolvedValue("false");
+            CoreClient.AllowDrops = true;
+
+            interaction = GenerateCommandInteractionMock();
+
+            const newUser = {
+                Currency: CardConstants.StartingCurrency,
+                RemoveCurrency: jest.fn().mockReturnValue(true),
+                Save: jest.fn(),
+            };
+
+            (User.FetchOneById as jest.Mock).mockResolvedValue(null);
+            (User as unknown as jest.Mock).mockImplementation(() => newUser);
+            (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue({
+                card: { id: "cardId", path: "https://example.com/card.png" }
+            });
+            (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue(null);
+            (DropEmbedHelper.GenerateDropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
+            (DropEmbedHelper.GenerateDropButtons as jest.Mock).mockReturnValue({ type: "Button" });
+            (uuid.v4 as jest.Mock).mockReturnValue("uuid");
+
+            const drop = new Drop();
+            await drop.execute(interaction as unknown as ChatInputCommandInteraction);
+        });
+
+        test("EXPECT new user to be created", () => {
+            expect(User).toHaveBeenCalledTimes(1);
+            expect(User).toHaveBeenCalledWith("userId", CardConstants.StartingCurrency);
+        });
     });
 
     describe("GIVEN user.RemoveCurrency fails", () => {
-        test.todo("EXPECT error replied");
-    });
-    
-    describe("GIVEN randomCard returns null", () => {
-        test.todo("EXPECT error logged");
+        let interaction: ChatInputCommandInteractionMock;
 
-        test.todo("EXPECT error replied");
+        beforeAll(async () => {
+            jest.resetAllMocks();
+            (Config.GetValue as jest.Mock).mockResolvedValue("false");
+            CoreClient.AllowDrops = true;
+
+            interaction = GenerateCommandInteractionMock();
+
+            const user = {
+                Currency: 0,
+                RemoveCurrency: jest.fn().mockReturnValue(false),
+                Save: jest.fn(),
+            } as unknown as User;
+
+            (User.FetchOneById as jest.Mock).mockResolvedValue(user);
+
+            const drop = new Drop();
+            await drop.execute(interaction as unknown as ChatInputCommandInteraction);
+        });
+
+        test("EXPECT error replied", () => {
+            expect(interaction.reply).toHaveBeenCalledTimes(1);
+            expect(interaction.reply).toHaveBeenCalledWith(
+                ErrorMessages.NotEnoughCurrency(CardConstants.ClaimCost, 0)
+            );
+        });
+    });
+
+    describe("GIVEN randomCard returns null", () => {
+        let interaction: ChatInputCommandInteractionMock;
+
+        beforeAll(async () => {
+            jest.resetAllMocks();
+            (Config.GetValue as jest.Mock).mockResolvedValue("false");
+            CoreClient.AllowDrops = true;
+
+            interaction = GenerateCommandInteractionMock();
+
+            const user = {
+                Currency: 500,
+                RemoveCurrency: jest.fn().mockReturnValue(true),
+                Save: jest.fn(),
+            } as unknown as User;
+
+            (User.FetchOneById as jest.Mock).mockResolvedValue(user);
+            (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue(null);
+
+            const drop = new Drop();
+            await drop.execute(interaction as unknown as ChatInputCommandInteraction);
+        });
+
+        test("EXPECT error logged", () => {
+            expect(AppLogger.LogWarn).toHaveBeenCalledWith(
+                "Commands/Drop",
+                ErrorMessages.UnableToFetchCard
+            );
+        });
+
+        test("EXPECT error replied", () => {
+            expect(interaction.reply).toHaveBeenCalledTimes(1);
+            expect(interaction.reply).toHaveBeenCalledWith(ErrorMessages.UnableToFetchCard);
+        });
     });
 
     describe("GIVEN the code throws an error", () => {
-        test.todo("EXPECT error logged");
+        let interaction: ChatInputCommandInteractionMock;
+        const randomCard = {
+            card: {
+                id: "cardId",
+                path: "https://example.com/card.png",
+            }
+        };
 
-        test.todo("EXPECT interaction edited with error");
+        beforeAll(async () => {
+            jest.resetAllMocks();
+            (Config.GetValue as jest.Mock).mockResolvedValue("false");
+            CoreClient.AllowDrops = true;
+
+            interaction = GenerateCommandInteractionMock();
+
+            const user = {
+                Currency: 500,
+                RemoveCurrency: jest.fn().mockReturnValue(true),
+                Save: jest.fn(),
+            } as unknown as User;
+
+            (User.FetchOneById as jest.Mock).mockResolvedValue(user);
+            (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue(randomCard);
+            (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockRejectedValue(new Error("DB error"));
+
+            const drop = new Drop();
+            await drop.execute(interaction as unknown as ChatInputCommandInteraction);
+        });
+
+        test("EXPECT error logged", () => {
+            expect(AppLogger.LogError).toHaveBeenCalledWith(
+                "Commands/Drop",
+                expect.stringContaining("cardId")
+            );
+        });
+
+        test("EXPECT interaction edited with error", () => {
+            expect(interaction.editReply).toHaveBeenCalledTimes(1);
+            expect(interaction.editReply).toHaveBeenCalledWith(
+                expect.stringContaining("cardId")
+            );
+        });
     });
 });

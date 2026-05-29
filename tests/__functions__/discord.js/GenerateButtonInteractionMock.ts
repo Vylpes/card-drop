@@ -9,6 +9,7 @@ export default function GenerateButtonInteractionMock(): ButtonInteraction {
             send: jest.fn(),
         },
         deferUpdate: jest.fn(),
+        deferReply: jest.fn(),
         editReply: jest.fn(),
         message: {
             createdAt: new Date(1000 * 60 * 27),
