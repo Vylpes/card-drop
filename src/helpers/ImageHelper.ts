@@ -12,7 +12,7 @@ interface CardInput {
 }
 
 export default class ImageHelper {
-    public static async GenerateCardImageGrid(cards: CardInput[], userId?: string): Promise<Buffer> {
+    public static async GenerateCardImageGrid(cards: CardInput[], userId?: string, disableColourFilter: boolean = false): Promise<Buffer> {
         const gridWidth = 3;
         const gridHeight = Math.ceil(cards.length / gridWidth);
 
@@ -50,7 +50,7 @@ export default class ImageHelper {
 
                 const imageData = Jimp.fromBitmap(bitmap);
 
-                if (userId != null) {
+                if (userId != null && !disableColourFilter) {
                     const claimed = await Inventory.FetchOneByCardNumberAndUserId(userId, card.id);
 
                     if (!claimed || claimed.Quantity == 0) {

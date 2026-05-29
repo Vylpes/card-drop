@@ -23,10 +23,11 @@ export default class Series extends ButtonEvent {
     private async ViewSeries(interaction: ButtonInteraction) {
         const seriesid = interaction.customId.split(" ")[2];
         const page = interaction.customId.split(" ")[3];
+        const disableColourFilter = interaction.customId.split(" ")[4] == "1";
 
         await interaction.deferUpdate();
 
-        const embed = await SeriesHelper.GenerateSeriesViewPage(Number(seriesid), Number(page), interaction.user.id);
+        const embed = await SeriesHelper.GenerateSeriesViewPage(Number(seriesid), Number(page), interaction.user.id, disableColourFilter);
 
         await interaction.editReply({
             embeds: [ embed!.embed ],

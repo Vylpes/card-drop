@@ -19,7 +19,11 @@ export default class Series extends Command {
                         y
                             .setName("id")
                             .setDescription("The series id")
-                            .setRequired(true)))
+                            .setRequired(true))
+                    .addBooleanOption(y =>
+                        y
+                            .setName("disable_colour_filter")
+                            .setDescription("Show all cards in full colour")))
             .addSubcommand(x =>
                 x
                     .setName("list")
@@ -42,8 +46,9 @@ export default class Series extends Command {
 
     private async ViewSeries(interaction: ChatInputCommandInteraction) {
         const id = interaction.options.get("id");
+        const disableColourFilter = interaction.options.getBoolean("disable_colour_filter") ?? false;
 
-        AppLogger.LogSilly("Commands/Series/View", `Parameters: id=${id?.value}`);
+        AppLogger.LogSilly("Commands/Series/View", `Parameters: id=${id?.value}, disableColourFilter=${disableColourFilter}`);
 
         await interaction.deferReply();
 
@@ -59,7 +64,7 @@ export default class Series extends Command {
         }
 
         try {
-            const embed = await SeriesHelper.GenerateSeriesViewPage(series.id, 0, interaction.user.id);
+            const embed = await SeriesHelper.GenerateSeriesViewPage(series.id, 0, interaction.user.id, disableColourFilter);
 
             await interaction.followUp({
                 embeds: [ embed!.embed ],
