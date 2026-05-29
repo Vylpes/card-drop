@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`EXPECT CommandBuilder to be defined 1`] = `
+{
+  "contexts": undefined,
+  "default_member_permissions": undefined,
+  "default_permission": undefined,
+  "description": "View your inventory",
+  "description_localizations": undefined,
+  "dm_permission": undefined,
+  "integration_types": undefined,
+  "name": "inventory",
+  "name_localizations": undefined,
+  "nsfw": undefined,
+  "options": [
+    {
+      "autocomplete": undefined,
+      "choices": undefined,
+      "description": "The page to start with",
+      "description_localizations": undefined,
+      "max_value": undefined,
+      "min_value": undefined,
+      "name": "page",
+      "name_localizations": undefined,
+      "required": false,
+      "type": 10,
+    },
+    {
+      "autocomplete": undefined,
+      "choices": [
+        {
+          "name": "ID",
+          "name_localizations": undefined,
+          "value": "id",
+        },
+        {
+          "name": "Name",
+          "name_localizations": undefined,
+          "value": "name",
+        },
+        {
+          "name": "Type",
+          "name_localizations": undefined,
+          "value": "type",
+        },
+      ],
+      "description": "How to sort cards in each series",
+      "description_localizations": undefined,
+      "max_length": undefined,
+      "min_length": undefined,
+      "name": "sortby",
+      "name_localizations": undefined,
+      "required": false,
+      "type": 3,
+    },
+    {
+      "description": "The user to view (Defaults to yourself)",
+      "description_localizations": undefined,
+      "name": "user",
+      "name_localizations": undefined,
+      "required": false,
+      "type": 6,
+    },
+  ],
+  "type": 1,
+}
+`;

@@ -9,8 +9,9 @@ export default class Inventory extends ButtonEvent {
 
         const userid = interaction.customId.split(" ")[1];
         const page = interaction.customId.split(" ")[2];
+        const sortBy = InventoryHelper.ParseSortBy(interaction.customId.split(" ")[3]);
 
-        AppLogger.LogSilly("Button/Inventory", `Parameters: userid=${userid}, page=${page}`);
+        AppLogger.LogSilly("Button/Inventory", `Parameters: userid=${userid}, page=${page}, sortBy=${sortBy}`);
 
         await interaction.deferUpdate();
 
@@ -24,7 +25,7 @@ export default class Inventory extends ButtonEvent {
         try {
             AppLogger.LogVerbose("Button/Inventory", `Generating inventory page ${page} for ${member.user.username} with id ${member.user.id}`);
 
-            const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page));
+            const embed = await InventoryHelper.GenerateInventoryPage(member.user.username, member.user.id, Number(page), sortBy);
 
             if (!embed) {
                 await interaction.followUp("No page for user found.");
