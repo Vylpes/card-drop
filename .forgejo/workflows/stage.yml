@@ -3,6 +3,7 @@ name: Deploy To Stage
 on:
   push:
     branches:
+      - main
       - develop
       - hotfix/*
       - release/*
