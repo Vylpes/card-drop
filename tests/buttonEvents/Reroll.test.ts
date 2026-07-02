@@ -9,7 +9,6 @@ import GetCardsHelper from "../../src/helpers/DropHelpers/GetCardsHelper";
 import Inventory from "../../src/database/entities/app/Inventory";
 import DropEmbedHelper from "../../src/helpers/DropHelpers/DropEmbedHelper";
 import CardConstants from "../../src/constants/CardConstants";
-import AppLogger from "../../src/client/appLogger";
 import * as uuid from "uuid";
 
 jest.mock("../../src/database/entities/app/Config");
