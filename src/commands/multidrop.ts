@@ -11,6 +11,7 @@ import path from "path";
 import Inventory from "../database/entities/app/Inventory";
 import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 import MultidropEmbedHelper from "../helpers/DropHelpers/MultidropEmbedHelper";
+import MultidropRecord from "../database/entities/app/Multidrop";
 
 export default class Multidrop extends Command {
     constructor() {
@@ -59,6 +60,9 @@ export default class Multidrop extends Command {
             return;
         }
 
+        const multidrop = new MultidropRecord(interaction.user.id);
+        await multidrop.Save(MultidropRecord, multidrop);
+
         await interaction.deferReply();
 
         try {
@@ -79,7 +83,7 @@ export default class Multidrop extends Command {
 
             const embed = MultidropEmbedHelper.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
 
-            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id);
+            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, multidrop.Id);
 
             await interaction.editReply({
                 embeds: [ embed ],
