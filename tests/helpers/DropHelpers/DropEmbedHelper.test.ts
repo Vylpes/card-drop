@@ -1,5 +1,4 @@
 import DropEmbedHelper from "../../../src/helpers/DropHelpers/DropEmbedHelper";
-import AppLogger from "../../../src/client/appLogger";
 import { ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { DropResult } from "../../../src/contracts/SeriesMetadata";
 import { CardRarity } from "../../../src/constants/CardRarity";

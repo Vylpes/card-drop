@@ -8,7 +8,6 @@ import User from "../../src/database/entities/app/User";
 import GetCardsHelper from "../../src/helpers/DropHelpers/GetCardsHelper";
 import Inventory from "../../src/database/entities/app/Inventory";
 import MultidropEmbedHelper from "../../src/helpers/DropHelpers/MultidropEmbedHelper";
-import AppLogger from "../../src/client/appLogger";
 import * as fs from "fs";
 
 jest.mock("../../src/database/entities/app/Config");
