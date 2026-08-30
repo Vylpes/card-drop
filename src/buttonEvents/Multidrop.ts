@@ -1,8 +1,7 @@
-import { AttachmentBuilder, ButtonInteraction, EmbedBuilder } from "discord.js";
+import { AttachmentBuilder, ButtonInteraction } from "discord.js";
 import { ButtonEvent } from "../type/buttonEvent";
 import AppLogger from "../client/appLogger";
 import Inventory from "../database/entities/app/Inventory";
-import EmbedColours from "../constants/EmbedColours";
 import { readFileSync } from "fs";
 import path from "path";
 import ErrorMessages from "../constants/ErrorMessages";
@@ -10,6 +9,7 @@ import User from "../database/entities/app/User";
 import { GetSacrificeAmount } from "../constants/CardRarity";
 import GetCardsHelper from "../helpers/DropHelpers/GetCardsHelper";
 import MultidropEmbedHelper from "../helpers/DropHelpers/MultidropEmbedHelper";
+import MultidropRecord from "../database/entities/app/Multidrop";
 
 export default class Multidrop extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
@@ -31,9 +31,15 @@ export default class Multidrop extends ButtonEvent {
     private async Keep(interaction: ButtonInteraction) {
         const cardNumber = interaction.customId.split(" ")[2];
         let cardsRemaining = Number(interaction.customId.split(" ")[3]) || 0;
-        const userId = interaction.customId.split(" ")[4];
+        const multidropId = interaction.customId.split(" ")[4];
+        const multidrop = await MultidropRecord.FetchOneById(MultidropRecord, multidropId);
 
-        if (interaction.user.id != userId) {
+        if (!multidrop) {
+            await interaction.reply("Your multidrop has expired! Please buy a new one!");
+            return;
+        }
+
+        if (interaction.user.id != multidrop.UserId) {
             await interaction.reply("You're not the user this drop was made for!");
             return;
         }
@@ -69,18 +75,22 @@ export default class Multidrop extends ButtonEvent {
         }
 
         await inventory.Save(Inventory, inventory);
+        multidrop.Keep(cardNumber);
+        await multidrop.Save(MultidropRecord, multidrop);
 
         // Pack has ran out
         if (cardsRemaining == 0) {
-            const embed = new EmbedBuilder()
-                .setDescription("Your multidrop has ran out! Please buy a new one!")
-                .setColor(EmbedColours.Ok);
+            const embed = MultidropEmbedHelper.GenerateSummaryEmbed(
+                multidrop.CardsKept,
+                multidrop.CardsSacrificed,
+                user.Currency);
 
             await interaction.update({
                 embeds: [ embed ],
                 attachments: [],
                 components: [],
             });
+            await MultidropRecord.Remove(MultidropRecord, multidrop);
 
             return;
         }
@@ -116,7 +126,7 @@ export default class Multidrop extends ButtonEvent {
 
             const embed = MultidropEmbedHelper.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
 
-            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id, cardsRemaining < 0);
+            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, multidrop.Id, cardsRemaining < 0);
 
             await interaction.editReply({
                 embeds: [ embed ],
@@ -133,9 +143,15 @@ export default class Multidrop extends ButtonEvent {
     private async Sacrifice(interaction: ButtonInteraction) {
         const cardNumber = interaction.customId.split(" ")[2];
         let cardsRemaining = Number(interaction.customId.split(" ")[3]) || 0;
-        const userId = interaction.customId.split(" ")[4];
+        const multidropId = interaction.customId.split(" ")[4];
+        const multidrop = await MultidropRecord.FetchOneById(MultidropRecord, multidropId);
 
-        if (interaction.user.id != userId) {
+        if (!multidrop) {
+            await interaction.reply("Your multidrop has expired! Please buy a new one!");
+            return;
+        }
+
+        if (interaction.user.id != multidrop.UserId) {
             await interaction.reply("You're not the user this drop was made for!");
             return;
         }
@@ -167,18 +183,22 @@ export default class Multidrop extends ButtonEvent {
         user.AddCurrency(sacrificeAmount);
 
         await user.Save(User, user);
+        multidrop.Sacrifice(cardNumber);
+        await multidrop.Save(MultidropRecord, multidrop);
 
         // Pack has ran out
         if (cardsRemaining == 0) {
-            const embed = new EmbedBuilder()
-                .setDescription("Your multidrop has ran out! Please buy a new one!")
-                .setColor(EmbedColours.Ok);
+            const embed = MultidropEmbedHelper.GenerateSummaryEmbed(
+                multidrop.CardsKept,
+                multidrop.CardsSacrificed,
+                user.Currency);
 
             await interaction.update({
                 embeds: [ embed ],
                 attachments: [],
                 components: [],
             });
+            await MultidropRecord.Remove(MultidropRecord, multidrop);
 
             return;
         }
@@ -206,7 +226,7 @@ export default class Multidrop extends ButtonEvent {
 
             const embed = MultidropEmbedHelper.GenerateMultidropEmbed(randomCard, quantityClaimed, imageFileName, cardsRemaining, undefined, user.Currency);
 
-            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, interaction.user.id, cardsRemaining < 0);
+            const row = MultidropEmbedHelper.GenerateMultidropButtons(randomCard, cardsRemaining, multidrop.Id, cardsRemaining < 0);
 
             await interaction.editReply({
                 embeds: [ embed ],

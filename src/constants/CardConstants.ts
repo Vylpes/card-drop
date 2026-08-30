@@ -7,6 +7,7 @@ export default class CardConstants {
     // Multidrop
     public static readonly MultidropCost = this.ClaimCost * 10;
     public static readonly MultidropQuantity = 11;
+    public static readonly MultidropExpiry = 1000 * 60 * 60 * 24;
 
     // Effects
     public static readonly UnusedChanceUpMin = 0.25;
