@@ -6,7 +6,6 @@ import User from "../../src/database/entities/app/User";
 import Inventory from "../../src/database/entities/app/Inventory";
 import GetCardsHelper from "../../src/helpers/DropHelpers/GetCardsHelper";
 import MultidropEmbedHelper from "../../src/helpers/DropHelpers/MultidropEmbedHelper";
-import AppLogger from "../../src/client/appLogger";
 import * as fs from "fs";
 
 jest.mock("../../src/database/entities/app/User");
@@ -24,7 +23,7 @@ jest.mock("fs", () => ({
  * Configures User, Inventory, embed helpers, and card lookup mocks needed for
  * the Keep action to proceed past the initial guard checks.
  */
-function setupCommonMocks(interaction: ButtonInteractionType) {
+function setupCommonMocks() {
     const user = {
         Currency: 500,
         AddCurrency: jest.fn(),
@@ -59,7 +58,7 @@ describe("execute", () => {
             // customId: "multidrop keep cardNumber cardsRemaining userId"
             interaction.customId = "multidrop keep cardId 1 userId";
 
-            setupCommonMocks(interaction);
+            setupCommonMocks();
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "series/next.png", type: 1 },
@@ -88,7 +87,7 @@ describe("execute", () => {
             interaction = GenerateButtonInteractionMock();
             interaction.customId = "multidrop keep cardId 1 userId";
 
-            setupCommonMocks(interaction);
+            setupCommonMocks();
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "http://example.com/card.png", type: 1 },
@@ -116,7 +115,7 @@ describe("execute", () => {
             interaction = GenerateButtonInteractionMock();
             interaction.customId = "multidrop keep cardId 1 userId";
 
-            setupCommonMocks(interaction);
+            setupCommonMocks();
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "https://example.com/card.png", type: 1 },
