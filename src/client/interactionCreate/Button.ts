@@ -4,7 +4,7 @@ import AppLogger from "../appLogger";
 
 export default class Button {
     public static async onButtonClicked(interaction: ButtonInteraction) {
-        const item = CoreClient.buttonEvents.find(x => x.ButtonId == interaction.customId.split(" ")[0]);
+        const item = CoreClient.buttonEvents.find(x => x.ButtonId === interaction.customId.split(" ")[0]);
 
         if (!item) {
             AppLogger.LogVerbose("Button", `Event not found: ${interaction.customId}`);
@@ -16,12 +16,18 @@ export default class Button {
         try {
             AppLogger.LogDebug("Button", `Executing ${interaction.customId}`);
 
-            item.Event.execute(interaction);
+            await item.Event.execute(interaction);
         } catch (e) {
             AppLogger.LogError("Button", `Error occurred while executing event: ${interaction.customId}`);
-            AppLogger.LogError("Button", e as string);
+            AppLogger.CatchError("Button", e);
 
-            await interaction.reply("An error occurred while executing the event");
+            // The handler may already have replied or deferred before throwing, in which
+            // case replying again would throw a second, unrelated error.
+            if (interaction.replied || interaction.deferred) {
+                await interaction.followUp("An error occurred while executing the event");
+            } else {
+                await interaction.reply("An error occurred while executing the event");
+            }
         }
     }
 }
