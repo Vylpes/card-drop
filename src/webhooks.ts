@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import express, { Application } from "express";
 import ReloadDB from "./hooks/ReloadDB";
+import RequireWebhookToken from "./hooks/middleware/RequireWebhookToken";
 import AppLogger from "./client/appLogger";
 
 export default class Webhooks {
@@ -20,7 +21,7 @@ export default class Webhooks {
     }
 
     private setupRoutes() {
-        this.app.post("/api/reload-db", ReloadDB);
+        this.app.post("/api/reload-db", RequireWebhookToken, ReloadDB);
     }
 
     private setupListen() {
