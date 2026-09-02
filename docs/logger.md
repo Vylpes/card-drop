@@ -8,10 +8,18 @@ We are using [winston](https://www.npmjs.com/package/winston) for the main
 logging function, [winston-daily-rotate-file](https://www.npmjs.com/package/winston-daily-rotate-file)
 to rotate the log files, and [winston-discord-transport](https://www.npmjs.com/package/winston-discord-transport) to send to discord via a webhook.
 
+The logger is used by nearly every handler, so see
+[development.md](development.md) for how those handlers are registered and
+dispatched, and the [README](../README.md) for the build, test and lint
+commands.
+
 ## Setup
 
 Setting the logger up is as easy as adding the following environment variables.
-Examples are also supplied in `.env.example` in the root of the project.
+Examples are also supplied in `.env.example` in the root of the project, along
+with the rest of the bot's configuration. None of these are in
+`requiredConfigs` in `src/bot.ts`, so the bot starts without them and falls
+back to the defaults listed below.
 
 - `BOT_LOGLEVEL` = The level in which to output logs, default is `info`. Valid
 values are `error`, `warn`, `info`, `verbose`, `debug`, and `silly`. Setting
@@ -31,3 +39,10 @@ The file will rotate once it reaches 20mb or on a new day, whatever comes
 first.
 
 The files will auto delete logs older than 14 days.
+
+## Testing
+
+`AppLogger` is mocked out in tests (`jest.mock("../src/client/appLogger")`)
+rather than exercised for real, so suites do not write log files. Where the log
+call is the observable outcome of a code path - an error being swallowed, for
+instance - assert on the mock rather than leaving the branch untested.
