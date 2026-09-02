@@ -4,6 +4,11 @@ The bot relies on an external sync between the local file system and Google
 Drive in order to get newer cards to the bot. This is done using
 [Rclone](https://rclone.org/).
 
+The environment variables named below live in `.env`, with every supported
+variable listed in `.env.example`. See [cards.md](cards.md) for the layout of
+the folder being synced, and [development.md](development.md) for the
+development workflow.
+
 The process for this is done by once the `/gdrivesync` command is executed by
 an admin user of the bot, which calls the system shell to run rclone to the
 card folder.
@@ -25,6 +30,12 @@ upon failure to sync properly. It is disabled once errors are resolved.
 
 The reason for safe mode is to ensure that the bot stays online for admins to
 be able to resync the bot in case there's an error without it crashing.
+
+Changes to the sync or to safe mode should be covered by tests that assert the
+behaviour with the environment variables both present and missing, and that
+safe mode is entered on failure rather than the bot exiting. The admin check on
+`/gdrivesync` (`$BOT_ADMINS`) is worth asserting explicitly, since it is the
+only thing standing between an arbitrary user and a shell command.
 
 ## Google Drive
 Please see the Rclone documentation on how to setup a remote using Google
