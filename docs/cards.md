@@ -68,6 +68,20 @@ cards:
 - Card 1001 is the same, except has a custom "subseries" name which will
   override the main series name if shown, helpful for an "other" category.
 
+### Validation
+
+Metadata is validated when each JSON file is loaded.
+
+- `type` must be a JSON number in the Card Type table below (e.g. `1`). String
+  values such as `"1"` are **rejected**, not coerced — otherwise strict
+  equality checks in drop / inventory / stats would silently drop the card.
+- Series `id` may be either a number or a numeric string (`"28"`); numeric
+  strings are coerced to integers on load.
+
+If a file fails validation (or fails to parse), that load aborts, the error is
+logged with the file path and card/series id, and safe mode is activated — the
+same behaviour as a corrupt JSON file. Invalid cards are never kept in memory.
+
 ### Card Type
 
 <table>
