@@ -46,7 +46,7 @@ export default class AppLogger {
                 )}));
         }
 
-        if (process.env.BOT_LOG_DISCORD_ENABLE == "true") {
+        if (process.env.BOT_LOG_DISCORD_ENABLE === "true") {
             if (process.env.BOT_LOG_DISCORD_WEBHOOK) {
                 logger.add(new DiscordTransport({
                     webhook: process.env.BOT_LOG_DISCORD_WEBHOOK.toString(),
@@ -54,7 +54,7 @@ export default class AppLogger {
                     level: process.env.BOT_LOG_DISCORD_LEVEL,
                 }));
             } else {
-                throw "BOT_LOG_DISCORD_WEBHOOK is required to enable discord logger support.";
+                throw new Error("BOT_LOG_DISCORD_WEBHOOK is required to enable discord logger support.");
             }
         }
 

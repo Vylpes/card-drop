@@ -13,7 +13,7 @@ export default class SeriesHelper {
         const itemsPerPage = 9;
 
         const series = cloneDeep(CoreClient.Cards)
-            .find(x => x.id == seriesId);
+            .find(x => x.id === seriesId);
 
         if (!series) {
             AppLogger.LogVerbose("Helpers/SeriesHelper", `Unable to find series: ${seriesId}`);
@@ -28,7 +28,7 @@ export default class SeriesHelper {
             return null;
         }
 
-        const cardsOnPage = series.cards.splice(page * itemsPerPage, itemsPerPage);
+        const cardsOnPage = series.cards.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
         const description = cardsOnPage
             .map(x => `[${x.id}] ${x.name} (${CardRarityToString(x.type)})`)
@@ -47,12 +47,12 @@ export default class SeriesHelper {
                     .setCustomId(`series view ${seriesId} ${page - 1}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page == 0),
+                    .setDisabled(page === 0),
                 new ButtonBuilder()
                     .setCustomId(`series view ${seriesId} ${page + 1}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page + 1 == totalPages));
+                    .setDisabled(page + 1 === totalPages));
 
         const buffer = await ImageHelper.GenerateCardImageGrid(cardsOnPage.map(x => ({id: x.id, path: x.path})), userId);
         const image = new AttachmentBuilder(buffer, { name: "page.png" });
@@ -75,7 +75,7 @@ export default class SeriesHelper {
             return null;
         }
 
-        const seriesOnPage = series.splice(page * itemsPerPage, itemsPerPage);
+        const seriesOnPage = series.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
         const description = seriesOnPage
             .map(x => `[${x.id}] ${x.name} (${x.cards.length} cards)`)
@@ -93,12 +93,12 @@ export default class SeriesHelper {
                     .setCustomId(`series list ${page - 1}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page == 0),
+                    .setDisabled(page === 0),
                 new ButtonBuilder()
                     .setCustomId(`series list ${page + 1}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page + 1 == totalPages));
+                    .setDisabled(page + 1 === totalPages));
 
         return { embed, row };
     }

@@ -50,10 +50,10 @@ export default class ImageHelper {
 
                 const imageData = Jimp.fromBitmap(bitmap);
 
-                if (userId != null) {
+                if (userId !== undefined) {
                     const claimed = await Inventory.FetchOneByCardNumberAndUserId(userId, card.id);
 
-                    if (!claimed || claimed.Quantity == 0) {
+                    if (!claimed || claimed.Quantity === 0) {
                         imageData.greyscale();
                     }
                 }
@@ -68,9 +68,10 @@ export default class ImageHelper {
 
                 ctx.drawImage(image, imageX, imageY);
             }
-            catch {
-                // TODO: Enable once we've investigated a fix
-                //AppLogger.CatchError("ImageHelper", e);
+            catch (e) {
+                // A single unreadable card must not fail the whole grid, so the error is
+                // logged and the remaining cards are still drawn.
+                AppLogger.CatchError("ImageHelper/GenerateCardImageGrid", e);
             }
         }
 

@@ -108,7 +108,7 @@ export default class TimeLengthInput {
     private GetValue(designation: string): number {
         const valueSplit = this.value.split(" ");
 
-        const desString = valueSplit.find(x => x.charAt(x.length - 1) == designation);
+        const desString = valueSplit.find(x => x.charAt(x.length - 1) === designation);
 
         if (!desString) return 0;
 
