@@ -5,7 +5,15 @@ perspective of the development side and doesn't go into details of syncing
 from an external place such as with the Google Drive Sync function.
 
 The cards will be put into the `$DATA_DIR/cards` folder. `$DATA_DIR` is
-configured in the `.env` file.
+configured in the `.env` file, with every supported variable listed in
+`.env.example`. For syncing cards from an external source see
+[google-drive-sync.md](google-drive-sync.md), and for the development
+workflow see [development.md](development.md).
+
+> Changes to the metadata format or to how the cards folder is read should come
+with tests covering the parse, in particular the card type weightings and the
+`subseries` override, since a bad parse puts the bot into safe mode rather than
+failing loudly.
 
 ## Folder Structure
 
