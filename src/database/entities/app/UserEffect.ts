@@ -30,7 +30,7 @@ export default class UserEffect extends AppBaseEntity {
     }
 
     public UseEffect(whenExpires: Date): boolean {
-        if (this.Unused == 0) {
+        if (this.Unused === 0) {
             return false;
         }
 

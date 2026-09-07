@@ -27,7 +27,7 @@ const requiredConfigs: string[] = [
 
 requiredConfigs.forEach(config => {
     if (!process.env[config]) {
-        throw `${config} is required in .env`;
+        throw new Error(`${config} is required in .env`);
     }
 });
 
@@ -40,7 +40,7 @@ Registry.RegisterCommands();
 Registry.RegisterButtonEvents();
 Registry.RegisterStringDropdownEvents();
 
-if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == "true") {
+if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO === "true") {
     console.log("Card directory not found, syncing...");
 
     CoreClient.AllowDrops = false;
@@ -48,7 +48,7 @@ if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO 
     exec(`rclone sync card-drop-gdrive: ${process.cwd()}/cards`, async (error: ExecException | null) => {
         if (error) {
             console.error(error.code);
-            throw `Error while running sync command. Code: ${error.code}`;
+            throw new Error(`Error while running sync command. Code: ${error.code}`);
         } else {
             console.log("Synced successfully.");
             CoreClient.AllowDrops = true;

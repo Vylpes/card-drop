@@ -38,7 +38,7 @@ export default class InventoryHelper {
 
         const inventory = await Inventory.FetchAllByUserId(userid);
 
-        if (!inventory || inventory.length == 0) return undefined;
+        if (!inventory || inventory.length === 0) return undefined;
 
         const clientCards = cloneDeep(CoreClient.Cards);
 
@@ -47,8 +47,8 @@ export default class InventoryHelper {
             .filter(x => {
                 x.cards = x.cards
                     .sort((a, b) => b.type - a.type)
-                    .filter(y => inventory.find(z => z.CardNumber == y.id))
-                    .filter(y => inventory.find(z => z.CardNumber == y.id)!.Quantity > 0);
+                    .filter(y => inventory.find(z => z.CardNumber === y.id))
+                    .filter(y => inventory.find(z => z.CardNumber === y.id)!.Quantity > 0);
 
                 return x;
             });
@@ -63,7 +63,7 @@ export default class InventoryHelper {
                 const pageCards: InventoryPageCards[] = [];
 
                 for (const card of cards) {
-                    const item = inventory.find(x => x.CardNumber == card.id);
+                    const item = inventory.find(x => x.CardNumber === card.id);
 
                     if (!item) {
                         continue;
@@ -106,12 +106,12 @@ export default class InventoryHelper {
                     .setCustomId(`inventory ${userid} ${page - 1}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page == 0),
+                    .setDisabled(page === 0),
                 new ButtonBuilder()
                     .setCustomId(`inventory ${userid} ${page + 1}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page + 1 == pages.length));
+                    .setDisabled(page + 1 === pages.length));
 
         let pageNum = 0;
 
@@ -121,7 +121,7 @@ export default class InventoryHelper {
             new StringSelectMenuOptionBuilder()
                 .setLabel(`${x.name} (${x.seriesSubpage + 1})`.substring(0, 100))
                 .setDescription(`Page ${pageNum + 1}`)
-                .setDefault(currentPage.id == x.id)
+                .setDefault(currentPage.id === x.id)
                 .setValue(`${userid} ${pageNum++}`));
 
         const currentPageIndex = allPageOptions.indexOf(allPageOptions.find(x => x.data.default)!);

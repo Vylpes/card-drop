@@ -49,7 +49,7 @@ export default class Trade extends Command {
 
         AppLogger.LogSilly("Commands/Trade", `Parameters: user=${user.id}, give=${give.value}, receive=${receive.value}`);
 
-        if (interaction.user.id == user.id) {
+        if (interaction.user.id === user.id) {
             await interaction.reply("You can not create a trade with yourself.");
             return;
         }

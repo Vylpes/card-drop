@@ -59,7 +59,7 @@ export class CoreClient extends Client {
 
         const loglevel = process.env.BOT_LOGLEVEL ?? "info";
 
-        AppLogger.InitialiseLogger(loglevel, CoreClient.Environment == Environment.Local);
+        AppLogger.InitialiseLogger(loglevel, CoreClient.Environment === Environment.Local);
 
         AppLogger.LogInfo("Client", "Initialising Client");
 
@@ -119,7 +119,7 @@ export class CoreClient extends Client {
             ServerId: serverId
         };
 
-        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) === CoreClient.Environment) {
             CoreClient._commandItems.push(item);
 
             AppLogger.LogVerbose("Client", `Registered Command: ${name}`);
@@ -139,7 +139,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -162,7 +162,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -174,7 +174,7 @@ export class CoreClient extends Client {
 
     public static RegisterChannelUpdateEvent(fn: (channel: DMChannel | NonThreadGuildBasedChannel) => void) {
         if (this._eventExecutors) {
-            this._eventExecutors.ChannelCreate.push(fn);
+            this._eventExecutors.ChannelUpdate.push(fn);
         } else {
             this._eventExecutors = {
                 ChannelCreate: [],
@@ -185,7 +185,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -208,7 +208,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -231,7 +231,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -254,7 +254,7 @@ export class CoreClient extends Client {
                 GuildCreate: [ fn ],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -277,7 +277,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [ fn ],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -300,7 +300,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [ fn ],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -310,9 +310,9 @@ export class CoreClient extends Client {
         AppLogger.LogVerbose("Client", "Registered Guild Member Remove Event");
     }
 
-    public static GuildMemebrUpdate(fn: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => void) {
+    public static RegisterGuildMemberUpdateEvent(fn: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => void) {
         if (this._eventExecutors) {
-            this._eventExecutors.GuildMemebrUpdate.push(fn);
+            this._eventExecutors.GuildMemberUpdate.push(fn);
         } else {
             this._eventExecutors = {
                 ChannelCreate: [],
@@ -323,7 +323,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [ fn ],
+                GuildMemberUpdate: [ fn ],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -346,7 +346,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [ fn ],
                 MessageDelete: [],
                 MessageUpdate: []
@@ -369,7 +369,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [ fn ],
                 MessageUpdate: []
@@ -392,7 +392,7 @@ export class CoreClient extends Client {
                 GuildCreate: [],
                 GuildMemberAdd: [],
                 GuildMemberRemove: [],
-                GuildMemebrUpdate: [],
+                GuildMemberUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
                 MessageUpdate: [ fn ]
@@ -409,7 +409,7 @@ export class CoreClient extends Client {
             Environment: environment
         };
 
-        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) === CoreClient.Environment) {
             CoreClient._buttonEvents.push(item);
 
             AppLogger.LogVerbose("Client", `Registered Button Event: ${buttonId}`);
@@ -423,7 +423,7 @@ export class CoreClient extends Client {
             Environment: environment
         };
 
-        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) === CoreClient.Environment) {
             CoreClient._stringDropdowns.push(item);
 
             AppLogger.LogVerbose("Client", `Registered String Dropdown Event: ${dropdownId}`);

@@ -19,7 +19,7 @@ export default class Resync extends Command {
 
         const whitelistedUsers = process.env.BOT_ADMINS!.split(",");
 
-        if (!whitelistedUsers.find(x => x == interaction.user.id)) {
+        if (!whitelistedUsers.find(x => x === interaction.user.id)) {
             await interaction.reply("Only whitelisted users can use this command.");
             return;
         }
@@ -29,7 +29,7 @@ export default class Resync extends Command {
         const result = await CardMetadataFunction.Execute(true);
 
         if (result) {
-            if (await Config.GetValue("safemode") == "true") {
+            if (await Config.GetValue("safemode") === "true") {
                 AppLogger.LogInfo("Commands/Resync", "Resync successful, safe mode disabled");
 
                 await Config.SetValue("safemode", "false");

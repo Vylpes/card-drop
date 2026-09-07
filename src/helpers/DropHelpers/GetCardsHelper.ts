@@ -46,7 +46,7 @@ export default class GetCardsHelper {
 
         const allCards = CoreClient.Cards
             .flatMap(x => x.cards)
-            .filter(x => x.type == rarity);
+            .filter(x => x.type === rarity);
 
         const randomCardIndex = Math.floor(Math.random() * allCards.length);
 
@@ -73,10 +73,10 @@ export default class GetCardsHelper {
 
         const card = CoreClient.Cards
             .flatMap(x => x.cards)
-            .find(x => x.id == cardNumber);
+            .find(x => x.id === cardNumber);
 
         const series = CoreClient.Cards
-            .find(x => x.cards.find(y => y.id == card?.id));
+            .find(x => x.cards.find(y => y.id === card?.id));
 
         AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Card: ${card?.id} ${card?.name}`);
         AppLogger.LogSilly("CardDropHelperMetadata/GetCardByCardNumber", `Series: ${series?.id} ${series?.name}`);

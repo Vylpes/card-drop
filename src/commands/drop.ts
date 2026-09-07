@@ -29,7 +29,7 @@ export default class Drop extends Command {
             return;
         }
 
-        if (await Config.GetValue("safemode") == "true") {
+        if (await Config.GetValue("safemode") === "true") {
             AppLogger.LogWarn("Commands/Drop", ErrorMessages.SafeMode);
             await interaction.reply(ErrorMessages.SafeMode);
             return;

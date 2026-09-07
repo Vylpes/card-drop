@@ -27,7 +27,7 @@ export default class Multidrop extends Command {
             return;
         }
 
-        if (await Config.GetValue("safemode") == "true") {
+        if (await Config.GetValue("safemode") === "true") {
             AppLogger.LogWarn("Commands/Multidrop", ErrorMessages.SafeMode);
             await interaction.reply(ErrorMessages.SafeMode);
             return;

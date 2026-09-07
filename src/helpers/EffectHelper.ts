@@ -37,7 +37,7 @@ export default class EffectHelper {
         const effect = await UserEffect.FetchOneByUserIdAndName(userId, name);
         const now = new Date();
 
-        if (!effect || effect.Unused == 0) {
+        if (!effect || effect.Unused === 0) {
             return false;
         }
 
@@ -116,12 +116,12 @@ export default class EffectHelper {
                     .setCustomId(`effects list ${page - 1}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page == 1),
+                    .setDisabled(page === 1),
                 new ButtonBuilder()
                     .setCustomId(`effects list ${page + 1}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page == totalPages),
+                    .setDisabled(page === totalPages),
             );
 
         return {

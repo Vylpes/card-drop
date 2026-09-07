@@ -10,7 +10,7 @@ export default async function Buy(interaction: ChatInputCommandInteraction) {
 
     const result = await EffectHelper.GenerateEffectBuyEmbed(interaction.user.id, idValue, quantityValue, false);
 
-    if (typeof result == "string") {
+    if (typeof result === "string") {
         await interaction.reply(result);
         return;
     }

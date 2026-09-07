@@ -14,6 +14,13 @@ export default [
     js.configs.recommended,
     ...ts.configs.recommended,
     {
+        // Separate from the files-scoped rules below so eqeqeq is actually enforced
+        // (those "./src"/"./tests" globs currently match no files).
+        rules: {
+            eqeqeq: ["error", "always", { null: "ignore" }],
+        },
+    },
+    {
         languageOptions: {
             globals: {
                 exports: "writable",

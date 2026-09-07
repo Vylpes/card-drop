@@ -32,7 +32,7 @@ export default class Dropnumber extends Command {
 
         const card = CoreClient.Cards
             .flatMap(x => x.cards)
-            .find(x => x.id == cardNumber.value);
+            .find(x => x.id === cardNumber.value);
 
         if (!card) {
             await interaction.reply("Card not found");

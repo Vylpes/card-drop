@@ -34,7 +34,7 @@ export default class Droprarity extends Command {
 
         const rarityType = CardRarityParse(rarity.value.toString());
 
-        if (rarityType == CardRarity.Unknown) {
+        if (rarityType === CardRarity.Unknown) {
             await interaction.reply("Invalid rarity");
             return;
         }

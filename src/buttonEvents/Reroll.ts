@@ -17,7 +17,7 @@ import {GetSacrificeAmount} from "../constants/CardRarity";
 export default class Reroll extends ButtonEvent {
     public override async execute(interaction: ButtonInteraction) {
         const cardId = interaction.customId.split(" ")[1];
-        const doSacrifice = interaction.customId.split(" ")[2] == "true";
+        const doSacrifice = interaction.customId.split(" ")[2] === "true";
 
         if (!cardId) {
             AppLogger.LogError("Button/Reroll", "cardId is undefined");
@@ -29,7 +29,7 @@ export default class Reroll extends ButtonEvent {
             return;
         }
 
-        if (await Config.GetValue("safemode") == "true") {
+        if (await Config.GetValue("safemode") === "true") {
             AppLogger.LogWarn("Button/Reroll", "Safe Mode is active, refusing to send next drop.");
 
             await interaction.reply("Safe Mode has been activated, please resync to continue.");

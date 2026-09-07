@@ -151,7 +151,7 @@ export default class Trade extends ButtonEvent {
 
         AppLogger.LogSilly("Button/Trade/DeclineTrade", `Parameters: user1UserId=${user1UserId}, user2UserId=${user2UserId}, user1CardNumber=${user1CardNumber}, user2CardNumber=${user2CardNumber}, timeoutId=${timeoutId}`);
 
-        if (interaction.user.id != user1UserId && interaction.user.id !== user2UserId) {
+        if (interaction.user.id !== user1UserId && interaction.user.id !== user2UserId) {
             await interaction.reply("You are not the user who the trade is intended for");
             return;
         }

@@ -65,7 +65,7 @@ export default class Buy {
 
         const generatedEmbed = await EffectHelper.GenerateEffectBuyEmbed(interaction.user.id, id, quantityNumber, true);
 
-        if (typeof generatedEmbed == "string") {
+        if (typeof generatedEmbed === "string") {
             await interaction.reply(generatedEmbed);
             return;
         }
@@ -104,7 +104,7 @@ export default class Buy {
 
         const generatedEmbed = await EffectHelper.GenerateEffectBuyEmbed(interaction.user.id, id, quantityNumber, true);
 
-        if (typeof generatedEmbed == "string") {
+        if (typeof generatedEmbed === "string") {
             await interaction.reply(generatedEmbed);
             return;
         }

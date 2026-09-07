@@ -26,7 +26,7 @@ export default class CardMetadataFunction {
     public static async Execute(overrideSafeMode: boolean = false): Promise<CardMetadataResult> {
         AppLogger.LogInfo("Functions/CardMetadataFunction", "Executing");
 
-        if (!overrideSafeMode && await Config.GetValue("safemode") == "true") {
+        if (!overrideSafeMode && await Config.GetValue("safemode") === "true") {
             AppLogger.LogWarn("Functions/CardMetadataFunction", "Safe Mode is active, refusing to resync");
 
             return {
@@ -43,15 +43,15 @@ export default class CardMetadataFunction {
             const allCards = CoreClient.Cards.flatMap(x => x.cards);
 
             const totalCards = allCards.length;
-            const bronzeCards = allCards.filter(x => x.type == CardRarity.Bronze)
+            const bronzeCards = allCards.filter(x => x.type === CardRarity.Bronze)
                 .length;
-            const silverCards = allCards.filter(x => x.type == CardRarity.Silver)
+            const silverCards = allCards.filter(x => x.type === CardRarity.Silver)
                 .length;
-            const goldCards = allCards.filter(x => x.type == CardRarity.Gold)
+            const goldCards = allCards.filter(x => x.type === CardRarity.Gold)
                 .length;
-            const mangaCards = allCards.filter(x => x.type == CardRarity.Manga)
+            const mangaCards = allCards.filter(x => x.type === CardRarity.Manga)
                 .length;
-            const legendaryCards = allCards.filter(x => x.type == CardRarity.Legendary)
+            const legendaryCards = allCards.filter(x => x.type === CardRarity.Legendary)
                 .length;
 
             AppLogger.LogInfo("Functions/CardMetadataFunction", `Loaded ${totalCards} cards to database (${bronzeCards} bronze, ${silverCards} silver, ${goldCards} gold, ${mangaCards} manga, ${legendaryCards} legendary)`);
