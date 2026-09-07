@@ -72,7 +72,7 @@ export default class Droprarity extends Command {
             await interaction.editReply({
                 embeds: [ embed ],
                 files: files,
-                components: [ row ],
+                components: [ row ]
             });
         } catch (e) {
             AppLogger.CatchError("Droprarity", e);

@@ -109,16 +109,16 @@ export default class Trade extends ButtonEvent {
                 {
                     name: `${user1User.username} Receives`,
                     value: `${user2Item.id}: ${user2Item.name} x${user2Quantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: `${user2User.username} Receives`,
                     value: `${user1Item.id}: ${user1Item.name} x${user1Quantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Complete",
-                    value: new Date().toLocaleString(),
+                    value: new Date().toLocaleString()
                 }
             ]);
 
@@ -133,7 +133,7 @@ export default class Trade extends ButtonEvent {
                     .setCustomId("trade expired decline")
                     .setLabel("Decline")
                     .setStyle(ButtonStyle.Danger)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.update({ embeds: [ tradeEmbed ], components: [ row ]});
@@ -183,16 +183,16 @@ export default class Trade extends ButtonEvent {
                 {
                     name: `${user1User.username} Receives`,
                     value: `${user2Item.id}: ${user2Item.name} x${user2Quantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: `${user2User.username} Receives`,
                     value: `${user1Item.id}: ${user1Item.name} x${user1Quantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Declined",
-                    value: new Date().toLocaleString(),
+                    value: new Date().toLocaleString()
                 }
             ]);
 
@@ -207,7 +207,7 @@ export default class Trade extends ButtonEvent {
                     .setCustomId("trade expired decline")
                     .setLabel("Decline")
                     .setStyle(ButtonStyle.Danger)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.update({ embeds: [ tradeEmbed ], components: [ row ]});

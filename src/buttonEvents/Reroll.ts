@@ -57,7 +57,7 @@ export default class Reroll extends ButtonEvent {
             const oldRow = DropEmbedHelper.GenerateDropButtons(cardData, "", interaction.user.id, true, false);
 
             interaction.message.edit({
-                components: [ oldRow ],
+                components: [ oldRow ]
             });
 
             const sacrificeAmount = GetSacrificeAmount(cardData.card.type);
@@ -116,7 +116,7 @@ export default class Reroll extends ButtonEvent {
             await interaction.editReply({
                 embeds: [ embed ],
                 files: files,
-                components: [ row ],
+                components: [ row ]
             });
         } catch (e) {
             AppLogger.LogError("Button/Reroll", `Error sending next drop for card ${randomCard.card.id}: ${e}`);

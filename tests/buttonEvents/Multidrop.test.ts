@@ -15,7 +15,7 @@ jest.mock("../../src/helpers/DropHelpers/MultidropEmbedHelper");
 jest.mock("../../src/client/appLogger");
 jest.mock("fs", () => ({
     ...jest.requireActual("fs"),
-    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image")),
+    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image"))
 }));
 
 /**
@@ -27,14 +27,14 @@ function setupCommonMocks() {
     const user = {
         Currency: 500,
         AddCurrency: jest.fn(),
-        Save: jest.fn(),
+        Save: jest.fn()
     } as unknown as User;
 
     (User.FetchOneById as jest.Mock).mockResolvedValue(user);
     (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({
         Quantity: 1,
         AddQuantity: jest.fn(),
-        Save: jest.fn(),
+        Save: jest.fn()
     });
     (MultidropEmbedHelper.GenerateMultidropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
     (MultidropEmbedHelper.GenerateMultidropButtons as jest.Mock).mockReturnValue({ type: "Button" });
@@ -42,7 +42,7 @@ function setupCommonMocks() {
     // Setup GetCardsHelper.GetCardByCardNumber for the Keep action (cardNumber = "cardId")
     (GetCardsHelper.GetCardByCardNumber as jest.Mock).mockReturnValue({
         card: { id: "cardId", name: "Card", type: 1, path: "series/card.png" },
-        series: { id: 1, name: "Series", cards: [] },
+        series: { id: 1, name: "Series", cards: [] }
     });
 }
 
@@ -62,7 +62,7 @@ describe("execute", () => {
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "series/next.png", type: 1 },
-                series: { id: 1, name: "Series", cards: [] },
+                series: { id: 1, name: "Series", cards: [] }
             });
 
             const multidrop = new Multidrop();
@@ -91,7 +91,7 @@ describe("execute", () => {
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "http://example.com/card.png", type: 1 },
-                series: { id: 1, name: "Series", cards: [] },
+                series: { id: 1, name: "Series", cards: [] }
             });
 
             const multidrop = new Multidrop();
@@ -119,7 +119,7 @@ describe("execute", () => {
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "https://example.com/card.png", type: 1 },
-                series: { id: 1, name: "Series", cards: [] },
+                series: { id: 1, name: "Series", cards: [] }
             });
 
             const multidrop = new Multidrop();

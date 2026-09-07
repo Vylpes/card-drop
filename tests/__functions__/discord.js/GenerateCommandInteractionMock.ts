@@ -10,10 +10,10 @@ export default function GenerateCommandInteractionMock(options?: {
         isChatInputCommand: jest.fn().mockReturnValue(true),
         options: {
             getSubcommand: jest.fn().mockReturnValue(options?.subcommand),
-            get: jest.fn(),
+            get: jest.fn()
         },
         user: {
-            id: "userId",
-        },
+            id: "userId"
+        }
     };
 }

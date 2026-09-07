@@ -15,6 +15,6 @@ export default async function List(interaction: ButtonInteraction) {
 
     await interaction.update({
         embeds: [ result.embed ],
-        components: [ result.row ],
+        components: [ result.row ]
     });
 }

@@ -34,13 +34,13 @@ export default async function Use(interaction: ChatInputCommandInteraction) {
             {
                 name: "Effect",
                 value: effectDetail.friendlyName,
-                inline: true,
+                inline: true
             },
             {
                 name: "Length",
                 value: timeLengthInput.GetLengthShort(),
-                inline: true,
-            },
+                inline: true
+            }
         ]);
 
     const row = new ActionRowBuilder<ButtonBuilder>()
@@ -52,11 +52,11 @@ export default async function Use(interaction: ChatInputCommandInteraction) {
             new ButtonBuilder()
                 .setLabel("Cancel")
                 .setCustomId(`effects use cancel ${effectDetail.id}`)
-                .setStyle(ButtonStyle.Danger),
+                .setStyle(ButtonStyle.Danger)
         ]);
 
     await interaction.reply({
         embeds: [ embed ],
-        components: [ row ],
+        components: [ row ]
     });
 }

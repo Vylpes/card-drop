@@ -15,9 +15,9 @@ class EffectDetail {
 };
 
 export const EffectDetails = new Map<string, EffectDetail>([
-    [ "unclaimed", new EffectDetail("unclaimed", "Unclaimed Chance Up", 10 * 60 * 1000, 100, 3 * 60 * 60 * 1000) ],
+    [ "unclaimed", new EffectDetail("unclaimed", "Unclaimed Chance Up", 10 * 60 * 1000, 100, 3 * 60 * 60 * 1000) ]
 ]);
 
 export const EffectChoices = [
-    { name: "Unclaimed Chance Up", value: "unclaimed" },
+    { name: "Unclaimed Chance Up", value: "unclaimed" }
 ];

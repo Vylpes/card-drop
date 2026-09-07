@@ -65,7 +65,7 @@ export default class Id extends Command {
         try {
             await interaction.editReply({
                 embeds: [ embed ],
-                files: files,
+                files: files
             });
         } catch (e) {
             AppLogger.LogError("Commands/View", `Error sending view for card ${card.id}: ${e}`);

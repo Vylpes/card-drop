@@ -1,7 +1,7 @@
 import { CardRarity } from "../../src/constants/CardRarity";
 import {
     isValidCardRarity,
-    validateSeriesMetadataFile,
+    validateSeriesMetadataFile
 } from "../../src/Functions/CardMetadataValidator";
 
 const filePath = "/data/cards/Series 1/1.json";
@@ -15,10 +15,10 @@ function validSeries(overrides: Record<string, unknown> = {}) {
                 id: "1000",
                 name: "Card 1000",
                 type: CardRarity.Bronze,
-                path: "Series 1/BRONZE/1000.jpg",
-            },
+                path: "Series 1/BRONZE/1000.jpg"
+            }
         ],
-        ...overrides,
+        ...overrides
     };
 }
 
@@ -28,7 +28,7 @@ function validCard(overrides: Record<string, unknown> = {}) {
         name: "Card 1000",
         type: CardRarity.Bronze,
         path: "Series 1/BRONZE/1000.jpg",
-        ...overrides,
+        ...overrides
     };
 }
 
@@ -39,8 +39,8 @@ describe("isValidCardRarity", () => {
         CardRarity.Silver,
         CardRarity.Gold,
         CardRarity.Manga,
-        CardRarity.Legendary,
-    ])("ACCEPTS numeric rarity %p", (rarity) => {
+        CardRarity.Legendary
+    ])("ACCEPTS numeric rarity %p", rarity => {
         expect(isValidCardRarity(rarity)).toBe(true);
     });
 
@@ -55,8 +55,8 @@ describe("isValidCardRarity", () => {
         6,
         -1,
         {},
-        [],
-    ])("REJECTS %p", (value) => {
+        []
+    ])("REJECTS %p", value => {
         expect(isValidCardRarity(value)).toBe(false);
     });
 });
@@ -76,10 +76,10 @@ describe("validateSeriesMetadataFile", () => {
                 cards: [
                     validCard({
                         subseries: "Other",
-                        colour: "#ffffff",
-                    }),
-                ],
-            }),
+                        colour: "#ffffff"
+                    })
+                ]
+            })
         ], filePath);
 
         expect(result[0].cards[0].subseries).toBe("Other");
@@ -89,8 +89,8 @@ describe("validateSeriesMetadataFile", () => {
     test("REJECTS string type \"1\"", () => {
         expect(() => validateSeriesMetadataFile([
             validSeries({
-                cards: [validCard({ type: "1" })],
-            }),
+                cards: [validCard({ type: "1" })]
+            })
         ], filePath)).toThrow(/card 1000: type must be an integer CardRarity/);
     });
 
@@ -99,31 +99,31 @@ describe("validateSeriesMetadataFile", () => {
         delete (card as { type?: unknown }).type;
 
         expect(() => validateSeriesMetadataFile([
-            validSeries({ cards: [card] }),
+            validSeries({ cards: [card] })
         ], filePath)).toThrow(/card 1000: type must be an integer CardRarity.*undefined/);
     });
 
     test("REJECTS null type", () => {
         expect(() => validateSeriesMetadataFile([
             validSeries({
-                cards: [validCard({ type: null })],
-            }),
+                cards: [validCard({ type: null })]
+            })
         ], filePath)).toThrow(/card 1000: type must be an integer CardRarity.*null/);
     });
 
     test("REJECTS non-numeric garbage type", () => {
         expect(() => validateSeriesMetadataFile([
             validSeries({
-                cards: [validCard({ type: "bronze" })],
-            }),
+                cards: [validCard({ type: "bronze" })]
+            })
         ], filePath)).toThrow(/card 1000: type must be an integer CardRarity.*"bronze"/);
     });
 
     test("REJECTS out-of-range type", () => {
         expect(() => validateSeriesMetadataFile([
             validSeries({
-                cards: [validCard({ type: 99 })],
-            }),
+                cards: [validCard({ type: 99 })]
+            })
         ], filePath)).toThrow(/card 1000: type must be an integer CardRarity.*99/);
     });
 
@@ -134,7 +134,7 @@ describe("validateSeriesMetadataFile", () => {
 
     test("COERCES numeric-string series id", () => {
         const result = validateSeriesMetadataFile([
-            validSeries({ id: "28" }),
+            validSeries({ id: "28" })
         ], filePath);
 
         expect(result[0].id).toBe(28);
@@ -142,15 +142,15 @@ describe("validateSeriesMetadataFile", () => {
 
     test("REJECTS non-numeric series id", () => {
         expect(() => validateSeriesMetadataFile([
-            validSeries({ id: "abc" }),
+            validSeries({ id: "abc" })
         ], filePath)).toThrow(/id must be an integer or numeric string.*"abc"/);
     });
 
     test("includes file path in error messages", () => {
         expect(() => validateSeriesMetadataFile([
             validSeries({
-                cards: [validCard({ type: "1" })],
-            }),
+                cards: [validCard({ type: "1" })]
+            })
         ], filePath)).toThrow(filePath);
     });
 });

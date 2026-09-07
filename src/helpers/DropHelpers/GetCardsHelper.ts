@@ -64,7 +64,7 @@ export default class GetCardsHelper {
 
         return {
             series: series,
-            card: card,
+            card: card
         };
     }
 

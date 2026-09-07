@@ -23,7 +23,7 @@ jest.mock("../../src/client/appLogger");
 jest.mock("uuid");
 jest.mock("fs", () => ({
     ...jest.requireActual("fs"),
-    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image")),
+    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image"))
 }));
 
 beforeEach(() => {
@@ -37,7 +37,7 @@ describe("execute", () => {
         const randomCard = {
             card: {
                 id: "cardId",
-                path: "https://google.com/",
+                path: "https://google.com/"
             }
         };
 
@@ -50,19 +50,19 @@ describe("execute", () => {
             user = {
                 Currency: 500,
                 RemoveCurrency: jest.fn().mockReturnValue(true),
-                Save: jest.fn(),
+                Save: jest.fn()
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);
             (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue(randomCard);
             (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({
-                Quantity: 1,
+                Quantity: 1
             });
             (DropEmbedHelper.GenerateDropEmbed as jest.Mock).mockReturnValue({
-                type: "Embed",
+                type: "Embed"
             });
             (DropEmbedHelper.GenerateDropButtons as jest.Mock).mockReturnValue({
-                type: "Button",
+                type: "Button"
             });
 
             (uuid.v4 as jest.Mock).mockReturnValue("uuid");
@@ -116,7 +116,7 @@ describe("execute", () => {
             expect(interaction.editReply).toHaveBeenCalledWith({
                 embeds: [ { type: "Embed" } ],
                 files: [],
-                components: [ { type: "Button" } ],
+                components: [ { type: "Button" } ]
             });
         });
 
@@ -125,7 +125,7 @@ describe("execute", () => {
             const localRandomCard = {
                 card: {
                     id: "cardId",
-                    path: "series/card.png",
+                    path: "series/card.png"
                 }
             };
 
@@ -141,13 +141,13 @@ describe("execute", () => {
                 const localUser = {
                     Currency: 500,
                     RemoveCurrency: jest.fn().mockReturnValue(true),
-                    Save: jest.fn(),
+                    Save: jest.fn()
                 } as unknown as User;
 
                 (User.FetchOneById as jest.Mock).mockResolvedValue(localUser);
                 (GetCardsHelper.FetchCard as jest.Mock).mockResolvedValue(localRandomCard);
                 (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({
-                    Quantity: 1,
+                    Quantity: 1
                 });
                 (DropEmbedHelper.GenerateDropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
                 (DropEmbedHelper.GenerateDropButtons as jest.Mock).mockReturnValue({ type: "Button" });
@@ -185,7 +185,7 @@ describe("execute", () => {
             const newUser = {
                 Currency: CardConstants.StartingCurrency,
                 RemoveCurrency: jest.fn().mockReturnValue(true),
-                Save: jest.fn(),
+                Save: jest.fn()
             };
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(null);
@@ -221,7 +221,7 @@ describe("execute", () => {
             const user = {
                 Currency: 0,
                 RemoveCurrency: jest.fn().mockReturnValue(false),
-                Save: jest.fn(),
+                Save: jest.fn()
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);
@@ -251,7 +251,7 @@ describe("execute", () => {
             const user = {
                 Currency: 500,
                 RemoveCurrency: jest.fn().mockReturnValue(true),
-                Save: jest.fn(),
+                Save: jest.fn()
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);
@@ -279,7 +279,7 @@ describe("execute", () => {
         const randomCard = {
             card: {
                 id: "cardId",
-                path: "https://example.com/card.png",
+                path: "https://example.com/card.png"
             }
         };
 
@@ -293,7 +293,7 @@ describe("execute", () => {
             const user = {
                 Currency: 500,
                 RemoveCurrency: jest.fn().mockReturnValue(true),
-                Save: jest.fn(),
+                Save: jest.fn()
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);

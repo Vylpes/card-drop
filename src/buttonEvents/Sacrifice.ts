@@ -76,7 +76,7 @@ export default class Sacrifice extends ButtonEvent {
             `Rarity: ${cardRarityString}`,
             `Quantity Owned: ${cardInInventory.Quantity}`,
             `Quantity To Sacrifice: ${quantity}`,
-            `Sacrifice Amount: ${cardValue}`,
+            `Sacrifice Amount: ${cardValue}`
         ];
 
         const embed = new EmbedBuilder()
@@ -96,12 +96,12 @@ export default class Sacrifice extends ButtonEvent {
                     .setCustomId("sacrifice cancel")
                     .setLabel("Cancel")
                     .setStyle(ButtonStyle.Secondary)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.update({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
     }
 
@@ -143,7 +143,7 @@ export default class Sacrifice extends ButtonEvent {
             `Rarity: ${cardRarityString}`,
             `Quantity Owned: ${cardInInventory.Quantity}`,
             `Quantity To Sacrifice: ${quantity}`,
-            `Sacrifice Amount: ${cardValue}`,
+            `Sacrifice Amount: ${cardValue}`
         ];
 
         const embed = new EmbedBuilder()
@@ -163,12 +163,12 @@ export default class Sacrifice extends ButtonEvent {
                     .setCustomId("sacrifice cancel")
                     .setLabel("Cancel")
                     .setStyle(ButtonStyle.Secondary)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.update({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
     }
 
@@ -215,7 +215,7 @@ export default class Sacrifice extends ButtonEvent {
             `Rarity: ${cardRarityString}`,
             `Quantity Owned: ${cardQuantity}`,
             `Quantity To Sacrifice: ${quantity}`,
-            `Sacrifice Amount: ${cardValue}`,
+            `Sacrifice Amount: ${cardValue}`
         ];
 
         const embed = new EmbedBuilder()
@@ -235,13 +235,13 @@ export default class Sacrifice extends ButtonEvent {
                     .setCustomId("sacrifice cancel")
                     .setLabel("Cancel")
                     .setStyle(ButtonStyle.Secondary)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.update({
             embeds: [ embed ],
             components: [ row ],
-            attachments: [],
+            attachments: []
         });
     }
 }

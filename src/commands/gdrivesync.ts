@@ -26,7 +26,7 @@ export default class Gdrivesync extends Command {
 
         await interaction.reply({
             content: "Syncing, this might take a while...",
-            ephemeral: true,
+            ephemeral: true
         });
 
         CoreClient.AllowDrops = false;

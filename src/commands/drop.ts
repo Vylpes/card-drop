@@ -96,7 +96,7 @@ export default class Drop extends Command {
             await interaction.editReply({
                 embeds: [ embed ],
                 files: files,
-                components: [ row ],
+                components: [ row ]
             });
 
         } catch (e) {

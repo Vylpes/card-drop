@@ -67,7 +67,7 @@ export default class GetUnclaimedCardsHelper {
 
         return {
             series: series,
-            card: card,
+            card: card
         };
     }
 }

@@ -20,10 +20,10 @@ describe("Buy", () => {
                     if (name === "id") return { value: "unclaimed" };
                     if (name === "quantity") return { value: 1 };
                     return null;
-                }),
+                })
             },
             user: { id: "userId" },
-            reply: jest.fn(),
+            reply: jest.fn()
         };
     });
 
@@ -52,7 +52,7 @@ describe("Buy", () => {
         expect(interaction.reply).toHaveBeenCalledTimes(1);
         expect(interaction.reply).toHaveBeenCalledWith({
             embeds: [embed],
-            components: [row],
+            components: [row]
         });
     });
 

@@ -23,26 +23,26 @@ export default [
                 console: "writable",
                 jest: "writable",
             },
-    
+
             ecmaVersion: 6,
             sourceType: "script",
         },
-    
+
         files: [
-            "./src",
-            "./tests"
+            "src/**/*",
+            "tests/**/*"
         ],
-    
+
         rules: {
             camelcase: "error",
             "brace-style": ["error", "1tbs"],
             "comma-dangle": ["error", "never"],
-    
+
             "comma-spacing": ["error", {
                 before: false,
                 after: true,
             }],
-    
+
             "comma-style": ["error", "last"],
             "arrow-body-style": ["error", "as-needed"],
             "arrow-parens": ["error", "as-needed"],

@@ -67,8 +67,7 @@ export default class ImageHelper {
                 const imageY = imageHeight * y;
 
                 ctx.drawImage(image, imageX, imageY);
-            }
-            catch {
+            } catch {
                 // TODO: Enable once we've investigated a fix
                 //AppLogger.CatchError("ImageHelper", e);
             }

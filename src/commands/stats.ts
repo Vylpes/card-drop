@@ -35,7 +35,7 @@ export default class Stats extends Command {
             `${silverCards} Silver`,
             `${goldCards} Gold`,
             `${mangaCards} Manga`,
-            `${legendaryCards} Legendary`,
+            `${legendaryCards} Legendary`
         ].join("\n");
 
         const embed = new EmbedBuilder()
@@ -45,7 +45,7 @@ export default class Stats extends Command {
 
         await interaction.reply({
             embeds: [ embed ],
-            ephemeral: true,
+            ephemeral: true
         });
     }
 }

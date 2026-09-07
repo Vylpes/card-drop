@@ -7,9 +7,7 @@ export default class AppLogger {
     public static Logger: Logger;
 
     public static InitialiseLogger(logLevel: string, outputToConsole: boolean) {
-        const customFormat = format.printf(({ level, message, timestamp, label }) => {
-            return `${timestamp} [${label}] ${level}: ${message}`;
-        });
+        const customFormat = format.printf(({ level, message, timestamp, label }) => `${timestamp} [${label}] ${level}: ${message}`);
 
         const logger = createLogger({
             level: logLevel,
@@ -22,7 +20,7 @@ export default class AppLogger {
                 customFormat,
             ),
             defaultMeta: { service: "bot" },
-            transports: [],
+            transports: []
         });
 
         if (process.env.DATA_DIR) {
@@ -33,7 +31,7 @@ export default class AppLogger {
                 dirname: logDir,
                 datePattern: "YYYY-MM-DD-HH",
                 maxSize: "20m",
-                maxFiles: "14d",
+                maxFiles: "14d"
             }));
         }
 
@@ -51,7 +49,7 @@ export default class AppLogger {
                 logger.add(new DiscordTransport({
                     webhook: process.env.BOT_LOG_DISCORD_WEBHOOK.toString(),
                     defaultMeta: { service: process.env.BOT_LOG_DISCORD_SERVICE },
-                    level: process.env.BOT_LOG_DISCORD_LEVEL,
+                    level: process.env.BOT_LOG_DISCORD_LEVEL
                 }));
             } else {
                 throw "BOT_LOG_DISCORD_WEBHOOK is required to enable discord logger support.";

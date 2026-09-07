@@ -57,7 +57,7 @@ export default class Sacrifice extends Command {
             `Rarity: ${cardRarityString}`,
             `Quantity Owned: ${cardInInventory.Quantity}`,
             `Quantity To Sacrifice: ${quantity}`,
-            `Sacrifice Amount: ${cardValue}`,
+            `Sacrifice Amount: ${cardValue}`
         ];
 
         const embed = new EmbedBuilder()
@@ -75,12 +75,12 @@ export default class Sacrifice extends Command {
                 new ButtonBuilder()
                     .setCustomId(`sacrifice cancel ${interaction.user.id} ${cardnumber.value!} ${quantity}`)
                     .setLabel("Cancel")
-                    .setStyle(ButtonStyle.Secondary),
+                    .setStyle(ButtonStyle.Secondary)
             ]);
 
         await interaction.reply({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
     }
 }

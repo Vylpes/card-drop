@@ -22,7 +22,7 @@ const requiredConfigs: string[] = [
     "DB_AUTH_PASS",
     "DB_SYNC",
     "DB_LOGGING",
-    "EXPRESS_PORT",
+    "EXPRESS_PORT"
 ];
 
 requiredConfigs.forEach(config => {
@@ -33,7 +33,7 @@ requiredConfigs.forEach(config => {
 
 const client = new CoreClient([
     IntentsBitField.Flags.Guilds,
-    IntentsBitField.Flags.GuildMembers,
+    IntentsBitField.Flags.GuildMembers
 ]);
 
 Registry.RegisterCommands();

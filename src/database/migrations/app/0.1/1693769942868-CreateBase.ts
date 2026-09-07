@@ -5,7 +5,7 @@ export class CreateBase1693769942868 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         MigrationHelper.Up("1693769942868-CreateBase", "0.1", [
-            "01-table/Inventory",
+            "01-table/Inventory"
         ], queryRunner);
     }
 

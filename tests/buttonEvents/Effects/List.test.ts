@@ -12,7 +12,7 @@ beforeEach(() => {
 
     (EffectHelper.GenerateEffectListEmbed as jest.Mock).mockResolvedValue({
         embed: mock<EmbedBuilder>(),
-        row: mock<ActionRowBuilder<ButtonBuilder>>(),
+        row: mock<ActionRowBuilder<ButtonBuilder>>()
     });
 
     interaction = mock<ButtonInteraction>();

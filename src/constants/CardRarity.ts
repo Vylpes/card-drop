@@ -12,24 +12,24 @@ export enum CardRarity {
 export const CardRarityChoices = [
     {
         name: "Bronze",
-        value: "bronze",
+        value: "bronze"
     },
     {
         name: "Silver",
-        value: "silver",
+        value: "silver"
     },
     {
         name: "Gold",
-        value: "gold",
+        value: "gold"
     },
     {
         name: "Manga",
-        value: "manga",
+        value: "manga"
     },
     {
         name: "Legendary",
-        value: "legendary",
-    },
+        value: "legendary"
+    }
 ];
 
 export function CardRarityToString(rarity: CardRarity): string {

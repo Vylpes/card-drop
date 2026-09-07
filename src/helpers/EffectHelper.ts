@@ -100,13 +100,13 @@ export default class EffectHelper {
                 {
                     name: "Active",
                     value: `${EffectDetails.get(activeEffect.Name)?.friendlyName}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Expires",
                     value: `<t:${Math.round(activeEffect.WhenExpires!.getTime() / 1000)}>`,
-                    inline: true,
-                },
+                    inline: true
+                }
             ]);
         }
 
@@ -126,7 +126,7 @@ export default class EffectHelper {
 
         return {
             embed,
-            row,
+            row
         };
     }
 
@@ -163,13 +163,13 @@ export default class EffectHelper {
                 {
                     name: "Cost",
                     value: `${totalCost}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Quantity",
                     value: `${quantity}`,
-                    inline: true,
-                },
+                    inline: true
+                }
             ]);
 
         const row = new ActionRowBuilder<ButtonBuilder>()
@@ -183,12 +183,12 @@ export default class EffectHelper {
                     .setCustomId(`effects buy cancel ${id} ${quantity}`)
                     .setLabel("Cancel")
                     .setStyle(ButtonStyle.Danger)
-                    .setDisabled(disabled),
+                    .setDisabled(disabled)
             ]);
 
         return {
             embed,
-            row,
+            row
         }
     }
 }

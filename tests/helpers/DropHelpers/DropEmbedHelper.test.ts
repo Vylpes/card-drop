@@ -13,13 +13,13 @@ describe("GenerateDropButtons", () => {
                 id: "cardId",
                 name: "Card Name",
                 type: CardRarity.Bronze,
-                path: "https://example.com/card.png",
+                path: "https://example.com/card.png"
             },
             series: {
                 id: 1,
                 name: "Series Name",
-                cards: [],
-            },
+                cards: []
+            }
         };
 
         // Act

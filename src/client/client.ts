@@ -116,7 +116,7 @@ export class CoreClient extends Client {
             Name: name,
             Environment: environment,
             Command: command,
-            ServerId: serverId,
+            ServerId: serverId
         };
 
         if ((environment & CoreClient.Environment) == CoreClient.Environment) {
@@ -142,7 +142,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -165,7 +165,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -188,7 +188,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -211,7 +211,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -234,7 +234,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -257,7 +257,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -280,7 +280,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -303,7 +303,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -326,7 +326,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [ fn ],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -349,7 +349,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [ fn ],
                 MessageDelete: [],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -372,7 +372,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [ fn ],
-                MessageUpdate: [],
+                MessageUpdate: []
             };
         }
 
@@ -395,7 +395,7 @@ export class CoreClient extends Client {
                 GuildMemebrUpdate: [],
                 MessageCreate: [],
                 MessageDelete: [],
-                MessageUpdate: [ fn ],
+                MessageUpdate: [ fn ]
             };
         }
 
@@ -406,7 +406,7 @@ export class CoreClient extends Client {
         const item: IButtonEventItem = {
             ButtonId: buttonId,
             Event: event,
-            Environment: environment,
+            Environment: environment
         };
 
         if ((environment & CoreClient.Environment) == CoreClient.Environment) {
@@ -420,7 +420,7 @@ export class CoreClient extends Client {
         const item: StringDropdownEventItem = {
             DropdownId: dropdownId,
             Event: event,
-            Environment: environment,
+            Environment: environment
         };
 
         if ((environment & CoreClient.Environment) == CoreClient.Environment) {
