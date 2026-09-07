@@ -13,17 +13,17 @@ export class Events {
 
         if (interaction.isChatInputCommand()) {
             AppLogger.LogVerbose("Client", `ChatInputCommand: ${interaction.commandName}`);
-            ChatInputCommand.onChatInput(interaction);
+            await ChatInputCommand.onChatInput(interaction);
         }
 
         if (interaction.isButton()) {
             AppLogger.LogVerbose("Client", `Button: ${interaction.customId}`);
-            Button.onButtonClicked(interaction);
+            await Button.onButtonClicked(interaction);
         }
 
         if (interaction.isStringSelectMenu()) {
             AppLogger.LogVerbose("Client", `StringDropdown: ${interaction.customId}`);
-            StringDropdown.onStringDropdownSelected(interaction);
+            await StringDropdown.onStringDropdownSelected(interaction);
         }
     }
 

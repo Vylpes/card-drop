@@ -15,7 +15,7 @@ export class Util {
         for (const command of globalCommands) {
             if (!command.Command.CommandBuilder) continue;
 
-            if ((command.Environment & CoreClient.Environment) == CoreClient.Environment) {
+            if ((command.Environment & CoreClient.Environment) === CoreClient.Environment) {
                 globalCommandData.push(command.Command.CommandBuilder);
             }
         }
@@ -23,7 +23,7 @@ export class Util {
         const guildIds: string[] = [];
 
         for (const command of guildCommands) {
-            if (!guildIds.find(x => x == command.ServerId)) {
+            if (!guildIds.find(x => x === command.ServerId)) {
                 guildIds.push(command.ServerId!);
             }
         }
@@ -42,10 +42,10 @@ export class Util {
         for (const guild of guildIds) {
             const guildCommandData: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">[] = [];
 
-            for (const command of guildCommands.filter(x => x.ServerId == guild)) {
+            for (const command of guildCommands.filter(x => x.ServerId === guild)) {
                 if (!command.Command.CommandBuilder) continue;
 
-                if ((command.Environment & CoreClient.Environment) == CoreClient.Environment) {
+                if ((command.Environment & CoreClient.Environment) === CoreClient.Environment) {
                     guildCommandData.push(command.Command.CommandBuilder);
                 }
             }
@@ -73,7 +73,7 @@ export class Util {
         client.on("guildCreate", (guild) => events.GuildCreate.forEach((fn) => fn(guild)));
         client.on("guildMemberAdd", (member) => events.GuildMemberAdd.forEach((fn) => fn(member)));
         client.on("guildMemberRemove", (member) => events.GuildMemberRemove.forEach((fn) => fn(member)));
-        client.on("guildMemberUpdate", (oldMember, newMember) => events.GuildMemebrUpdate.forEach((fn) => fn(oldMember, newMember)));
+        client.on("guildMemberUpdate", (oldMember, newMember) => events.GuildMemberUpdate.forEach((fn) => fn(oldMember, newMember)));
         client.on("messageCreate", (message) => events.MessageCreate.forEach((fn) => fn(message)));
         client.on("messageDelete", (message) => events.MessageDelete.forEach((fn) => fn(message)));
         client.on("messageUpdate", (oldMessage, newMessage) => events.MessageUpdate.forEach((fn) => fn(oldMessage, newMessage)));

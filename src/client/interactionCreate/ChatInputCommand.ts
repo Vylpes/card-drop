@@ -5,8 +5,8 @@ import AppLogger from "../appLogger";
 
 export default class ChatInputCommand {
     public static async onChatInput(interaction: ChatInputCommandInteraction) {
-        const item = CoreClient.commandItems.find(x => x.Name == interaction.commandName && !x.ServerId);
-        const itemForServer = CoreClient.commandItems.find(x => x.Name == interaction.commandName && x.ServerId == interaction.guildId);
+        const item = CoreClient.commandItems.find(x => x.Name === interaction.commandName && !x.ServerId);
+        const itemForServer = CoreClient.commandItems.find(x => x.Name === interaction.commandName && x.ServerId === interaction.guildId);
 
         let itemToUse: ICommandItem;
 
@@ -26,12 +26,18 @@ export default class ChatInputCommand {
         try {
             AppLogger.LogDebug("Command", `Executing ${interaction.commandName}`);
 
-            itemToUse.Command.execute(interaction);
+            await itemToUse.Command.execute(interaction);
         } catch (e) {
             AppLogger.LogError("ChatInputCommand", `Error occurred while executing command: ${interaction.commandName}`);
-            AppLogger.LogError("ChatInputCommand", e as string);
+            AppLogger.CatchError("ChatInputCommand", e);
 
-            await interaction.reply("An error occurred while executing the command");
+            // The command may already have replied or deferred before throwing, in which
+            // case replying again would throw a second, unrelated error.
+            if (interaction.replied || interaction.deferred) {
+                await interaction.followUp("An error occurred while executing the command");
+            } else {
+                await interaction.reply("An error occurred while executing the command");
+            }
         }
     }
 }

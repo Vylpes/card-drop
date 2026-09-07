@@ -1,6 +1,7 @@
 import { CronJob } from "cron";
 import { v4 } from "uuid";
 import { Primitive } from "../type/primitive";
+import AppLogger from "../client/appLogger";
 
 interface Timer {
     id: string;
@@ -27,7 +28,7 @@ export default class TimerHelper {
         const job = new CronJob(
             cronTime,
             () => {
-                onTick(context);
+                TimerHelper.RunTick(onTick, context);
             },
             null,
             false,
@@ -56,7 +57,7 @@ export default class TimerHelper {
     }
 
     public StartTimer(id: string) {
-        const timer = this._timers.find(x => x.id == id);
+        const timer = this._timers.find(x => x.id === id);
 
         if (!timer) return;
 
@@ -64,7 +65,7 @@ export default class TimerHelper {
     }
 
     public StopTimer(id: string) {
-        const timer = this._timers.find(x => x.id == id);
+        const timer = this._timers.find(x => x.id === id);
 
         if (!timer) return;
 
@@ -75,7 +76,23 @@ export default class TimerHelper {
         timer.job.start();
 
         if (timer.runOnStart) {
-            timer.onTick(timer.context);
+            TimerHelper.RunTick(timer.onTick, timer.context);
+        }
+    }
+
+    // Ticks are fired by cron, so there is nobody to await the result. Rejections are
+    // caught and logged here rather than surfacing as unhandled promise rejections.
+    private static RunTick(
+        onTick: ((context: Map<string, Primitive>) => void) | ((context: Map<string, Primitive>) => Promise<void>),
+        context: Map<string, Primitive>) {
+        try {
+            const result = onTick(context) as void | Promise<void>;
+
+            if (result instanceof Promise) {
+                result.catch(e => AppLogger.CatchError("Helpers/TimerHelper", e));
+            }
+        } catch (e) {
+            AppLogger.CatchError("Helpers/TimerHelper", e);
         }
     }
 }

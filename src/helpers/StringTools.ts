@@ -41,7 +41,7 @@ export default class StringTools {
     }
 
     public static IsHexCode(str: string): boolean {
-        if (str.length != 6) return false;
+        if (str.length !== 6) return false;
 
         const characters = "0123456789abcdefABCDEF";
 
