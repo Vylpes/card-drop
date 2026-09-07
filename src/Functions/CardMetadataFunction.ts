@@ -6,6 +6,7 @@ import { SeriesMetadata } from "../contracts/SeriesMetadata";
 import { CoreClient } from "../client/client";
 import AppLogger from "../client/appLogger";
 import {CardRarity} from "../constants/CardRarity";
+import { validateSeriesMetadataFile } from "./CardMetadataValidator";
 
 export interface CardMetadataResult {
     IsSuccess: boolean;
@@ -25,7 +26,7 @@ export default class CardMetadataFunction {
     public static async Execute(overrideSafeMode: boolean = false): Promise<CardMetadataResult> {
         AppLogger.LogInfo("Functions/CardMetadataFunction", "Executing");
 
-        if (!overrideSafeMode && await Config.GetValue("safemode") == "true") {
+        if (!overrideSafeMode && await Config.GetValue("safemode") === "true") {
             AppLogger.LogWarn("Functions/CardMetadataFunction", "Safe Mode is active, refusing to resync");
 
             return {
@@ -42,15 +43,15 @@ export default class CardMetadataFunction {
             const allCards = CoreClient.Cards.flatMap(x => x.cards);
 
             const totalCards = allCards.length;
-            const bronzeCards = allCards.filter(x => x.type == CardRarity.Bronze)
+            const bronzeCards = allCards.filter(x => x.type === CardRarity.Bronze)
                 .length;
-            const silverCards = allCards.filter(x => x.type == CardRarity.Silver)
+            const silverCards = allCards.filter(x => x.type === CardRarity.Silver)
                 .length;
-            const goldCards = allCards.filter(x => x.type == CardRarity.Gold)
+            const goldCards = allCards.filter(x => x.type === CardRarity.Gold)
                 .length;
-            const mangaCards = allCards.filter(x => x.type == CardRarity.Manga)
+            const mangaCards = allCards.filter(x => x.type === CardRarity.Manga)
                 .length;
-            const legendaryCards = allCards.filter(x => x.type == CardRarity.Legendary)
+            const legendaryCards = allCards.filter(x => x.type === CardRarity.Legendary)
                 .length;
 
             AppLogger.LogInfo("Functions/CardMetadataFunction", `Loaded ${totalCards} cards to database (${bronzeCards} bronze, ${silverCards} silver, ${goldCards} gold, ${mangaCards} manga, ${legendaryCards} legendary)`);
@@ -85,9 +86,10 @@ export default class CardMetadataFunction {
             try {
                 AppLogger.LogVerbose("Functions/CardMetadataFunction", `Reading file ${jsonPath}`);
                 const jsonFile = readFileSync(jsonPath);
-                const parsedJson: SeriesMetadata[] = JSON.parse(jsonFile.toString());
+                const parsedJson = JSON.parse(jsonFile.toString()) as unknown;
+                const validated = validateSeriesMetadataFile(parsedJson, jsonPath);
 
-                res.push(...parsedJson);
+                res.push(...validated);
             } catch (e) {
                 AppLogger.LogError("Functions/CardMetadataFunction", `Error reading file ${jsonPath}: ${e}`);
 

@@ -10,7 +10,7 @@ interface EventExecutors {
     GuildCreate: ((guild: Guild) => void)[],
     GuildMemberAdd: ((member: GuildMember) => void)[],
     GuildMemberRemove: ((member: GuildMember | PartialGuildMember) => void)[],
-    GuildMemebrUpdate: ((oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => void)[],
+    GuildMemberUpdate: ((oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => void)[],
     MessageCreate: ((message: Message<boolean>) => void)[],
     MessageDelete: ((message: Message<boolean> | PartialMessage) => void)[],
     MessageUpdate: ((oldMessage: Message<boolean> | PartialMessage, newMessage: Message<boolean> | PartialMessage) => void)[],

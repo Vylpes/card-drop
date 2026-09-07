@@ -56,7 +56,7 @@ export default class AppBaseEntity {
     public static async FetchOneById<T extends AppBaseEntity>(target: EntityTarget<T>, id: string, relations?: string[]): Promise<T | null> {
         const repository = AppDataSource.getRepository<T>(target);
 
-        const single = await repository.findOne({ where: ({ Id: id } as FindOptionsWhere<T>), relations: relations || {} });
+        const single = await repository.findOne({ where: ({ Id: id } as FindOptionsWhere<T>), relations: relations || [] });
 
         return single;
     }

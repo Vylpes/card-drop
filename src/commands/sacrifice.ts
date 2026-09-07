@@ -31,7 +31,7 @@ export default class Sacrifice extends Command {
 
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, cardnumber.value! as string);
 
-        if (!cardInInventory || cardInInventory.Quantity == 0) {
+        if (!cardInInventory || cardInInventory.Quantity === 0) {
             await interaction.reply("Unable to find card in your inventory.");
             return;
         }
