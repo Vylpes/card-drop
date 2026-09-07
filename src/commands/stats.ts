@@ -18,15 +18,15 @@ export default class Stats extends Command {
         const allCards = CoreClient.Cards.flatMap(x => x.cards);
 
         const totalCards = allCards.length;
-        const bronzeCards = allCards.filter(x => x.type == CardRarity.Bronze)
+        const bronzeCards = allCards.filter(x => x.type === CardRarity.Bronze)
             .length;
-        const silverCards = allCards.filter(x => x.type == CardRarity.Silver)
+        const silverCards = allCards.filter(x => x.type === CardRarity.Silver)
             .length;
-        const goldCards = allCards.filter(x => x.type == CardRarity.Gold)
+        const goldCards = allCards.filter(x => x.type === CardRarity.Gold)
             .length;
-        const mangaCards = allCards.filter(x => x.type == CardRarity.Manga)
+        const mangaCards = allCards.filter(x => x.type === CardRarity.Manga)
             .length;
-        const legendaryCards = allCards.filter(x => x.type == CardRarity.Legendary)
+        const legendaryCards = allCards.filter(x => x.type === CardRarity.Legendary)
             .length;
 
         const description = [

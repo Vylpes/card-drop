@@ -48,7 +48,7 @@ export default class Give extends Command {
     public override async execute(interaction: ChatInputCommandInteraction) {
         const whitelistedUsers = process.env.BOT_ADMINS!.split(",");
 
-        if (!whitelistedUsers.find(x => x == interaction.user.id)) {
+        if (!whitelistedUsers.find(x => x === interaction.user.id)) {
             await interaction.reply("Only whitelisted users can use this command.");
             return;
         }
@@ -69,7 +69,7 @@ export default class Give extends Command {
             return;
         }
 
-        if (await Config.GetValue("safemode") == "true") {
+        if (await Config.GetValue("safemode") === "true") {
             await interaction.reply("Safe Mode has been activated, please resync to continue.");
             return;
         }

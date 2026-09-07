@@ -31,17 +31,17 @@ export default class GetUnclaimedCardsHelper {
     public static async GetRandomCardByRarityUnclaimed(rarity: CardRarity, userId: string): Promise<DropResult | undefined> {
         const claimedCards = await Inventory.FetchAllByUserId(userId);
 
-        if (!claimedCards || claimedCards.length == 0) {
+        if (!claimedCards || claimedCards.length === 0) {
             // They don't have any cards, so safe to get any random card
             return GetCardsHelper.GetRandomCardByRarity(rarity);
         }
 
         const allCards = CoreClient.Cards
             .flatMap(x => x.cards)
-            .filter(x => x.type == rarity)
-            .filter(x => !claimedCards.find(y => y.CardNumber == x.id && y.Quantity > 0));
+            .filter(x => x.type === rarity)
+            .filter(x => !claimedCards.find(y => y.CardNumber === x.id && y.Quantity > 0));
 
-        if (!allCards || allCards.length == 0) {
+        if (!allCards || allCards.length === 0) {
             // There is no card left unclaimed, fallback to any card
             return GetCardsHelper.GetRandomCardByRarity(rarity);
         };

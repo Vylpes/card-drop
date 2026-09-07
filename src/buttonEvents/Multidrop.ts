@@ -33,7 +33,7 @@ export default class Multidrop extends ButtonEvent {
         let cardsRemaining = Number(interaction.customId.split(" ")[3]) || 0;
         const userId = interaction.customId.split(" ")[4];
 
-        if (interaction.user.id != userId) {
+        if (interaction.user.id !== userId) {
             await interaction.reply("You're not the user this drop was made for!");
             return;
         }
@@ -71,7 +71,7 @@ export default class Multidrop extends ButtonEvent {
         await inventory.Save(Inventory, inventory);
 
         // Pack has ran out
-        if (cardsRemaining == 0) {
+        if (cardsRemaining === 0) {
             const embed = new EmbedBuilder()
                 .setDescription("Your multidrop has ran out! Please buy a new one!")
                 .setColor(EmbedColours.Ok);
@@ -135,7 +135,7 @@ export default class Multidrop extends ButtonEvent {
         let cardsRemaining = Number(interaction.customId.split(" ")[3]) || 0;
         const userId = interaction.customId.split(" ")[4];
 
-        if (interaction.user.id != userId) {
+        if (interaction.user.id !== userId) {
             await interaction.reply("You're not the user this drop was made for!");
             return;
         }
@@ -169,7 +169,7 @@ export default class Multidrop extends ButtonEvent {
         await user.Save(User, user);
 
         // Pack has ran out
-        if (cardsRemaining == 0) {
+        if (cardsRemaining === 0) {
             const embed = new EmbedBuilder()
                 .setDescription("Your multidrop has ran out! Please buy a new one!")
                 .setColor(EmbedColours.Ok);
