@@ -65,17 +65,17 @@ export class Util {
 
     // Load the events
     loadEvents(client: Client, events: EventExecutors) {
-        client.on("channelCreate", (channel) => events.ChannelCreate.forEach((fn) => fn(channel)));
-        client.on("channelDelete", (channel) => events.ChannelDelete.forEach((fn) => fn(channel)));
-        client.on("channelUpdate", (channel) => events.ChannelUpdate.forEach((fn) => fn(channel)));
-        client.on("guildBanAdd", (ban) => events.GuildBanAdd.forEach((fn) => fn(ban)));
-        client.on("guildBanRemove", (ban) => events.GuildBanRemove.forEach((fn) => fn(ban)));
-        client.on("guildCreate", (guild) => events.GuildCreate.forEach((fn) => fn(guild)));
-        client.on("guildMemberAdd", (member) => events.GuildMemberAdd.forEach((fn) => fn(member)));
-        client.on("guildMemberRemove", (member) => events.GuildMemberRemove.forEach((fn) => fn(member)));
-        client.on("guildMemberUpdate", (oldMember, newMember) => events.GuildMemberUpdate.forEach((fn) => fn(oldMember, newMember)));
-        client.on("messageCreate", (message) => events.MessageCreate.forEach((fn) => fn(message)));
-        client.on("messageDelete", (message) => events.MessageDelete.forEach((fn) => fn(message)));
-        client.on("messageUpdate", (oldMessage, newMessage) => events.MessageUpdate.forEach((fn) => fn(oldMessage, newMessage)));
+        client.on("channelCreate", channel => events.ChannelCreate.forEach(fn => fn(channel)));
+        client.on("channelDelete", channel => events.ChannelDelete.forEach(fn => fn(channel)));
+        client.on("channelUpdate", channel => events.ChannelUpdate.forEach(fn => fn(channel)));
+        client.on("guildBanAdd", ban => events.GuildBanAdd.forEach(fn => fn(ban)));
+        client.on("guildBanRemove", ban => events.GuildBanRemove.forEach(fn => fn(ban)));
+        client.on("guildCreate", guild => events.GuildCreate.forEach(fn => fn(guild)));
+        client.on("guildMemberAdd", member => events.GuildMemberAdd.forEach(fn => fn(member)));
+        client.on("guildMemberRemove", member => events.GuildMemberRemove.forEach(fn => fn(member)));
+        client.on("guildMemberUpdate", (oldMember, newMember) => events.GuildMemberUpdate.forEach(fn => fn(oldMember, newMember)));
+        client.on("messageCreate", message => events.MessageCreate.forEach(fn => fn(message)));
+        client.on("messageDelete", message => events.MessageDelete.forEach(fn => fn(message)));
+        client.on("messageUpdate", (oldMessage, newMessage) => events.MessageUpdate.forEach(fn => fn(oldMessage, newMessage)));
     }
 }

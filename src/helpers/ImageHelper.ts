@@ -67,8 +67,7 @@ export default class ImageHelper {
                 const imageY = imageHeight * y;
 
                 ctx.drawImage(image, imageX, imageY);
-            }
-            catch (e) {
+            } catch (e) {
                 // A single unreadable card must not fail the whole grid, so the error is
                 // logged and the remaining cards are still drawn.
                 AppLogger.CatchError("ImageHelper/GenerateCardImageGrid", e);

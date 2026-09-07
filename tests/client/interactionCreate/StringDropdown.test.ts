@@ -20,7 +20,7 @@ function generateInteraction(customId: string): InteractionMock {
         replied: false,
         deferred: false,
         reply: jest.fn(),
-        followUp: jest.fn(),
+        followUp: jest.fn()
     };
 }
 
@@ -29,7 +29,7 @@ function registerDropdown(dropdownId: string, execute: jest.Mock) {
         {
             DropdownId: dropdownId,
             Event: { execute },
-            Environment: 0,
+            Environment: 0
         } as unknown as StringDropdownEventItem
     ]);
 }

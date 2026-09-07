@@ -13,8 +13,8 @@ jest.mock("jimp", () => ({
     Jimp: {
         read: jest.fn(),
         fromBitmap: jest.fn(),
-        fromBuffer: jest.fn(),
-    },
+        fromBuffer: jest.fn()
+    }
 }));
 
 const drawImage = jest.fn();
@@ -23,7 +23,7 @@ const toBuffer = jest.fn();
 function generateImageData() {
     return {
         greyscale: jest.fn(),
-        getBuffer: jest.fn().mockResolvedValue(Buffer.from("image")),
+        getBuffer: jest.fn().mockResolvedValue(Buffer.from("image"))
     };
 }
 
@@ -40,7 +40,7 @@ describe("GenerateCardImageGrid", () => {
         toBuffer.mockReturnValue(Buffer.from("grid"));
         (createCanvas as jest.Mock).mockReturnValue({
             getContext: jest.fn().mockReturnValue({ drawImage }),
-            toBuffer,
+            toBuffer
         });
         (existsSync as jest.Mock).mockReturnValue(true);
         (Jimp.read as jest.Mock).mockResolvedValue({ bitmap: "bitmap" });
