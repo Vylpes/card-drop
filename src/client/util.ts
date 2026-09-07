@@ -15,7 +15,7 @@ export class Util {
         for (const command of globalCommands) {
             if (!command.Command.CommandBuilder) continue;
 
-            if ((command.Environment & CoreClient.Environment) == CoreClient.Environment) {
+            if ((command.Environment & CoreClient.Environment) === CoreClient.Environment) {
                 globalCommandData.push(command.Command.CommandBuilder);
             }
         }
@@ -23,7 +23,7 @@ export class Util {
         const guildIds: string[] = [];
 
         for (const command of guildCommands) {
-            if (!guildIds.find(x => x == command.ServerId)) {
+            if (!guildIds.find(x => x === command.ServerId)) {
                 guildIds.push(command.ServerId!);
             }
         }
@@ -42,10 +42,10 @@ export class Util {
         for (const guild of guildIds) {
             const guildCommandData: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">[] = [];
 
-            for (const command of guildCommands.filter(x => x.ServerId == guild)) {
+            for (const command of guildCommands.filter(x => x.ServerId === guild)) {
                 if (!command.Command.CommandBuilder) continue;
 
-                if ((command.Environment & CoreClient.Environment) == CoreClient.Environment) {
+                if ((command.Environment & CoreClient.Environment) === CoreClient.Environment) {
                     guildCommandData.push(command.Command.CommandBuilder);
                 }
             }

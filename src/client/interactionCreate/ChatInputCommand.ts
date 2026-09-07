@@ -5,8 +5,8 @@ import AppLogger from "../appLogger";
 
 export default class ChatInputCommand {
     public static async onChatInput(interaction: ChatInputCommandInteraction) {
-        const item = CoreClient.commandItems.find(x => x.Name == interaction.commandName && !x.ServerId);
-        const itemForServer = CoreClient.commandItems.find(x => x.Name == interaction.commandName && x.ServerId == interaction.guildId);
+        const item = CoreClient.commandItems.find(x => x.Name === interaction.commandName && !x.ServerId);
+        const itemForServer = CoreClient.commandItems.find(x => x.Name === interaction.commandName && x.ServerId === interaction.guildId);
 
         let itemToUse: ICommandItem;
 

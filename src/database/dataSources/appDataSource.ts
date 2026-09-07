@@ -10,8 +10,8 @@ const AppDataSource = new DataSource({
     username: process.env.DB_AUTH_USER,
     password: process.env.DB_AUTH_PASS,
     database: process.env.DB_NAME,
-    synchronize: process.env.DB_SYNC == "true",
-    logging: process.env.DB_LOGGING == "true",
+    synchronize: process.env.DB_SYNC === "true",
+    logging: process.env.DB_LOGGING === "true",
     entities: [
         "dist/database/entities/app/**/*.js",
     ],

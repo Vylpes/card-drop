@@ -56,7 +56,7 @@ export default class TimerHelper {
     }
 
     public StartTimer(id: string) {
-        const timer = this._timers.find(x => x.id == id);
+        const timer = this._timers.find(x => x.id === id);
 
         if (!timer) return;
 
@@ -64,7 +64,7 @@ export default class TimerHelper {
     }
 
     public StopTimer(id: string) {
-        const timer = this._timers.find(x => x.id == id);
+        const timer = this._timers.find(x => x.id === id);
 
         if (!timer) return;
 

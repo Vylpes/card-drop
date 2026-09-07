@@ -4,7 +4,7 @@ import AppLogger from "../appLogger";
 
 export default class Button {
     public static async onButtonClicked(interaction: ButtonInteraction) {
-        const item = CoreClient.buttonEvents.find(x => x.ButtonId == interaction.customId.split(" ")[0]);
+        const item = CoreClient.buttonEvents.find(x => x.ButtonId === interaction.customId.split(" ")[0]);
 
         if (!item) {
             AppLogger.LogVerbose("Button", `Event not found: ${interaction.customId}`);

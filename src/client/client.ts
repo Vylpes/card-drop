@@ -59,7 +59,7 @@ export class CoreClient extends Client {
 
         const loglevel = process.env.BOT_LOGLEVEL ?? "info";
 
-        AppLogger.InitialiseLogger(loglevel, CoreClient.Environment == Environment.Local);
+        AppLogger.InitialiseLogger(loglevel, CoreClient.Environment === Environment.Local);
 
         AppLogger.LogInfo("Client", "Initialising Client");
 
@@ -119,7 +119,7 @@ export class CoreClient extends Client {
             ServerId: serverId,
         };
 
-        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) === CoreClient.Environment) {
             CoreClient._commandItems.push(item);
 
             AppLogger.LogVerbose("Client", `Registered Command: ${name}`);
@@ -409,7 +409,7 @@ export class CoreClient extends Client {
             Environment: environment,
         };
 
-        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) === CoreClient.Environment) {
             CoreClient._buttonEvents.push(item);
 
             AppLogger.LogVerbose("Client", `Registered Button Event: ${buttonId}`);
@@ -423,7 +423,7 @@ export class CoreClient extends Client {
             Environment: environment,
         };
 
-        if ((environment & CoreClient.Environment) == CoreClient.Environment) {
+        if ((environment & CoreClient.Environment) === CoreClient.Environment) {
             CoreClient._stringDropdowns.push(item);
 
             AppLogger.LogVerbose("Client", `Registered String Dropdown Event: ${dropdownId}`);

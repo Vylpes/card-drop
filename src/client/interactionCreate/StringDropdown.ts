@@ -4,7 +4,7 @@ import AppLogger from "../appLogger";
 
 export default class StringDropdown {
     public static async onStringDropdownSelected(interaction: StringSelectMenuInteraction) {
-        const item = CoreClient.stringDropdowns.find(x => x.DropdownId == interaction.customId.split(" ")[0]);
+        const item = CoreClient.stringDropdowns.find(x => x.DropdownId === interaction.customId.split(" ")[0]);
 
         if (!item) {
             AppLogger.LogVerbose("StringDropdown", `Event not found: ${interaction.customId}`);

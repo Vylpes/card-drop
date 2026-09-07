@@ -40,7 +40,7 @@ Registry.RegisterCommands();
 Registry.RegisterButtonEvents();
 Registry.RegisterStringDropdownEvents();
 
-if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO == "true") {
+if (!existsSync(`${process.env.DATA_DIR}/cards`) && process.env.GDRIVESYNC_AUTO && process.env.GDRIVESYNC_AUTO === "true") {
     console.log("Card directory not found, syncing...");
 
     CoreClient.AllowDrops = false;

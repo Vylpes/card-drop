@@ -28,14 +28,14 @@ export default class Sacrifice extends ButtonEvent {
         const cardNumber = interaction.customId.split(" ")[3];
         const quantity = Number(interaction.customId.split(" ")[4]) || 1;
 
-        if (userId != interaction.user.id) {
+        if (userId !== interaction.user.id) {
             await interaction.reply("Only the user who created this sacrifice can confirm it.");
             return;
         }
 
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
-        if (!cardInInventory || cardInInventory.Quantity == 0) {
+        if (!cardInInventory || cardInInventory.Quantity === 0) {
             await interaction.reply("Unable to find card in inventory.");
             return;
         }
@@ -110,14 +110,14 @@ export default class Sacrifice extends ButtonEvent {
         const cardNumber = interaction.customId.split(" ")[3];
         const quantity = Number(interaction.customId.split(" ")[4]) || 1;
 
-        if (userId != interaction.user.id) {
+        if (userId !== interaction.user.id) {
             await interaction.reply("Only the user who created this sacrifice can cancel it.");
             return;
         }
 
         const cardInInventory = await Inventory.FetchOneByCardNumberAndUserId(userId, cardNumber);
 
-        if (!cardInInventory || cardInInventory.Quantity == 0) {
+        if (!cardInInventory || cardInInventory.Quantity === 0) {
             await interaction.reply("Unable to find card in inventory.");
             return;
         }
@@ -177,7 +177,7 @@ export default class Sacrifice extends ButtonEvent {
         const cardNumber = interaction.customId.split(" ")[3];
         const quantity = Number(interaction.customId.split(" ")[4]) || 1;
 
-        if (userId != interaction.user.id) {
+        if (userId !== interaction.user.id) {
             await interaction.reply("Only the user who created this sacrifice can confirm it.");
             return;
         }

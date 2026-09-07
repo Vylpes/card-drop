@@ -65,7 +65,7 @@ export default class CardSearchHelper {
                     .setCustomId(`view 2 ${results.join(" ")}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(pages == 1));
+                    .setDisabled(pages === 1));
 
         return { embed, row, attachments, results };
     }
@@ -104,12 +104,12 @@ export default class CardSearchHelper {
                     .setCustomId(`view ${page - 1} ${results.join(" ")}`)
                     .setLabel("Previous")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page - 1 == 0),
+                    .setDisabled(page - 1 === 0),
                 new ButtonBuilder()
                     .setCustomId(`view ${page + 1} ${results.join(" ")}`)
                     .setLabel("Next")
                     .setStyle(ButtonStyle.Primary)
-                    .setDisabled(page == results.length));
+                    .setDisabled(page === results.length));
 
         return { embed, row, attachments, results };
     }

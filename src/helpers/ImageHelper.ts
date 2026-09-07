@@ -53,7 +53,7 @@ export default class ImageHelper {
                 if (userId != null) {
                     const claimed = await Inventory.FetchOneByCardNumberAndUserId(userId, card.id);
 
-                    if (!claimed || claimed.Quantity == 0) {
+                    if (!claimed || claimed.Quantity === 0) {
                         imageData.greyscale();
                     }
                 }

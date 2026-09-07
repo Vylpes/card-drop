@@ -14,7 +14,7 @@ export default class Inventory extends ButtonEvent {
 
         await interaction.deferUpdate();
 
-        const member = interaction.guild.members.cache.find(x => x.id == userid) || await interaction.guild.members.fetch(userid);
+        const member = interaction.guild.members.cache.find(x => x.id === userid) || await interaction.guild.members.fetch(userid);
 
         if (!member) {
             await interaction.reply("Unable to find user.");

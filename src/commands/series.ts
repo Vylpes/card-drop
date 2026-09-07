@@ -49,7 +49,7 @@ export default class Series extends Command {
 
         if (!id) return;
 
-        const series = CoreClient.Cards.find(x => x.id == id.value);
+        const series = CoreClient.Cards.find(x => x.id === id.value);
 
         if (!series) {
             AppLogger.LogVerbose("Commands/Series/View", "Series not found.");

@@ -46,7 +46,7 @@ export default class AppLogger {
                 )}));
         }
 
-        if (process.env.BOT_LOG_DISCORD_ENABLE == "true") {
+        if (process.env.BOT_LOG_DISCORD_ENABLE === "true") {
             if (process.env.BOT_LOG_DISCORD_WEBHOOK) {
                 logger.add(new DiscordTransport({
                     webhook: process.env.BOT_LOG_DISCORD_WEBHOOK.toString(),
