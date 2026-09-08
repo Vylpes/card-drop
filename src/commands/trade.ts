@@ -92,16 +92,16 @@ export default class Trade extends Command {
                 {
                     name: `${interaction.user.username} Receives`,
                     value: `${user2Item.id}: ${user2Item.name} x${receivequantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: `${user.username} Receives`,
                     value: `${user1Item.id}: ${user1Item.name} x${givequantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Expires",
-                    value: new Date(expiry).toLocaleString(),
+                    value: new Date(expiry).toLocaleString()
                 }
             ]);
 
@@ -116,7 +116,7 @@ export default class Trade extends Command {
                 new ButtonBuilder()
                     .setCustomId(`trade decline ${interaction.user.id} ${user.id} ${user1Item.id} ${user2Item.id} ${expiry} ${timeoutId} ${givequantity} ${receivequantity}`)
                     .setLabel("Decline")
-                    .setStyle(ButtonStyle.Danger),
+                    .setStyle(ButtonStyle.Danger)
             ]);
 
         await interaction.reply({ content: `${user}`, embeds: [ tradeEmbed ], components: [ row ] });
@@ -134,16 +134,16 @@ export default class Trade extends Command {
                 {
                     name: `${user1Username} Receives`,
                     value: `${user2CardNumber}: ${user2CardName} x${user2Quantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: `${user2Username} Receives`,
                     value: `${user1CardNumber}: ${user1CardName} x${user1Quantity}`,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Expired",
-                    value: new Date().toLocaleString(),
+                    value: new Date().toLocaleString()
                 }
             ]);
 
@@ -158,7 +158,7 @@ export default class Trade extends Command {
                     .setCustomId("trade expired declined")
                     .setLabel("Decline")
                     .setStyle(ButtonStyle.Danger)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.editReply({ embeds: [ tradeEmbed ], components: [ row ]});

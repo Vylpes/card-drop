@@ -79,7 +79,7 @@ export default class Multidrop extends ButtonEvent {
             await interaction.update({
                 embeds: [ embed ],
                 attachments: [],
-                components: [],
+                components: []
             });
 
             return;
@@ -121,7 +121,7 @@ export default class Multidrop extends ButtonEvent {
             await interaction.editReply({
                 embeds: [ embed ],
                 files: files,
-                components: [ row ],
+                components: [ row ]
             });
         } catch (e) {
             AppLogger.LogError("Button/Multidrop/Keep", `Error sending next drop for card ${randomCard.card.id}: ${e}`);
@@ -177,7 +177,7 @@ export default class Multidrop extends ButtonEvent {
             await interaction.update({
                 embeds: [ embed ],
                 attachments: [],
-                components: [],
+                components: []
             });
 
             return;
@@ -211,7 +211,7 @@ export default class Multidrop extends ButtonEvent {
             await interaction.editReply({
                 embeds: [ embed ],
                 files: [ attachment ],
-                components: [ row ],
+                components: [ row ]
             });
         } catch (e) {
             AppLogger.LogError("Button/Multidrop/Sacrifice", `Error sending next drop for card ${randomCard.card.id}: ${e}`);

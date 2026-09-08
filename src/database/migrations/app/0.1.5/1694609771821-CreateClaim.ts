@@ -7,7 +7,7 @@ export class CreateClaim1694609771821 implements MigrationInterface {
         MigrationHelper.Up("1694609771821-CreateClaim", "0.1.5", [
             "01-CreateClaim",
             "02-MoveToClaim",
-            "03-AlterInventory",
+            "03-AlterInventory"
         ], queryRunner);
     }
 

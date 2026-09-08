@@ -75,7 +75,7 @@ export default class Buy {
 
         await interaction.update({
             embeds: [ generatedEmbed.embed ],
-            components: [ generatedEmbed.row ],
+            components: [ generatedEmbed.row ]
         });
     }
 
@@ -114,7 +114,7 @@ export default class Buy {
 
         await interaction.update({
             embeds: [ generatedEmbed.embed ],
-            components: [ generatedEmbed.row ],
+            components: [ generatedEmbed.row ]
         });
     }
 }

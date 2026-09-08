@@ -11,7 +11,7 @@ function generateCards(count: number) {
         id: `card-${i}`,
         name: `Card ${i}`,
         type: 0,
-        path: `card-${i}.png`,
+        path: `card-${i}.png`
     }));
 }
 
@@ -19,7 +19,7 @@ function generateSeries(id: number, cardCount: number): SeriesMetadata {
     return {
         id,
         name: `Series ${id}`,
-        cards: generateCards(cardCount),
+        cards: generateCards(cardCount)
     } as unknown as SeriesMetadata;
 }
 

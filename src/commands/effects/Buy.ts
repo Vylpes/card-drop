@@ -17,6 +17,6 @@ export default async function Buy(interaction: ChatInputCommandInteraction) {
 
     await interaction.reply({
         embeds: [ result.embed ],
-        components: [ result.row ],
+        components: [ result.row ]
     });
 }

@@ -68,7 +68,7 @@ export default class Dropnumber extends Command {
         await interaction.editReply({
             embeds: [ embed ],
             files: files,
-            components: [ row ],
+            components: [ row ]
         });
         } catch (e) {
             AppLogger.CatchError("Dropnumber", e);

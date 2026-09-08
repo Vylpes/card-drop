@@ -84,7 +84,7 @@ export default class Multidrop extends Command {
             await interaction.editReply({
                 embeds: [ embed ],
                 files: files,
-                components: [ row ],
+                components: [ row ]
             });
         } catch (e) {
             AppLogger.LogError("Commands/Multidrop", `Error sending next drop for card ${randomCard.card.id}: ${e}`);

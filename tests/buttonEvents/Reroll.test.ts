@@ -23,9 +23,9 @@ const randomCard = {
     card: {
         id: "cardId",
         path: "https://example.com/card.png",
-        type: 1,
+        type: 1
     },
-    series: { id: 1, name: "Series", cards: [] },
+    series: { id: 1, name: "Series", cards: [] }
 };
 
 describe("GIVEN valid conditions", () => {
@@ -43,7 +43,7 @@ describe("GIVEN valid conditions", () => {
         user = {
             Currency: 500,
             RemoveCurrency: jest.fn().mockReturnValue(true),
-            Save: jest.fn(),
+            Save: jest.fn()
         } as unknown as User;
 
         (User.FetchOneById as jest.Mock).mockResolvedValue(user);
@@ -79,7 +79,7 @@ test("GIVEN user.RemoveCurrency fails, EXPECT error replied", async () => {
     const user = {
         Currency: 0,
         RemoveCurrency: jest.fn().mockReturnValue(false),
-        Save: jest.fn(),
+        Save: jest.fn()
     } as unknown as User;
 
     (User.FetchOneById as jest.Mock).mockResolvedValue(user);

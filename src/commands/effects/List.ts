@@ -10,6 +10,6 @@ export default async function List(interaction: ChatInputCommandInteraction) {
 
     await interaction.reply({
         embeds: [ result.embed ],
-        components: [ result.row ],
+        components: [ result.row ]
     });
 }

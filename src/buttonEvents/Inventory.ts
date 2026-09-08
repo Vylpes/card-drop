@@ -34,7 +34,7 @@ export default class Inventory extends ButtonEvent {
             await interaction.editReply({
                 files: [ embed.image ],
                 embeds: [ embed.embed ],
-                components: [ embed.row1, embed.row2 ],
+                components: [ embed.row1, embed.row2 ]
             });
         } catch (e) {
             AppLogger.LogError("Button/Inventory", `Error generating inventory page for ${member.user.username} with id ${member.user.id}: ${e}`);

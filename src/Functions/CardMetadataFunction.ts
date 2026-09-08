@@ -31,7 +31,7 @@ export default class CardMetadataFunction {
 
             return {
                 IsSuccess: false,
-                ErrorMessage: "Safe mode is on and not overridden",
+                ErrorMessage: "Safe mode is on and not overridden"
             };
         }
 
@@ -64,7 +64,7 @@ export default class CardMetadataFunction {
             }
 
             return {
-                IsSuccess: true,
+                IsSuccess: true
             };
         }
 
@@ -73,7 +73,7 @@ export default class CardMetadataFunction {
 
         return {
             IsSuccess: false,
-            ErrorMessage: `${cardResult.Error!.File}: ${cardResult.Error!.Message}`,
+            ErrorMessage: `${cardResult.Error!.File}: ${cardResult.Error!.Message}`
         };
     }
 
@@ -97,7 +97,7 @@ export default class CardMetadataFunction {
                     IsSuccess: false,
                     Error: {
                         File: jsonPath,
-                        Message: `${e}`,
+                        Message: `${e}`
                     }
                 };
             }
@@ -105,7 +105,7 @@ export default class CardMetadataFunction {
 
         return {
             IsSuccess: true,
-            Result: res,
+            Result: res
         };
     }
 }

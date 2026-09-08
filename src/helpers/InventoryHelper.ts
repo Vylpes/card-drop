@@ -74,7 +74,7 @@ export default class InventoryHelper {
                         name: card.name,
                         type: card.type,
                         quantity: item.Quantity,
-                        path: card.path,
+                        path: card.path
                     });
                 }
 
@@ -82,7 +82,7 @@ export default class InventoryHelper {
                     id: series.id,
                     name: series.name,
                     cards: pageCards,
-                    seriesSubpage: i / cardsPerPage,
+                    seriesSubpage: i / cardsPerPage
                 });
             }
         }

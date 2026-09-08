@@ -27,7 +27,7 @@ describe("execute", () => {
     test("GIVEN interaction subcommand is list, EXPECT buy function called", async () => {
         // Arrange
         const interaction = GenerateCommandInteractionMock({
-            subcommand: "list",
+            subcommand: "list"
         });
 
         // Act
@@ -47,7 +47,7 @@ describe("execute", () => {
     test("GIVEN interaction subcommand is use, EXPECT buy function called", async () => {
         // Arrange
         const interaction = GenerateCommandInteractionMock({
-            subcommand: "use",
+            subcommand: "use"
         });
 
         // Act
@@ -67,7 +67,7 @@ describe("execute", () => {
     test("GIVEN interaction subcommand is buy, EXPECT buy function called", async () => {
         // Arrange
         const interaction = GenerateCommandInteractionMock({
-            subcommand: "buy",
+            subcommand: "buy"
         });
 
         // Act
@@ -87,7 +87,7 @@ describe("execute", () => {
     test("GIVEN interaction subcommand is invalid, EXPECT error logged", async () => {
         // Arrange
         const interaction = GenerateCommandInteractionMock({
-            subcommand: "invalid",
+            subcommand: "invalid"
         });
 
         // Act

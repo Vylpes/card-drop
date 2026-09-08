@@ -44,7 +44,7 @@ describe("Confirm", () => {
         user = {
             Currency: 1000,
             Save: jest.fn(),
-            RemoveCurrency: jest.fn(),
+            RemoveCurrency: jest.fn()
         } as unknown as User;
 
         (User.FetchOneById as jest.Mock).mockResolvedValue(user);
@@ -57,15 +57,15 @@ describe("Confirm", () => {
         const embed = {
             id: "embed",
             setColor: jest.fn(),
-            setFooter: jest.fn(),
+            setFooter: jest.fn()
         };
         const row = {
-            id: "row",
+            id: "row"
         };
         
         (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue({
             embed,
-            row,
+            row
         });
 
         // Act
@@ -75,7 +75,7 @@ describe("Confirm", () => {
         expect(interaction.update).toHaveBeenCalledTimes(1);
         expect(interaction.update).toHaveBeenCalledWith({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
 
         expect(EffectHelper.GenerateEffectBuyEmbed).toHaveBeenCalledTimes(1);
@@ -235,15 +235,15 @@ describe("Cancel", () => {
         const embed = {
             id: "embed",
             setColor: jest.fn(),
-            setFooter: jest.fn(),
+            setFooter: jest.fn()
         };
         const row = {
-            id: "row",
+            id: "row"
         };
         
         (EffectHelper.GenerateEffectBuyEmbed as jest.Mock).mockResolvedValue({
             embed,
-            row,
+            row
         });
 
         // Act
@@ -253,7 +253,7 @@ describe("Cancel", () => {
         expect(interaction.update).toHaveBeenCalledTimes(1);
         expect(interaction.update).toHaveBeenCalledWith({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
 
         expect(EffectHelper.GenerateEffectBuyEmbed).toHaveBeenCalledTimes(1);

@@ -16,10 +16,10 @@ describe("GenerateEffectListEmbed", () => {
             [
                 {
                     Name: "unclaimed",
-                    Unused: 1,
+                    Unused: 1
                 }
             ],
-            1,
+            1
         ]);
 
         // Act
@@ -38,14 +38,14 @@ describe("GenerateEffectListEmbed", () => {
         for (let i = 0; i < 15; i++) {
             effects.push({
                 Name: "unclaimed",
-                Unused: 1,
+                Unused: 1
             });
         }
 
         // Arrange
         (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
             effects,
-            15,
+            15
         ]);
 
         // Act
@@ -64,14 +64,14 @@ describe("GenerateEffectListEmbed", () => {
         for (let i = 0; i < 15; i++) {
             effects.push({
                 Name: "unclaimed",
-                Unused: 1,
+                Unused: 1
             });
         }
 
         // Arrange
         (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
             effects,
-            15,
+            15
         ]);
 
         // Act
@@ -85,7 +85,7 @@ describe("GenerateEffectListEmbed", () => {
         // Arrange
         (UserEffect.FetchAllByUserIdPaginated as jest.Mock).mockResolvedValue([
             [],
-            0,
+            0
         ]);
 
         // Act
@@ -101,15 +101,15 @@ describe("GenerateEffectListEmbed", () => {
             [
                 {
                     Name: "unclaimed",
-                    Unused: 1,
+                    Unused: 1
                 }
             ],
-            1,
+            1
         ]);
 
         (UserEffect.FetchActiveEffectByUserId as jest.Mock).mockResolvedValue({
             Name: "unclaimed",
-            WhenExpires: new Date(1738174052),
+            WhenExpires: new Date(1738174052)
         });
 
         // Act
@@ -137,7 +137,7 @@ describe("GenerateEffectBuyEmbed", () => {
         // Arrange
         const newUser = {
             Currency: CardConstants.StartingCurrency,
-            Save: jest.fn(),
+            Save: jest.fn()
         };
 
         (User.FetchOneById as jest.Mock).mockResolvedValue(null);
@@ -156,7 +156,7 @@ describe("GenerateEffectBuyEmbed", () => {
     test("GIVEN user does not have enough currency, EXPECT error", async () => {
         // Arrange
         (User.FetchOneById as jest.Mock).mockResolvedValue({
-            Currency: 0,
+            Currency: 0
         });
 
         // Act
@@ -170,7 +170,7 @@ describe("GenerateEffectBuyEmbed", () => {
     test("GIVEN user does have enough currency, EXPECT embed returned", async () => {
         // Arrange
         (User.FetchOneById as jest.Mock).mockResolvedValue({
-            Currency: 1000,
+            Currency: 1000
         });
 
         // Act
@@ -187,7 +187,7 @@ describe("GenerateEffectBuyEmbed", () => {
     test("GIVEN disabled boolean is true, EXPECT buttons to be disabled", async () => {
         // Arrange
         (User.FetchOneById as jest.Mock).mockResolvedValue({
-            Currency: 0,
+            Currency: 0
         });
 
         // Act

@@ -18,7 +18,7 @@ jest.mock("../../src/helpers/DropHelpers/MultidropEmbedHelper");
 jest.mock("../../src/client/appLogger");
 jest.mock("fs", () => ({
     ...jest.requireActual("fs"),
-    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image")),
+    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image"))
 }));
 
 describe("execute", () => {
@@ -36,7 +36,7 @@ describe("execute", () => {
             const user = {
                 Currency: 500,
                 RemoveCurrency: jest.fn(),
-                Save: jest.fn(),
+                Save: jest.fn()
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);
@@ -45,7 +45,7 @@ describe("execute", () => {
             (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({ Quantity: 1 });
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "cardId", path: "series/card.png", type: 1 },
-                series: { id: 1, name: "Series", cards: [] },
+                series: { id: 1, name: "Series", cards: [] }
             });
 
             const multidrop = new Multidrop();
@@ -74,7 +74,7 @@ describe("execute", () => {
             const user = {
                 Currency: 500,
                 RemoveCurrency: jest.fn(),
-                Save: jest.fn(),
+                Save: jest.fn()
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);
@@ -83,7 +83,7 @@ describe("execute", () => {
             (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({ Quantity: 1 });
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "cardId", path: "http://example.com/card.png", type: 1 },
-                series: { id: 1, name: "Series", cards: [] },
+                series: { id: 1, name: "Series", cards: [] }
             });
 
             const multidrop = new Multidrop();
@@ -111,7 +111,7 @@ describe("execute", () => {
             const user = {
                 Currency: 500,
                 RemoveCurrency: jest.fn(),
-                Save: jest.fn(),
+                Save: jest.fn()
             } as unknown as User;
 
             (User.FetchOneById as jest.Mock).mockResolvedValue(user);
@@ -120,7 +120,7 @@ describe("execute", () => {
             (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({ Quantity: 1 });
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "cardId", path: "https://example.com/card.png", type: 1 },
-                series: { id: 1, name: "Series", cards: [] },
+                series: { id: 1, name: "Series", cards: [] }
             });
 
             const multidrop = new Multidrop();

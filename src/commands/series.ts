@@ -64,7 +64,7 @@ export default class Series extends Command {
             await interaction.followUp({
                 embeds: [ embed!.embed ],
                 components: [ embed!.row ],
-                files: [ embed!.image ],
+                files: [ embed!.image ]
             });
         } catch (e) {
             await interaction.followUp("An error has occured generating the series grid.");

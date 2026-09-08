@@ -12,7 +12,7 @@ export default class DropEmbedHelper {
         let colour = CardRarityToColour(drop.card.type);
 
         if (drop.card.colour && StringTools.IsHexCode(drop.card.colour)) {
-            const hexCode = Number("0x" + drop.card.colour);
+            const hexCode = Number(`0x${  drop.card.colour}`);
 
             if (hexCode) {
                 colour = hexCode;
@@ -39,7 +39,7 @@ export default class DropEmbedHelper {
                 {
                     name: "Claimed",
                     value: `${quantityClaimed}`,
-                    inline: true,
+                    inline: true
                 }
             ]);
 
@@ -48,7 +48,7 @@ export default class DropEmbedHelper {
                 {
                     name: "Claimed by",
                     value: claimedBy,
-                    inline: true,
+                    inline: true
                 }
             ]);
         }
@@ -58,7 +58,7 @@ export default class DropEmbedHelper {
                 {
                     name: "Currency",
                     value: `${currency}`,
-                    inline: true,
+                    inline: true
                 }
             ]);
         }

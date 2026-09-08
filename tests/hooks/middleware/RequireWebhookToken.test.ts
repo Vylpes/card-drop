@@ -7,13 +7,13 @@ jest.mock("../../../src/client/appLogger");
 function generateRequest(token?: string) {
     return {
         path: "/api/reload-db",
-        header: jest.fn().mockReturnValue(token),
+        header: jest.fn().mockReturnValue(token)
     } as unknown as Request;
 }
 
 function generateResponse() {
     return {
-        sendStatus: jest.fn(),
+        sendStatus: jest.fn()
     } as unknown as Response;
 }
 

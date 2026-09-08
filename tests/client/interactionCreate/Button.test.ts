@@ -20,7 +20,7 @@ function generateInteraction(customId: string): InteractionMock {
         replied: false,
         deferred: false,
         reply: jest.fn(),
-        followUp: jest.fn(),
+        followUp: jest.fn()
     };
 }
 
@@ -29,7 +29,7 @@ function registerEvent(buttonId: string, execute: jest.Mock) {
         {
             ButtonId: buttonId,
             Event: { execute },
-            Environment: 0,
+            Environment: 0
         } as unknown as IButtonEventItem
     ]);
 }

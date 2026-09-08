@@ -22,7 +22,7 @@ function generateInteraction(commandName: string, guildId: string | null = "guil
         replied: false,
         deferred: false,
         reply: jest.fn(),
-        followUp: jest.fn(),
+        followUp: jest.fn()
     };
 }
 
@@ -31,7 +31,7 @@ function registerCommands(items: { Name: string, ServerId?: string, execute: jes
         Name: item.Name,
         ServerId: item.ServerId,
         Environment: 0,
-        Command: { execute: item.execute },
+        Command: { execute: item.execute }
     }) as unknown as ICommandItem));
 }
 

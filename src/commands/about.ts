@@ -24,13 +24,13 @@ export default class About extends Command {
             {
                 name: "Version",
                 value: process.env.BOT_VER!,
-                inline: true,
+                inline: true
             },
             {
                 name: "Author",
                 value: process.env.BOT_AUTHOR!,
-                inline: true,
-            },
+                inline: true
+            }
         ]);
 
         const row = new ActionRowBuilder<ButtonBuilder>();

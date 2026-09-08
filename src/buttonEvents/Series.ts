@@ -31,7 +31,7 @@ export default class Series extends ButtonEvent {
         await interaction.editReply({
             embeds: [ embed!.embed ],
             components: [ embed!.row ],
-            files: [ embed!.image ],
+            files: [ embed!.image ]
         });
     }
 
@@ -42,7 +42,7 @@ export default class Series extends ButtonEvent {
 
         await interaction.update({
             embeds: [ embed!.embed ],
-            components: [ embed!.row ],
+            components: [ embed!.row ]
         });
     }
 }

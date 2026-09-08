@@ -72,7 +72,7 @@ export default class Claim extends ButtonEvent {
 
         await interaction.editReply({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
     }
 }

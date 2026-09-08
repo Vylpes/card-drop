@@ -42,7 +42,7 @@ export default class TimerHelper {
             job,
             context,
             onTick,
-            runOnStart,
+            runOnStart
         });
 
         return id;

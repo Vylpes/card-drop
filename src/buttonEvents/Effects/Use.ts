@@ -50,13 +50,13 @@ export default class Use {
                 {
                     name: "Effect",
                     value: effectDetail.friendlyName,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Expires",
                     value: `<t:${Math.round(whenExpires.getTime() / 1000)}:f>`,
-                    inline: true,
-                },
+                    inline: true
+                }
             ]);
 
         const row = new ActionRowBuilder<ButtonBuilder>()
@@ -70,12 +70,12 @@ export default class Use {
                     .setLabel("Cancel")
                     .setCustomId(`effects use cancel ${effectDetail.id}`)
                     .setStyle(ButtonStyle.Danger)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.update({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
     }
 
@@ -101,13 +101,13 @@ export default class Use {
                 {
                     name: "Effect",
                     value: effectDetail.friendlyName,
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Expires",
                     value: timeLengthInput.GetLengthShort(),
-                    inline: true,
-                },
+                    inline: true
+                }
             ]);
 
         const row = new ActionRowBuilder<ButtonBuilder>()
@@ -121,12 +121,12 @@ export default class Use {
                     .setLabel("Cancel")
                     .setCustomId(`effects use cancel ${effectDetail.id}`)
                     .setStyle(ButtonStyle.Danger)
-                    .setDisabled(true),
+                    .setDisabled(true)
             ]);
 
         await interaction.update({
             embeds: [ embed ],
-            components: [ row ],
+            components: [ row ]
         });
     }
 }

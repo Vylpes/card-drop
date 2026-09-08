@@ -66,7 +66,7 @@ function validateSeries(value: unknown, filePath: string, index: number): Series
     return {
         id: seriesId,
         name: series.name,
-        cards,
+        cards
     };
 }
 
@@ -113,7 +113,7 @@ function validateCard(
         id: card.id,
         name: card.name,
         type: card.type,
-        path: card.path,
+        path: card.path
     };
 
     if (card.subseries !== undefined) {
