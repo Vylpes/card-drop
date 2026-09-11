@@ -25,15 +25,15 @@ type InteractionMock = {
 const member = {
     user: {
         id: "userId",
-        username: "username",
-    },
+        username: "username"
+    }
 };
 
 const page = {
     image: "image",
     embed: { type: "Embed" },
     row1: { type: "Row1" },
-    row2: { type: "Row2" },
+    row2: { type: "Row2" }
 };
 
 function generateInteraction(cachedMember: unknown, fetchedMember: unknown): InteractionMock {
@@ -41,16 +41,16 @@ function generateInteraction(cachedMember: unknown, fetchedMember: unknown): Int
         guild: {
             members: {
                 cache: {
-                    find: jest.fn().mockReturnValue(cachedMember),
+                    find: jest.fn().mockReturnValue(cachedMember)
                 },
-                fetch: jest.fn().mockResolvedValue(fetchedMember),
-            },
+                fetch: jest.fn().mockResolvedValue(fetchedMember)
+            }
         },
         values: [ "userId 2" ],
         deferUpdate: jest.fn(),
         editReply: jest.fn(),
         followUp: jest.fn(),
-        reply: jest.fn(),
+        reply: jest.fn()
     };
 }
 
@@ -90,7 +90,7 @@ describe("GIVEN the member is in the guild cache", () => {
         expect(interaction.editReply).toHaveBeenCalledWith({
             files: [ page.image ],
             embeds: [ page.embed ],
-            components: [ page.row1, page.row2 ],
+            components: [ page.row1, page.row2 ]
         });
     });
 });
