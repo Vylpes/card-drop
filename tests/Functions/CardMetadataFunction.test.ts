@@ -31,16 +31,14 @@ beforeEach(() => {
     LogErrorSpy = jest.spyOn(AppLogger, "LogError").mockImplementation(() => {});
     jest.spyOn(AppLogger, "LogVerbose").mockImplementation(() => {});
 
-    Config.GetValue = jest.fn(async (): Promise<string | undefined> => {
-        return "";
-    });
+    Config.GetValue = jest.fn(async (): Promise<string | undefined> => "");
     Config.SetValue = jest.fn();
 
     mockedGlob.mockResolvedValue([ pathA, pathB ]);
 
     mockedReadFileSync.mockImplementation((p: string) => {
-        if (p == pathA) return JSON.stringify(seriesA);
-        if (p == pathB) return JSON.stringify(seriesB);
+        if (p === pathA) return JSON.stringify(seriesA);
+        if (p === pathB) return JSON.stringify(seriesB);
         return "[]";
     });
 

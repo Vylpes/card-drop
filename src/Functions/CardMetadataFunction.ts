@@ -88,20 +88,20 @@ export default class CardMetadataFunction {
                 const parsedJsons: SeriesMetadata[] = JSON.parse(jsonFile.toString());
                 const validated = validateSeriesMetadataFile(parsedJsons, jsonPath);
 
-                if (parsedJsons.length == 0) {
+                if (parsedJsons.length === 0) {
                     AppLogger.LogWarn("Functions/CardMetadataFunction", `No series found in file: ${jsonPath}`);
                 }
 
                 for (const parsedJson of parsedJsons) {
-                    if (parsedJson.cards == undefined || parsedJson.cards == null) {
+                    if (parsedJson.cards === undefined || parsedJson.cards === null) {
                         AppLogger.LogError("Functions/CardMetadataFunction", `No cards found in series: ${jsonPath}`);
 
                         return {
                             IsSuccess: false,
                             Error: {
                                 File: jsonPath,
-                                Message: "No cards found in series",
-                            },
+                                Message: "No cards found in series"
+                            }
                         };
                     }
                 }

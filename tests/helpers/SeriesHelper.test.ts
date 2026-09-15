@@ -17,24 +17,24 @@ describe("GenerateSeriesListPage", () => {
                 cards: [
                     { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" },
                     { id: "card2", name: "Card 2", type: CardRarity.Silver, path: "path2" },
-                    { id: "card3", name: "Card 3", type: CardRarity.Gold, path: "path3" },
-                ],
+                    { id: "card3", name: "Card 3", type: CardRarity.Gold, path: "path3" }
+                ]
             },
             {
                 id: 2,
                 name: "Series 2",
                 cards: [
                     { id: "card4", name: "Card 4", type: CardRarity.Bronze, path: "path4" },
-                    { id: "card5", name: "Card 5", type: CardRarity.Silver, path: "path5" },
-                ],
+                    { id: "card5", name: "Card 5", type: CardRarity.Silver, path: "path5" }
+                ]
             },
             {
                 id: 3,
                 name: "Series 3",
                 cards: [
-                    { id: "card6", name: "Card 6", type: CardRarity.Legendary, path: "path6" },
-                ],
-            },
+                    { id: "card6", name: "Card 6", type: CardRarity.Legendary, path: "path6" }
+                ]
+            }
         ];
     });
 
@@ -57,7 +57,7 @@ describe("GenerateSeriesListPage", () => {
         (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
             { CardNumber: "card1", Quantity: 2 },
             { CardNumber: "card2", Quantity: 1 },
-            { CardNumber: "card4", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 1 }
         ]);
 
         // Act
@@ -77,7 +77,7 @@ describe("GenerateSeriesListPage", () => {
             { CardNumber: "card2", Quantity: 1 },
             { CardNumber: "card3", Quantity: 1 },
             { CardNumber: "card4", Quantity: 2 },
-            { CardNumber: "card5", Quantity: 3 },
+            { CardNumber: "card5", Quantity: 3 }
         ]);
 
         // Act
@@ -98,14 +98,14 @@ describe("GenerateSeriesListPage", () => {
                 id: i,
                 name: `Series ${i}`,
                 cards: [
-                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` },
-                ],
+                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` }
+                ]
             });
         }
         CoreClient.Cards = manySeries;
 
         (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
-            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card1", Quantity: 1 }
         ]);
 
         // Act - Get first page
@@ -128,8 +128,8 @@ describe("GenerateSeriesListPage", () => {
                 id: i,
                 name: `Series ${i}`,
                 cards: [
-                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` },
-                ],
+                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` }
+                ]
             });
         }
         CoreClient.Cards = manySeries;
@@ -168,9 +168,9 @@ describe("GenerateSeriesViewPage", () => {
                 name: "Test Series",
                 cards: [
                     { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "/path/card1.jpg" },
-                    { id: "card2", name: "Card 2", type: CardRarity.Silver, path: "/path/card2.jpg" },
-                ],
-            },
+                    { id: "card2", name: "Card 2", type: CardRarity.Silver, path: "/path/card2.jpg" }
+                ]
+            }
         ];
 
         (ImageHelper.GenerateCardImageGrid as jest.Mock).mockResolvedValue(Buffer.from("test"));

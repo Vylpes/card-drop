@@ -21,9 +21,9 @@ beforeEach(() => {
             id: 1,
             name: "Series 1",
             cards: [
-                { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" },
-            ],
-        },
+                { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" }
+            ]
+        }
     ];
 });
 
@@ -33,7 +33,7 @@ describe("list subaction", () => {
         interaction.customId = "series list 0";
         (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockResolvedValue({
             embed: { type: "Embed" },
-            row: { type: "Row" },
+            row: { type: "Row" }
         });
 
         // Act
@@ -50,7 +50,7 @@ describe("list subaction", () => {
         interaction.customId = "series list 0";
         (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockResolvedValue({
             embed: { type: "Embed" },
-            row: { type: "Row" },
+            row: { type: "Row" }
         });
 
         // Act
@@ -61,7 +61,7 @@ describe("list subaction", () => {
         expect(interaction.update).toHaveBeenCalledTimes(1);
         expect(interaction.update).toHaveBeenCalledWith({
             embeds: [{ type: "Embed" }],
-            components: [{ type: "Row" }],
+            components: [{ type: "Row" }]
         });
     });
 
@@ -70,7 +70,7 @@ describe("list subaction", () => {
         interaction.customId = "series list 1";
         (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockResolvedValue({
             embed: { type: "Embed" },
-            row: { type: "Row" },
+            row: { type: "Row" }
         });
 
         // Act
@@ -89,7 +89,7 @@ describe("view subaction", () => {
         (SeriesHelper.GenerateSeriesViewPage as jest.Mock).mockResolvedValue({
             embed: { type: "Embed" },
             row: { type: "Row" },
-            image: { type: "Image" },
+            image: { type: "Image" }
         });
 
         // Act
@@ -107,7 +107,7 @@ describe("view subaction", () => {
         (SeriesHelper.GenerateSeriesViewPage as jest.Mock).mockResolvedValue({
             embed: { type: "Embed" },
             row: { type: "Row" },
-            image: { type: "Image" },
+            image: { type: "Image" }
         });
 
         // Act
@@ -120,7 +120,7 @@ describe("view subaction", () => {
         expect(interaction.editReply).toHaveBeenCalledWith({
             embeds: [{ type: "Embed" }],
             components: [{ type: "Row" }],
-            files: [{ type: "Image" }],
+            files: [{ type: "Image" }]
         });
     });
 });

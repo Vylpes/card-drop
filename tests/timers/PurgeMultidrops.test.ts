@@ -5,8 +5,8 @@ import PurgeMultidrops from "../../src/timers/PurgeMultidrops";
 jest.mock("../../src/client/appLogger", () => ({
     __esModule: true,
     default: {
-        LogInfo: jest.fn(),
-    },
+        LogInfo: jest.fn()
+    }
 }));
 
 describe("PurgeMultidrops", () => {

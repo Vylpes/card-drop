@@ -23,7 +23,7 @@ beforeEach(() => {
                 { id: "2", name: "Silver Card", type: 2, path: "test.jpg" },
                 { id: "3", name: "Gold Card", type: 3, path: "test.jpg" },
                 { id: "4", name: "Manga Card", type: 4, path: "test.jpg" },
-                { id: "5", name: "Legendary Card", type: 5, path: "test.jpg" },
+                { id: "5", name: "Legendary Card", type: 5, path: "test.jpg" }
             ]
         }
     ];
@@ -37,8 +37,8 @@ describe("FetchCard", () => {
         CoreClient.Cards = [
             GenerateSeriesMetadataMock(1, [
                 GenerateCardMetadataMock("1"),
-                GenerateCardMetadataMock("2"),
-            ]),
+                GenerateCardMetadataMock("2")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.5);
@@ -63,8 +63,8 @@ describe("FetchCard", () => {
         CoreClient.Cards = [
             GenerateSeriesMetadataMock(1, [
                 GenerateCardMetadataMock("1"),
-                GenerateCardMetadataMock("2"),
-            ]),
+                GenerateCardMetadataMock("2")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.9);
@@ -118,8 +118,8 @@ describe("GetRandomCard", () => {
                 GenerateCardMetadataMock("1"),
                 GenerateCardMetadataMock("2"),
                 GenerateCardMetadataMock("3"),
-                GenerateCardMetadataMock("4"),
-            ]),
+                GenerateCardMetadataMock("4")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.74);
@@ -141,8 +141,8 @@ describe("GetRandomCard", () => {
                 GenerateCardMetadataMock("1"),
                 GenerateCardMetadataMock("2"),
                 GenerateCardMetadataMock("3"),
-                GenerateCardMetadataMock("4"),
-            ]),
+                GenerateCardMetadataMock("4")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.76);
@@ -167,7 +167,7 @@ describe("GetRandomCard", () => {
             { CardNumber: "6", Quantity: 1 },
             { CardNumber: "7", Quantity: 1 },
             { CardNumber: "8", Quantity: 1 },
-            { CardNumber: "9", Quantity: 1 },
+            { CardNumber: "9", Quantity: 1 }
         ]);
         CoreClient.Cards = [
             GenerateSeriesMetadataMock(1, [
@@ -180,8 +180,8 @@ describe("GetRandomCard", () => {
                 GenerateCardMetadataMock("7"),
                 GenerateCardMetadataMock("8"),
                 GenerateCardMetadataMock("9"),
-                GenerateCardMetadataMock("10"),
-            ]),
+                GenerateCardMetadataMock("10")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.24);
@@ -206,7 +206,7 @@ describe("GetRandomCard", () => {
             { CardNumber: "6", Quantity: 1 },
             { CardNumber: "7", Quantity: 1 },
             { CardNumber: "8", Quantity: 1 },
-            { CardNumber: "9", Quantity: 1 },
+            { CardNumber: "9", Quantity: 1 }
         ]);
         CoreClient.Cards = [
             GenerateSeriesMetadataMock(1, [
@@ -219,8 +219,8 @@ describe("GetRandomCard", () => {
                 GenerateCardMetadataMock("7"),
                 GenerateCardMetadataMock("8"),
                 GenerateCardMetadataMock("9"),
-                GenerateCardMetadataMock("10"),
-            ]),
+                GenerateCardMetadataMock("10")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.26);
@@ -238,15 +238,15 @@ describe("GetRandomCard", () => {
         (EffectHelper.HasEffect as jest.Mock).mockResolvedValue(true);
         (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
             { CardNumber: "1", Quantity: 1 },
-            { CardNumber: "2", Quantity: 1 },
+            { CardNumber: "2", Quantity: 1 }
         ]);
         CoreClient.Cards = [
             GenerateSeriesMetadataMock(1, [
                 GenerateCardMetadataMock("1"),
                 GenerateCardMetadataMock("2"),
                 GenerateCardMetadataMock("3"),
-                GenerateCardMetadataMock("4"),
-            ]),
+                GenerateCardMetadataMock("4")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.49);
@@ -264,15 +264,15 @@ describe("GetRandomCard", () => {
         (EffectHelper.HasEffect as jest.Mock).mockResolvedValue(true);
         (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
             { CardNumber: "1", Quantity: 1 },
-            { CardNumber: "2", Quantity: 1 },
+            { CardNumber: "2", Quantity: 1 }
         ]);
         CoreClient.Cards = [
             GenerateSeriesMetadataMock(1, [
                 GenerateCardMetadataMock("1"),
                 GenerateCardMetadataMock("2"),
                 GenerateCardMetadataMock("3"),
-                GenerateCardMetadataMock("4"),
-            ]),
+                GenerateCardMetadataMock("4")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.51);
@@ -290,13 +290,13 @@ describe("GetRandomCard", () => {
         (EffectHelper.HasEffect as jest.Mock).mockResolvedValue(true);
         (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
             { CardNumber: "1", Quantity: 1 },
-            { CardNumber: "2", Quantity: 0 },
+            { CardNumber: "2", Quantity: 0 }
         ]);
         CoreClient.Cards = [
             GenerateSeriesMetadataMock(1, [
                 GenerateCardMetadataMock("1"),
-                GenerateCardMetadataMock("2"),
-            ]),
+                GenerateCardMetadataMock("2")
+            ])
         ];
         GetCardsHelper.GetRandomCard = jest.fn();
         Math.random = jest.fn().mockReturnValue(0.49);

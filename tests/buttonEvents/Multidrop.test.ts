@@ -31,7 +31,7 @@ function setupKeepNextCardMocks() {
         CardsKept: [],
         CardsSacrificed: [],
         Keep: jest.fn(),
-        Save: jest.fn().mockResolvedValue(undefined),
+        Save: jest.fn().mockResolvedValue(undefined)
     } as unknown as Multidrop;
 
     const user = {
@@ -66,22 +66,22 @@ describe("execute", () => {
             CardsKept: [ "card-1" ],
             CardsSacrificed: [ "card-2" ],
             Keep: jest.fn(),
-            Save: jest.fn(),
+            Save: jest.fn()
         } as unknown as Multidrop;
         multidrop.Keep = jest.fn(() => multidrop.CardsKept.push("card-11"));
 
         const user = {
-            Currency: 250,
+            Currency: 250
         } as User;
         const inventory = {
             AddQuantity: jest.fn(),
-            Save: jest.fn(),
+            Save: jest.fn()
         } as unknown as Inventory;
         const summaryEmbed = { type: "summary" };
 
         (Multidrop.FetchOneById as jest.Mock).mockResolvedValue(multidrop);
         (GetCardsHelper.GetCardByCardNumber as jest.Mock).mockReturnValue({
-            card: { id: "card-11" },
+            card: { id: "card-11" }
         });
         (User.FetchOneById as jest.Mock).mockResolvedValue(user);
         (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue(inventory);
@@ -96,7 +96,7 @@ describe("execute", () => {
         expect(interaction.update).toHaveBeenCalledWith({
             embeds: [ summaryEmbed ],
             attachments: [],
-            components: [],
+            components: []
         });
         expect(Multidrop.Remove).toHaveBeenCalledWith(Multidrop, multidrop);
     });

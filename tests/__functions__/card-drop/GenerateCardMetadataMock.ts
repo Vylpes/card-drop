@@ -7,6 +7,6 @@ export default function GenerateCardMetadataMock(id: string, overrides?: Partial
         name: `Card ${id}`,
         type: CardRarity.Bronze,
         path: `path${id}`,
-        ...overrides,
+        ...overrides
     };
 }

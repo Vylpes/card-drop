@@ -39,7 +39,7 @@ function setupCommonMocks() {
         UserId: userId,
         CardsKept: [],
         CardsSacrificed: [],
-        Save: jest.fn().mockResolvedValue(undefined),
+        Save: jest.fn().mockResolvedValue(undefined)
     }));
 }
 

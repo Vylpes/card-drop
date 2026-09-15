@@ -5,6 +5,6 @@ export default function GenerateSeriesMetadataMock(id: number, cards: CardMetada
         id,
         name: `Series ${id}`,
         cards,
-        ...overrides,
+        ...overrides
     };
 }

@@ -11,15 +11,15 @@ describe("GenerateSummaryEmbed", () => {
         const cardNames: Record<string, string> = {
             "card-1": "Card One",
             "card-2": "Card Two",
-            "card-3": "Card Three",
+            "card-3": "Card Three"
         };
         jest.spyOn(GetCardsHelper, "GetCardByCardNumber").mockImplementation(cardNumber => ({
             series: {
                 id: 1,
                 name: "Series",
-                cards: [],
+                cards: []
             },
-            card: GenerateCardMetadataMock(cardNumber, { name: cardNames[cardNumber] }),
+            card: GenerateCardMetadataMock(cardNumber, { name: cardNames[cardNumber] })
         }));
 
         const embed = MultidropEmbedHelper.GenerateSummaryEmbed(
@@ -32,17 +32,17 @@ describe("GenerateSummaryEmbed", () => {
             {
                 name: "Kept",
                 value: "• Card One (card-1)\n• Card Two (card-2)",
-                inline: true,
+                inline: true
             },
             {
                 name: "Sacrificed",
                 value: "• Card Three (card-3)",
-                inline: true,
+                inline: true
             },
             {
                 name: "New Balance",
-                value: "275 🪙",
-            },
+                value: "275 🪙"
+            }
         ]);
     });
 

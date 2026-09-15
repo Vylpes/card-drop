@@ -19,16 +19,16 @@ describe("execute", () => {
                     id: 1,
                     name: "Series 1",
                     cards: [
-                        { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" },
-                    ],
-                },
+                        { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" }
+                    ]
+                }
             ];
 
             interaction = GenerateCommandInteractionMock({ subcommand: "list" });
 
             (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockResolvedValue({
                 embed: { type: "Embed" },
-                row: { type: "Row" },
+                row: { type: "Row" }
             });
         });
 
@@ -51,7 +51,7 @@ describe("execute", () => {
             expect(interaction.reply).toHaveBeenCalledTimes(1);
             expect(interaction.reply).toHaveBeenCalledWith({
                 embeds: [{ type: "Embed" }],
-                components: [{ type: "Row" }],
+                components: [{ type: "Row" }]
             });
         });
     });
@@ -65,9 +65,9 @@ describe("execute", () => {
                     id: 1,
                     name: "Series 1",
                     cards: [
-                        { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" },
-                    ],
-                },
+                        { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" }
+                    ]
+                }
             ];
 
             interaction = GenerateCommandInteractionMock({ subcommand: "view" });
@@ -76,7 +76,7 @@ describe("execute", () => {
             (SeriesHelper.GenerateSeriesViewPage as jest.Mock).mockResolvedValue({
                 embed: { type: "Embed" },
                 row: { type: "Row" },
-                image: { type: "Image" },
+                image: { type: "Image" }
             });
         });
 
@@ -101,7 +101,7 @@ describe("execute", () => {
             expect(interaction.followUp).toHaveBeenCalledWith({
                 embeds: [{ type: "Embed" }],
                 components: [{ type: "Row" }],
-                files: [{ type: "Image" }],
+                files: [{ type: "Image" }]
             });
         });
 

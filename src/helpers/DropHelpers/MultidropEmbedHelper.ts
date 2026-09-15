@@ -37,17 +37,17 @@ export default class MultidropEmbedHelper {
                 {
                     name: "Kept",
                     value: this.FormatCards(cardsKept),
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "Sacrificed",
                     value: this.FormatCards(cardsSacrificed),
-                    inline: true,
+                    inline: true
                 },
                 {
                     name: "New Balance",
-                    value: `${currency} 🪙`,
-                },
+                    value: `${currency} 🪙`
+                }
             ]);
     }
 
