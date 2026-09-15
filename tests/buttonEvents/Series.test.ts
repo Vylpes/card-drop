@@ -20,7 +20,7 @@ beforeEach(() => {
         image: { type: "Image" },
     });
 
-    (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockReturnValue({
+    (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockResolvedValue({
         embed: { type: "Embed" },
         row: { type: "Row" },
     });
@@ -40,9 +40,9 @@ describe("execute", () => {
         expect(SeriesHelper.GenerateSeriesViewPage).toHaveBeenCalledTimes(1);
         expect(SeriesHelper.GenerateSeriesViewPage).toHaveBeenCalledWith(4, 2, "userId", true);
         expect(interaction.editReply).toHaveBeenCalledWith({
-            embeds: [ { type: "Embed" } ],
-            components: [ { type: "Row" } ],
-            files: [ { type: "Image" } ],
+            embeds: [{ type: "Embed" }],
+            components: [{ type: "Row" }],
+            files: [{ type: "Image" }],
         });
     });
 
@@ -69,10 +69,52 @@ describe("execute", () => {
 
         // Assert
         expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledTimes(1);
-        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(3);
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(3, "userId");
         expect(interaction.update).toHaveBeenCalledWith({
-            embeds: [ { type: "Embed" } ],
-            components: [ { type: "Row" } ],
+            embeds: [{ type: "Embed" }],
+            components: [{ type: "Row" }],
+        });
+    });
+
+    test("GIVEN list customId with page 0, EXPECT GenerateSeriesListPage called with userId", async () => {
+        // Arrange
+        interaction.customId = "series list 0";
+
+        // Act
+        const event = new Series();
+        await event.execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(0, "userId");
+    });
+
+    test("GIVEN list customId with page 1, EXPECT correct page to be requested", async () => {
+        // Arrange
+        interaction.customId = "series list 1";
+
+        // Act
+        const event = new Series();
+        await event.execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(1, "userId");
+    });
+
+    test("GIVEN view subaction, EXPECT interaction to be updated", async () => {
+        // Arrange
+        interaction.customId = "series view 1 0";
+
+        // Act
+        const event = new Series();
+        await event.execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(interaction.deferUpdate).toHaveBeenCalledTimes(1);
+        expect(interaction.editReply).toHaveBeenCalledTimes(1);
+        expect(interaction.editReply).toHaveBeenCalledWith({
+            embeds: [{ type: "Embed" }],
+            components: [{ type: "Row" }],
+            files: [{ type: "Image" }],
         });
     });
 });
