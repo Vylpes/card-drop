@@ -72,6 +72,7 @@ describe("FindMetadataResult", () => {
 
     describe("GIVEN parsedJson[0] doesn't have a cards object", () => {
         let res: CardMetadataResult;
+        const validationError = "CardMetadataValidationError: /data/seriesA/a.json: series 1: cards must be an array";
 
         beforeEach(async () => {
             seriesA = GenerateSeriesMetadata(1, "Series A", 1, 0);
@@ -82,17 +83,25 @@ describe("FindMetadataResult", () => {
         test("EXPECT failure returned", () => {
             expect(res).toBeDefined();
             expect(res.IsSuccess).toBe(false);
-            expect(res.ErrorMessage).toBe("/data/seriesA/a.json: No cards found in series");
+            expect(res.ErrorMessage).toBe(`/data/seriesA/a.json: ${validationError}`);
         });
 
         test("EXPECT error to be logged", () => {
             expect(LogErrorSpy).toHaveBeenCalledTimes(2);
-            expect(LogErrorSpy).toHaveBeenCalledWith("Functions/CardMetadataFunction", "No cards found in series: /data/seriesA/a.json");
+            expect(LogErrorSpy).toHaveBeenCalledWith(
+                "Functions/CardMetadataFunction",
+                `Error reading file /data/seriesA/a.json: ${validationError}`,
+            );
+            expect(LogErrorSpy).toHaveBeenCalledWith(
+                "Functions/CardMetadataFunction",
+                `Safe Mode activated due to error: ${validationError}`,
+            );
         });
     });
 
     describe("GIVEN parsedJson[1] doesn't have a cards object", () => {
         let res: CardMetadataResult;
+        const validationError = "CardMetadataValidationError: /data/seriesA/a.json: series 1: cards must be an array";
 
         beforeEach(async () => {
             seriesA = GenerateSeriesMetadata(1, "Series A", 2, [1, 0]);
@@ -103,12 +112,19 @@ describe("FindMetadataResult", () => {
         test("EXPECT failure returned", () => {
             expect(res).toBeDefined();
             expect(res.IsSuccess).toBe(false);
-            expect(res.ErrorMessage).toBe("/data/seriesA/a.json: No cards found in series");
+            expect(res.ErrorMessage).toBe(`/data/seriesA/a.json: ${validationError}`);
         });
 
         test("EXPECT error to be logged", () => {
             expect(LogErrorSpy).toHaveBeenCalledTimes(2);
-            expect(LogErrorSpy).toHaveBeenCalledWith("Functions/CardMetadataFunction", "No cards found in series: /data/seriesA/a.json");
+            expect(LogErrorSpy).toHaveBeenCalledWith(
+                "Functions/CardMetadataFunction",
+                `Error reading file /data/seriesA/a.json: ${validationError}`,
+            );
+            expect(LogErrorSpy).toHaveBeenCalledWith(
+                "Functions/CardMetadataFunction",
+                `Safe Mode activated due to error: ${validationError}`,
+            );
         });
     });
 });

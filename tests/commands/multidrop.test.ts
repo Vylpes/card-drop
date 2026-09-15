@@ -5,6 +5,7 @@ import { ChatInputCommandInteraction as ChatInputCommandInteractionMock } from "
 import { CoreClient } from "../../src/client/client";
 import Config from "../../src/database/entities/app/Config";
 import User from "../../src/database/entities/app/User";
+import MultidropRecord from "../../src/database/entities/app/Multidrop";
 import GetCardsHelper from "../../src/helpers/DropHelpers/GetCardsHelper";
 import Inventory from "../../src/database/entities/app/Inventory";
 import MultidropEmbedHelper from "../../src/helpers/DropHelpers/MultidropEmbedHelper";
@@ -12,6 +13,7 @@ import * as fs from "fs";
 
 jest.mock("../../src/database/entities/app/Config");
 jest.mock("../../src/database/entities/app/User");
+jest.mock("../../src/database/entities/app/Multidrop");
 jest.mock("../../src/helpers/DropHelpers/GetCardsHelper");
 jest.mock("../../src/database/entities/app/Inventory");
 jest.mock("../../src/helpers/DropHelpers/MultidropEmbedHelper");
@@ -20,6 +22,26 @@ jest.mock("fs", () => ({
     ...jest.requireActual("fs"),
     readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image"))
 }));
+
+function setupCommonMocks() {
+    const user = {
+        Currency: 500,
+        RemoveCurrency: jest.fn(),
+        Save: jest.fn()
+    } as unknown as User;
+
+    (User.FetchOneById as jest.Mock).mockResolvedValue(user);
+    (MultidropEmbedHelper.GenerateMultidropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
+    (MultidropEmbedHelper.GenerateMultidropButtons as jest.Mock).mockReturnValue({ type: "Button" });
+    (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({ Quantity: 1 });
+    (MultidropRecord as unknown as jest.Mock).mockImplementation((userId: string) => ({
+        Id: "multidrop-id",
+        UserId: userId,
+        CardsKept: [],
+        CardsSacrificed: [],
+        Save: jest.fn().mockResolvedValue(undefined),
+    }));
+}
 
 describe("execute", () => {
     describe("GIVEN randomCard image is hosted locally", () => {
@@ -32,17 +54,8 @@ describe("execute", () => {
             process.env.DATA_DIR = "/data";
 
             interaction = GenerateCommandInteractionMock();
+            setupCommonMocks();
 
-            const user = {
-                Currency: 500,
-                RemoveCurrency: jest.fn(),
-                Save: jest.fn()
-            } as unknown as User;
-
-            (User.FetchOneById as jest.Mock).mockResolvedValue(user);
-            (MultidropEmbedHelper.GenerateMultidropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
-            (MultidropEmbedHelper.GenerateMultidropButtons as jest.Mock).mockReturnValue({ type: "Button" });
-            (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({ Quantity: 1 });
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "cardId", path: "series/card.png", type: 1 },
                 series: { id: 1, name: "Series", cards: [] }
@@ -70,17 +83,8 @@ describe("execute", () => {
             CoreClient.AllowDrops = true;
 
             interaction = GenerateCommandInteractionMock();
+            setupCommonMocks();
 
-            const user = {
-                Currency: 500,
-                RemoveCurrency: jest.fn(),
-                Save: jest.fn()
-            } as unknown as User;
-
-            (User.FetchOneById as jest.Mock).mockResolvedValue(user);
-            (MultidropEmbedHelper.GenerateMultidropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
-            (MultidropEmbedHelper.GenerateMultidropButtons as jest.Mock).mockReturnValue({ type: "Button" });
-            (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({ Quantity: 1 });
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "cardId", path: "http://example.com/card.png", type: 1 },
                 series: { id: 1, name: "Series", cards: [] }
@@ -107,17 +111,8 @@ describe("execute", () => {
             CoreClient.AllowDrops = true;
 
             interaction = GenerateCommandInteractionMock();
+            setupCommonMocks();
 
-            const user = {
-                Currency: 500,
-                RemoveCurrency: jest.fn(),
-                Save: jest.fn()
-            } as unknown as User;
-
-            (User.FetchOneById as jest.Mock).mockResolvedValue(user);
-            (MultidropEmbedHelper.GenerateMultidropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
-            (MultidropEmbedHelper.GenerateMultidropButtons as jest.Mock).mockReturnValue({ type: "Button" });
-            (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({ Quantity: 1 });
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "cardId", path: "https://example.com/card.png", type: 1 },
                 series: { id: 1, name: "Series", cards: [] }

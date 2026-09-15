@@ -6,6 +6,8 @@ import User from "../../src/database/entities/app/User";
 import GetCardsHelper from "../../src/helpers/DropHelpers/GetCardsHelper";
 import MultidropEmbedHelper from "../../src/helpers/DropHelpers/MultidropEmbedHelper";
 import GenerateButtonInteractionMock from "../__functions__/discord.js/GenerateButtonInteractionMock";
+import { ButtonInteraction as ButtonInteractionType } from "../__types__/discord.js";
+import * as fs from "fs";
 
 jest.mock("../../src/client/appLogger");
 jest.mock("../../src/database/entities/app/Inventory");
@@ -13,6 +15,45 @@ jest.mock("../../src/database/entities/app/Multidrop");
 jest.mock("../../src/database/entities/app/User");
 jest.mock("../../src/helpers/DropHelpers/GetCardsHelper");
 jest.mock("../../src/helpers/DropHelpers/MultidropEmbedHelper");
+jest.mock("fs", () => ({
+    ...jest.requireActual("fs"),
+    readFileSync: jest.fn().mockReturnValue(Buffer.from("fake-image"))
+}));
+
+/**
+ * Sets up common mocks shared across Multidrop Keep flows that drop another card.
+ * customId format: "multidrop keep cardNumber cardsRemaining multidropId"
+ */
+function setupKeepNextCardMocks() {
+    const multidrop = {
+        Id: "multidrop-id",
+        UserId: "userId",
+        CardsKept: [],
+        CardsSacrificed: [],
+        Keep: jest.fn(),
+        Save: jest.fn().mockResolvedValue(undefined),
+    } as unknown as Multidrop;
+
+    const user = {
+        Currency: 500,
+        AddCurrency: jest.fn(),
+        Save: jest.fn()
+    } as unknown as User;
+
+    (Multidrop.FetchOneById as jest.Mock).mockResolvedValue(multidrop);
+    (User.FetchOneById as jest.Mock).mockResolvedValue(user);
+    (Inventory.FetchOneByCardNumberAndUserId as jest.Mock).mockResolvedValue({
+        Quantity: 1,
+        AddQuantity: jest.fn(),
+        Save: jest.fn().mockResolvedValue(undefined)
+    });
+    (MultidropEmbedHelper.GenerateMultidropEmbed as jest.Mock).mockReturnValue({ type: "Embed" });
+    (MultidropEmbedHelper.GenerateMultidropButtons as jest.Mock).mockReturnValue({ type: "Button" });
+    (GetCardsHelper.GetCardByCardNumber as jest.Mock).mockReturnValue({
+        card: { id: "cardId", name: "Card", type: 1, path: "series/card.png" },
+        series: { id: 1, name: "Series", cards: [] }
+    });
+}
 
 describe("execute", () => {
     test("GIVEN the final card is kept EXPECT a completed summary and multidrop removal", async () => {
@@ -68,18 +109,16 @@ describe("execute", () => {
             process.env.DATA_DIR = "/data";
 
             interaction = GenerateButtonInteractionMock();
-            // customId: "multidrop keep cardNumber cardsRemaining userId"
-            interaction.customId = "multidrop keep cardId 1 userId";
+            interaction.customId = "multidrop keep cardId 1 multidrop-id";
 
-            setupCommonMocks();
+            setupKeepNextCardMocks();
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "series/next.png", type: 1 },
                 series: { id: 1, name: "Series", cards: [] }
             });
 
-            const multidrop = new Multidrop();
-            await multidrop.execute(interaction as unknown as ButtonInteraction);
+            await new MultidropButtonEvent().execute(interaction as unknown as ButtonInteraction);
         });
 
         test("EXPECT image to be uploaded directly", () => {
@@ -98,17 +137,16 @@ describe("execute", () => {
             jest.resetAllMocks();
 
             interaction = GenerateButtonInteractionMock();
-            interaction.customId = "multidrop keep cardId 1 userId";
+            interaction.customId = "multidrop keep cardId 1 multidrop-id";
 
-            setupCommonMocks();
+            setupKeepNextCardMocks();
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "http://example.com/card.png", type: 1 },
                 series: { id: 1, name: "Series", cards: [] }
             });
 
-            const multidrop = new Multidrop();
-            await multidrop.execute(interaction as unknown as ButtonInteraction);
+            await new MultidropButtonEvent().execute(interaction as unknown as ButtonInteraction);
         });
 
         test("EXPECT image link to be directly added to embed", () => {
@@ -126,17 +164,16 @@ describe("execute", () => {
             jest.resetAllMocks();
 
             interaction = GenerateButtonInteractionMock();
-            interaction.customId = "multidrop keep cardId 1 userId";
+            interaction.customId = "multidrop keep cardId 1 multidrop-id";
 
-            setupCommonMocks();
+            setupKeepNextCardMocks();
 
             (GetCardsHelper.GetRandomCard as jest.Mock).mockReturnValue({
                 card: { id: "nextCardId", path: "https://example.com/card.png", type: 1 },
                 series: { id: 1, name: "Series", cards: [] }
             });
 
-            const multidrop = new Multidrop();
-            await multidrop.execute(interaction as unknown as ButtonInteraction);
+            await new MultidropButtonEvent().execute(interaction as unknown as ButtonInteraction);
         });
 
         test("EXPECT image link to be directly added to embed", () => {

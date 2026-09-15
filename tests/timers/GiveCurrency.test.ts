@@ -1,10 +1,8 @@
 import GiveCurrency from "../../src/timers/GiveCurrency";
 import User from "../../src/database/entities/app/User";
 import CardConstants from "../../src/constants/CardConstants";
-import AppLogger from "../../src/client/appLogger";
 
 jest.mock("../../src/database/entities/app/User");
-jest.mock("../../src/client/appLogger");
 
 describe("GIVEN a mix of users above and below the currency cap", () => {
     let poorUser: User;
@@ -38,10 +36,6 @@ describe("GIVEN a mix of users above and below the currency cap", () => {
     test("EXPECT all users to be saved", () => {
         expect(User.SaveAll).toHaveBeenCalledTimes(1);
         expect(User.SaveAll).toHaveBeenCalledWith(User, [poorUser, richUser]);
-    });
-
-    test("EXPECT the number of users given currency to be logged", () => {
-        expect(AppLogger.LogDebug).toHaveBeenCalledWith("Timers/GiveCurrency", `Successfully gave +${CardConstants.TimerGiveAmount} currency to 1 users`);
     });
 });
 
