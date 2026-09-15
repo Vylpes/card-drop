@@ -43,8 +43,6 @@ export default class Series extends Command {
     private async ViewSeries(interaction: ChatInputCommandInteraction) {
         const id = interaction.options.get("id");
 
-        AppLogger.LogSilly("Commands/Series/View", `Parameters: id=${id?.value}`);
-
         await interaction.deferReply();
 
         if (!id) return;
@@ -52,8 +50,6 @@ export default class Series extends Command {
         const series = CoreClient.Cards.find(x => x.id === id.value);
 
         if (!series) {
-            AppLogger.LogVerbose("Commands/Series/View", "Series not found.");
-
             await interaction.followUp("Series not found.");
             return;
         }
@@ -73,7 +69,7 @@ export default class Series extends Command {
     }
 
     private async ListSeries(interaction: ChatInputCommandInteraction) {
-        const embed = SeriesHelper.GenerateSeriesListPage(0);
+        const embed = await SeriesHelper.GenerateSeriesListPage(0, interaction.user.id);
 
         await interaction.reply({ embeds: [ embed!.embed ], components: [ embed!.row ]});
     }

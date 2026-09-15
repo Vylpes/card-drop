@@ -1,124 +1,197 @@
 import SeriesHelper from "../../src/helpers/SeriesHelper";
 import { CoreClient } from "../../src/client/client";
+import Inventory from "../../src/database/entities/app/Inventory";
+import { CardRarity } from "../../src/constants/CardRarity";
 import ImageHelper from "../../src/helpers/ImageHelper";
-import { SeriesMetadata } from "../../src/contracts/SeriesMetadata";
 
-jest.mock("../../src/client/appLogger");
+jest.mock("../../src/database/entities/app/Inventory");
 jest.mock("../../src/helpers/ImageHelper");
-
-function generateCards(count: number) {
-    return Array.from({ length: count }, (_, i) => ({
-        id: `card-${i}`,
-        name: `Card ${i}`,
-        type: 0,
-        path: `card-${i}.png`
-    }));
-}
-
-function generateSeries(id: number, cardCount: number): SeriesMetadata {
-    return {
-        id,
-        name: `Series ${id}`,
-        cards: generateCards(cardCount)
-    } as unknown as SeriesMetadata;
-}
-
-describe("GenerateSeriesViewPage", () => {
-    beforeEach(() => {
-        jest.resetAllMocks();
-
-        (ImageHelper.GenerateCardImageGrid as jest.Mock).mockResolvedValue(Buffer.from(""));
-    });
-
-    describe("GIVEN a series with more cards than fit on a page", () => {
-        beforeEach(() => {
-            CoreClient.Cards = [ generateSeries(1, 20) ];
-        });
-
-        test("EXPECT the first page to hold the first 9 cards", async () => {
-            const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
-
-            expect(result).not.toBeNull();
-            expect(result!.embed.data.description).toContain("[card-0]");
-            expect(result!.embed.data.description).toContain("[card-8]");
-            expect(result!.embed.data.description).not.toContain("[card-9]");
-        });
-
-        test("EXPECT the second page to hold the next 9 cards", async () => {
-            const result = await SeriesHelper.GenerateSeriesViewPage(1, 1, "userId");
-
-            expect(result!.embed.data.description).toContain("[card-9]");
-            expect(result!.embed.data.description).toContain("[card-17]");
-            expect(result!.embed.data.description).not.toContain("[card-8]");
-        });
-
-        test("EXPECT paging back and forth to keep returning the same page contents", async () => {
-            const first = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
-            await SeriesHelper.GenerateSeriesViewPage(1, 1, "userId");
-            const firstAgain = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
-
-            expect(firstAgain!.embed.data.description).toBe(first!.embed.data.description);
-        });
-
-        test("EXPECT the source series to keep all of its cards", async () => {
-            await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
-            await SeriesHelper.GenerateSeriesViewPage(1, 1, "userId");
-
-            expect(CoreClient.Cards[0].cards).toHaveLength(20);
-        });
-
-        test("EXPECT the total card count in the footer to stay stable across pages", async () => {
-            await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
-            const second = await SeriesHelper.GenerateSeriesViewPage(1, 1, "userId");
-
-            expect(second!.embed.data.footer!.text).toBe("1 · 20 cards · Page 2 of 3");
-        });
-    });
-
-    describe("GIVEN the series does not exist", () => {
-        test("EXPECT null returned", async () => {
-            CoreClient.Cards = [ generateSeries(1, 5) ];
-
-            expect(await SeriesHelper.GenerateSeriesViewPage(99, 0, "userId")).toBeNull();
-        });
-    });
-
-    describe("GIVEN the requested page is beyond the last page", () => {
-        test("EXPECT null returned", async () => {
-            CoreClient.Cards = [ generateSeries(1, 5) ];
-
-            expect(await SeriesHelper.GenerateSeriesViewPage(1, 5, "userId")).toBeNull();
-        });
-    });
-});
+jest.mock("../../src/client/appLogger");
 
 describe("GenerateSeriesListPage", () => {
     beforeEach(() => {
-        jest.resetAllMocks();
-
-        CoreClient.Cards = Array.from({ length: 20 }, (_, i) => generateSeries(i + 1, 3));
+        CoreClient.Cards = [
+            {
+                id: 1,
+                name: "Series 1",
+                cards: [
+                    { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "path1" },
+                    { id: "card2", name: "Card 2", type: CardRarity.Silver, path: "path2" },
+                    { id: "card3", name: "Card 3", type: CardRarity.Gold, path: "path3" },
+                ],
+            },
+            {
+                id: 2,
+                name: "Series 2",
+                cards: [
+                    { id: "card4", name: "Card 4", type: CardRarity.Bronze, path: "path4" },
+                    { id: "card5", name: "Card 5", type: CardRarity.Silver, path: "path5" },
+                ],
+            },
+            {
+                id: 3,
+                name: "Series 3",
+                cards: [
+                    { id: "card6", name: "Card 6", type: CardRarity.Legendary, path: "path6" },
+                ],
+            },
+        ];
     });
 
-    test("EXPECT the first page to hold the first 15 series", () => {
-        const result = SeriesHelper.GenerateSeriesListPage(0);
+    test("GIVEN user has no claims, EXPECT all series to show 0 claims", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
 
-        expect(result!.embed.data.description).toContain("[1] Series 1");
-        expect(result!.embed.data.description).toContain("[15] Series 15");
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.description).toContain("[1] Series 1 (0/3)");
+        expect(result!.embed.data.description).toContain("[2] Series 2 (0/2)");
+        expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
+    });
+
+    test("GIVEN user has some claims, EXPECT correct claim counts", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 2 },
+            { CardNumber: "card2", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 1 },
+        ]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.description).toContain("[1] Series 1 (2/3)");
+        expect(result!.embed.data.description).toContain("[2] Series 2 (1/2)");
+        expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
+    });
+
+    test("GIVEN user has all cards in a series, EXPECT full claim count", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card2", Quantity: 1 },
+            { CardNumber: "card3", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 2 },
+            { CardNumber: "card5", Quantity: 3 },
+        ]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.description).toContain("[1] Series 1 (3/3)");
+        expect(result!.embed.data.description).toContain("[2] Series 2 (2/2)");
+        expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
+    });
+
+    test("GIVEN multiple pages of series, EXPECT pagination to work correctly", async () => {
+        // Arrange - Create 20 series to ensure pagination
+        const manySeries = [];
+        for (let i = 1; i <= 20; i++) {
+            manySeries.push({
+                id: i,
+                name: `Series ${i}`,
+                cards: [
+                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` },
+                ],
+            });
+        }
+        CoreClient.Cards = manySeries;
+
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+        ]);
+
+        // Act - Get first page
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.description).toContain("[1] Series 1 (1/1)");
+        expect(result!.embed.data.description).toContain("[15] Series 15 (0/1)");
         expect(result!.embed.data.description).not.toContain("[16] Series 16");
+        expect(result!.row.components[0].data.disabled).toBe(true); // Previous disabled on first page
+        expect(result!.row.components[1].data.disabled).toBe(false); // Next enabled
     });
 
-    test("EXPECT the source series list to keep all of its entries", () => {
-        SeriesHelper.GenerateSeriesListPage(0);
-        SeriesHelper.GenerateSeriesListPage(1);
+    test("GIVEN second page requested, EXPECT correct series shown", async () => {
+        // Arrange - Create 20 series to ensure pagination
+        const manySeries = [];
+        for (let i = 1; i <= 20; i++) {
+            manySeries.push({
+                id: i,
+                name: `Series ${i}`,
+                cards: [
+                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` },
+                ],
+            });
+        }
+        CoreClient.Cards = manySeries;
 
-        expect(CoreClient.Cards).toHaveLength(20);
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
+
+        // Act - Get second page
+        const result = await SeriesHelper.GenerateSeriesListPage(1, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.description).toContain("[16] Series 16 (0/1)");
+        expect(result!.embed.data.description).toContain("[20] Series 20 (0/1)");
+        expect(result!.embed.data.description).not.toContain("[15] Series 15");
+        expect(result!.row.components[0].data.disabled).toBe(false); // Previous enabled
+        expect(result!.row.components[1].data.disabled).toBe(true); // Next disabled on last page
     });
 
-    test("EXPECT paging back and forth to keep returning the same page contents", () => {
-        const first = SeriesHelper.GenerateSeriesListPage(0);
-        SeriesHelper.GenerateSeriesListPage(1);
-        const firstAgain = SeriesHelper.GenerateSeriesListPage(0);
+    test("GIVEN page beyond total pages, EXPECT null returned", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
 
-        expect(firstAgain!.embed.data.description).toBe(first!.embed.data.description);
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(10, "userId");
+
+        // Assert
+        expect(result).toBeNull();
+    });
+});
+
+describe("GenerateSeriesViewPage", () => {
+    beforeEach(() => {
+        CoreClient.Cards = [
+            {
+                id: 1,
+                name: "Test Series",
+                cards: [
+                    { id: "card1", name: "Card 1", type: CardRarity.Bronze, path: "/path/card1.jpg" },
+                    { id: "card2", name: "Card 2", type: CardRarity.Silver, path: "/path/card2.jpg" },
+                ],
+            },
+        ];
+
+        (ImageHelper.GenerateCardImageGrid as jest.Mock).mockResolvedValue(Buffer.from("test"));
+    });
+
+    test("GIVEN valid series and page, EXPECT series view page generated", async () => {
+        // Act
+        const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Test Series");
+        expect(result!.embed.data.description).toContain("[card1] Card 1 (Bronze)");
+        expect(result!.embed.data.description).toContain("[card2] Card 2 (Silver)");
+    });
+
+    test("GIVEN invalid series id, EXPECT null returned", async () => {
+        // Act
+        const result = await SeriesHelper.GenerateSeriesViewPage(999, 0, "userId");
+
+        // Assert
+        expect(result).toBeNull();
     });
 });

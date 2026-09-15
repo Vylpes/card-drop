@@ -12,17 +12,14 @@ export class Events {
         await NewUserDiscovery(interaction);
 
         if (interaction.isChatInputCommand()) {
-            AppLogger.LogVerbose("Client", `ChatInputCommand: ${interaction.commandName}`);
             await ChatInputCommand.onChatInput(interaction);
         }
 
         if (interaction.isButton()) {
-            AppLogger.LogVerbose("Client", `Button: ${interaction.customId}`);
             await Button.onButtonClicked(interaction);
         }
 
         if (interaction.isStringSelectMenu()) {
-            AppLogger.LogVerbose("Client", `StringDropdown: ${interaction.customId}`);
             await StringDropdown.onStringDropdownSelected(interaction);
         }
     }

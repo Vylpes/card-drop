@@ -38,7 +38,7 @@ export default class Series extends ButtonEvent {
     private async ListSeries(interaction: ButtonInteraction) {
         const page = interaction.customId.split(" ")[2];
 
-        const embed = SeriesHelper.GenerateSeriesListPage(Number(page));
+        const embed = await SeriesHelper.GenerateSeriesListPage(Number(page), interaction.user.id);
 
         await interaction.update({
             embeds: [ embed!.embed ],
