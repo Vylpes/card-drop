@@ -51,9 +51,9 @@ export default class Gdrivesync extends Command {
                     CoreClient.AllowDrops = true;
                     await Config.SetValue("safemode", "false");
                 } else {
-                    AppLogger.LogError("Commands/GDriveSync", `Error while running sync command: ${result.ErrorMessage}`);
+                    AppLogger.LogError("Commands/GDriveSync", `Sync failed, safe mode activated: ${result.ErrorMessage}`);
 
-                    await interaction.editReply(`Sync failed \`\`\`${result.ErrorMessage}\`\`\``);
+                    await interaction.editReply(`Sync failed, safe mode has been activated.\n\`\`\`${result.ErrorMessage}\`\`\``);
                 }
             }
         });
