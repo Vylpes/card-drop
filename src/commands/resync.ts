@@ -28,7 +28,7 @@ export default class Resync extends Command {
 
         const result = await CardMetadataFunction.Execute(true);
 
-        if (result) {
+        if (result.IsSuccess) {
             if (await Config.GetValue("safemode") === "true") {
                 AppLogger.LogInfo("Commands/Resync", "Resync successful, safe mode disabled");
 
@@ -39,9 +39,9 @@ export default class Resync extends Command {
             }
             await interaction.reply("Resynced database.");
         } else {
-            AppLogger.LogWarn("Commands/Resync", "Resync failed, safe mode activated");
+            AppLogger.LogError("Commands/Resync", `Resync failed, safe mode activated: ${result.ErrorMessage}`);
 
-            await interaction.reply("Resync failed, safe mode has been activated until successful resync.");
+            await interaction.reply(`Resync failed, safe mode has been activated until successful resync.\n\`\`\`${result.ErrorMessage}\`\`\``);
         }
     }
 }

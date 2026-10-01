@@ -86,14 +86,12 @@ describe("FindMetadataResult", () => {
 
         test("EXPECT error to be logged", () => {
             expect(LogErrorSpy).toHaveBeenCalledTimes(2);
-            expect(LogErrorSpy).toHaveBeenCalledWith(
-                "Functions/CardMetadataFunction",
-                `Error reading file /data/seriesA/a.json: ${validationError}`,
-            );
-            expect(LogErrorSpy).toHaveBeenCalledWith(
-                "Functions/CardMetadataFunction",
-                `Safe Mode activated due to error: ${validationError}`,
-            );
+            expect(LogErrorSpy).toHaveBeenCalledWith("Functions/CardMetadataFunction", "No cards found in series: /data/seriesA/a.json");
+            expect(LogErrorSpy).toHaveBeenCalledWith("Functions/CardMetadataFunction", "Safe Mode activated due to error: /data/seriesA/a.json: No cards found in series");
+        });
+
+        test("EXPECT safe mode to be enabled", () => {
+            expect(Config.SetValue).toHaveBeenCalledWith("safemode", "true");
         });
     });
 
@@ -115,14 +113,40 @@ describe("FindMetadataResult", () => {
 
         test("EXPECT error to be logged", () => {
             expect(LogErrorSpy).toHaveBeenCalledTimes(2);
-            expect(LogErrorSpy).toHaveBeenCalledWith(
-                "Functions/CardMetadataFunction",
-                `Error reading file /data/seriesA/a.json: ${validationError}`,
-            );
-            expect(LogErrorSpy).toHaveBeenCalledWith(
-                "Functions/CardMetadataFunction",
-                `Safe Mode activated due to error: ${validationError}`,
-            );
+            expect(LogErrorSpy).toHaveBeenCalledWith("Functions/CardMetadataFunction", "No cards found in series: /data/seriesA/a.json");
+            expect(LogErrorSpy).toHaveBeenCalledWith("Functions/CardMetadataFunction", "Safe Mode activated due to error: /data/seriesA/a.json: No cards found in series");
+        });
+
+        test("EXPECT safe mode to be enabled", () => {
+            expect(Config.SetValue).toHaveBeenCalledWith("safemode", "true");
+        });
+    });
+
+    describe("GIVEN a file fails to parse", () => {
+        let res: CardMetadataResult;
+
+        beforeEach(async () => {
+            mockedReadFileSync.mockImplementation((p: string) => {
+                if (p == pathA) throw new Error("Unexpected token");
+                if (p == pathB) return JSON.stringify(seriesB);
+                return "[]";
+            });
+
+            res = await CardMetadataFunction.Execute();
+        });
+
+        test("EXPECT failure returned", () => {
+            expect(res).toBeDefined();
+            expect(res.IsSuccess).toBe(false);
+            expect(res.ErrorMessage).toBe("/data/seriesA/a.json: Error: Unexpected token");
+        });
+
+        test("EXPECT safe mode activation to be logged with the error", () => {
+            expect(LogErrorSpy).toHaveBeenCalledWith("Functions/CardMetadataFunction", "Safe Mode activated due to error: /data/seriesA/a.json: Error: Unexpected token");
+        });
+
+        test("EXPECT safe mode to be enabled", () => {
+            expect(Config.SetValue).toHaveBeenCalledWith("safemode", "true");
         });
     });
 });
