@@ -67,12 +67,14 @@ export default class CardMetadataFunction {
             };
         }
 
+        const errorMessage = `${cardResult.Error!.File}: ${cardResult.Error!.Message}`;
+
         await Config.SetValue("safemode", "true");
-        AppLogger.LogError("Functions/CardMetadataFunction", `Safe Mode activated due to error: ${cardResult.Error!.Message}`);
+        AppLogger.LogError("Functions/CardMetadataFunction", `Safe Mode activated due to error: ${errorMessage}`);
 
         return {
             IsSuccess: false,
-            ErrorMessage: `${cardResult.Error!.File}: ${cardResult.Error!.Message}`,
+            ErrorMessage: errorMessage,
         };
     }
 
