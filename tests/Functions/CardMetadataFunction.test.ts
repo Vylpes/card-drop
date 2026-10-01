@@ -127,8 +127,8 @@ describe("FindMetadataResult", () => {
 
         beforeEach(async () => {
             mockedReadFileSync.mockImplementation((p: string) => {
-                if (p == pathA) throw new Error("Unexpected token");
-                if (p == pathB) return JSON.stringify(seriesB);
+                if (p === pathA) throw new Error("Unexpected token");
+                if (p === pathB) return JSON.stringify(seriesB);
                 return "[]";
             });
 
