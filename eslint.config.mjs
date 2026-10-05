@@ -8,7 +8,8 @@ export default [
             "eslint.config.mjs",
             "jest.config.cjs",
             "jest.setup.js",
-            "**/.temp/**/*"
+            "**/.temp/**/*",
+            "**/vendor/**"
         ],
     },
     js.configs.recommended,
