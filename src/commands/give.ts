@@ -28,7 +28,12 @@ export default class Give extends Command {
                         x
                             .setName("user")
                             .setDescription("The user to give the card to")
-                            .setRequired(true)))
+                            .setRequired(true))
+                    .addNumberOption(x =>
+                        x
+                            .setName("quantity")
+                            .setDescription("The amount to give (default 1)")
+                            .setMinValue(1)))
             .addSubcommand(x =>
                 x
                     .setName("currency")
@@ -76,8 +81,14 @@ export default class Give extends Command {
 
         const cardNumber = interaction.options.get("cardnumber", true);
         const user = interaction.options.get("user", true).user!;
+        const quantity = Number(interaction.options.get("quantity")?.value ?? 1);
 
-        AppLogger.LogSilly("Commands/Give/GiveCard", `Parameters: cardNumber=${cardNumber.value}, user=${user.id}`);
+        if (!Number.isFinite(quantity) || quantity < 1) {
+            await interaction.reply("Quantity must be at least 1.");
+            return;
+        }
+
+        AppLogger.LogSilly("Commands/Give/GiveCard", `Parameters: cardNumber=${cardNumber.value}, user=${user.id}, quantity=${quantity}`);
 
         const card = GetCardsHelper.GetCardByCardNumber(cardNumber.value!.toString());
 
@@ -89,14 +100,14 @@ export default class Give extends Command {
         let inventory = await Inventory.FetchOneByCardNumberAndUserId(user.id, card.card.id);
 
         if (!inventory) {
-            inventory = new Inventory(user.id, card.card.id, 1);
+            inventory = new Inventory(user.id, card.card.id, quantity);
         } else {
-            inventory.SetQuantity(inventory.Quantity + 1);
+            inventory.AddQuantity(quantity);
         }
 
         await inventory.Save(Inventory, inventory);
 
-        await interaction.reply(`Card ${card.card.name} given to ${user.username}, they now have ${inventory.Quantity}`);
+        await interaction.reply(`Card ${card.card.name} x${quantity} given to ${user.username}, they now have ${inventory.Quantity}`);
     }
 
     private async GiveCurrency(interaction: ChatInputCommandInteraction) {
