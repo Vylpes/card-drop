@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### New Features
+- `/inventory` can be sorted by card id, name, or type (#278)
+- `/give card` accepts an optional `quantity` to grant multiple copies at once (#359)
+
+### Improvements
+- `/series view` has an optional parameter to disable the colour filter for better performance (#355)
+- Removed the obsolete `version` tag from Docker Compose (#441)
+- Stage CI now runs on push to `main` (#476)
+- Dependency updates and security patches (#531)
+- Added Forgejo issue templates (#484)
+
+### Documentation
+- Added `copilot-instructions.md` for AI-assisted development (#472)
+
+## 0.10.1
+
+### Improvements
+- Safe mode activation now logs the underlying error in the app logger (#554)
+
 ## 0.10.0
 
 ### New Features
