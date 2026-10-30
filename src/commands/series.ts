@@ -27,7 +27,12 @@ export default class Series extends Command {
             .addSubcommand(x =>
                 x
                     .setName("list")
-                    .setDescription("List all series")) as SlashCommandBuilder;
+                    .setDescription("List all series")
+                    .addStringOption(y =>
+                        y
+                            .setName("filter")
+                            .setDescription("Filter which series to show")
+                            .addChoices({ name: "Unclaimed", value: "unclaimed" }))) as SlashCommandBuilder;
     }
 
     public override async execute(interaction: ChatInputCommandInteraction) {
@@ -74,8 +79,18 @@ export default class Series extends Command {
     }
 
     private async ListSeries(interaction: ChatInputCommandInteraction) {
-        const embed = await SeriesHelper.GenerateSeriesListPage(0, interaction.user.id);
+        const filter = interaction.options.getString("filter");
+        const unclaimedOnly = filter === "unclaimed";
 
-        await interaction.reply({ embeds: [ embed!.embed ], components: [ embed!.row ]});
+        const embed = await SeriesHelper.GenerateSeriesListPage(0, interaction.user.id, unclaimedOnly);
+
+        if (!embed) {
+            await interaction.reply(unclaimedOnly
+                ? "No series with unclaimed cards found."
+                : "No series found.");
+            return;
+        }
+
+        await interaction.reply({ embeds: [ embed.embed ], components: [ embed.row ]});
     }
 }
