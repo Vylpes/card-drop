@@ -28,7 +28,7 @@ export default class GetCardsHelper {
         let silverChance = CardRarityChances.Silver;
         let goldChance = CardRarityChances.Gold;
         let mangaChance = CardRarityChances.Manga;
-        let legendaryChance = CardRarityChances.Legendary;
+        const legendaryChance = CardRarityChances.Legendary;
 
         if (userId) {
             const hasGoldEffect = await EffectHelper.HasEffect(userId, "goldchanceup");
@@ -44,7 +44,6 @@ export default class GetCardsHelper {
                 silverChance -= chancePerOther;
                 goldChance = boostedChance;
                 mangaChance -= chancePerOther;
-                legendaryChance -= chancePerOther;
             } else if (hasLegendaryEffect) {
                 const boostedChance = legendaryChance * 2;
                 const chanceToRemove = boostedChance - legendaryChance;
@@ -54,7 +53,6 @@ export default class GetCardsHelper {
                 silverChance -= chancePerOther;
                 goldChance -= chancePerOther;
                 mangaChance -= chancePerOther;
-                legendaryChance = boostedChance;
             } else if (hasMangaEffect) {
                 const boostedChance = mangaChance * 2;
                 const chanceToRemove = boostedChance - mangaChance;
@@ -64,7 +62,6 @@ export default class GetCardsHelper {
                 silverChance -= chancePerOther;
                 goldChance -= chancePerOther;
                 mangaChance = boostedChance;
-                legendaryChance -= chancePerOther;
             }
         }
 

@@ -57,20 +57,21 @@
     "braces": "file:./vendor/braces"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.0",
     "@jest/globals": "^30.5.2",
     "@types/clone-deep": "^4.0.4",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.19.1",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.71.0",
-    "@typescript-eslint/parser": "^8.71.0",
-    "eslint": "^9.39.5",
+    "@typescript-eslint/eslint-plugin": "^8.72.1",
+    "@typescript-eslint/parser": "^8.72.1",
+    "eslint": "^10.12.0",
     "jest": "^30.5.2",
     "jest-mock-extended": "^4.0.1",
     "np": "^10.3.0",
     "ts-jest": "^29.4.14",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.72.1"
   }
 }
