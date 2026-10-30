@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const AppDataSource = new DataSource({
     type: "mysql",
