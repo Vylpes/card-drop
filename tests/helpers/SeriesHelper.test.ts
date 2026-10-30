@@ -1,3 +1,4 @@
+import { APIButtonComponentWithCustomId } from "discord.js";
 import SeriesHelper from "../../src/helpers/SeriesHelper";
 import { CoreClient } from "../../src/client/client";
 import Inventory from "../../src/database/entities/app/Inventory";
@@ -179,7 +180,8 @@ describe("GenerateSeriesListPage", () => {
         expect(result!.embed.data.description).not.toContain("Series 1");
         expect(result!.embed.data.description).not.toContain("Series 2");
         expect(result!.row.components).toHaveLength(3);
-        expect((result!.row.components[2].data as any).label).toBe("Back");
+        const buttons = result!.row.toJSON().components as APIButtonComponentWithCustomId[];
+        expect(buttons[2].label).toBe("Back");
     });
 
     test("GIVEN unclaimed filter and quantity zero inventory, EXPECT series still treated as unclaimed", async () => {
@@ -224,8 +226,9 @@ describe("GenerateSeriesListPage", () => {
         // Assert
         expect(result).not.toBeNull();
         expect(result!.row.components).toHaveLength(3);
-        expect((result!.row.components[2].data as any).label).toBe("Unclaimed");
-        expect((result!.row.components[2].data as any).custom_id).toBe("series list 0 1 0");
+        const buttons = result!.row.toJSON().components as APIButtonComponentWithCustomId[];
+        expect(buttons[2].label).toBe("Unclaimed");
+        expect(buttons[2].custom_id).toBe("series list 0 1 0");
     });
 
     test("GIVEN unclaimed filter with return page, EXPECT Back button restores return page", async () => {
@@ -237,10 +240,11 @@ describe("GenerateSeriesListPage", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect((result!.row.components[2].data as any).label).toBe("Back");
-        expect((result!.row.components[2].data as any).custom_id).toBe("series list 2 0");
-        expect((result!.row.components[0].data as any).custom_id).toBe("series list -1 1 2");
-        expect((result!.row.components[1].data as any).custom_id).toBe("series list 1 1 2");
+        const buttons = result!.row.toJSON().components as APIButtonComponentWithCustomId[];
+        expect(buttons[2].label).toBe("Back");
+        expect(buttons[2].custom_id).toBe("series list 2 0");
+        expect(buttons[0].custom_id).toBe("series list -1 1 2");
+        expect(buttons[1].custom_id).toBe("series list 1 1 2");
     });
 
     test("GIVEN unclaimed filter across multiple pages, EXPECT pagination over filtered series", async () => {
