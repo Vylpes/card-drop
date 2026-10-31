@@ -54,7 +54,7 @@ export class CoreClient extends Client {
 
     constructor(intents: number[]) {
         super({ intents: intents });
-        dotenv.config();
+        dotenv.config({ quiet: true });
 
         CoreClient.Environment = Number(process.env.BOT_ENV);
 
