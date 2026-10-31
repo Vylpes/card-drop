@@ -37,13 +37,28 @@ export default class Series extends ButtonEvent {
     }
 
     private async ListSeries(interaction: ButtonInteraction) {
-        const page = interaction.customId.split(" ")[2];
+        const parts = interaction.customId.split(" ");
+        const page = Number(parts[2]);
+        const unclaimedOnly = parts[3] === "1";
+        const returnPage = Number(parts[4] ?? 0);
 
-        const embed = await SeriesHelper.GenerateSeriesListPage(Number(page), interaction.user.id);
+        const embed = await SeriesHelper.GenerateSeriesListPage(page, interaction.user.id, unclaimedOnly, returnPage);
+
+        if (!embed) {
+            await interaction.update({
+                content: unclaimedOnly
+                    ? "No series with unclaimed cards found."
+                    : "No series found.",
+                embeds: [],
+                components: [],
+            });
+            return;
+        }
 
         await interaction.update({
-            embeds: [ embed!.embed ],
-            components: [ embed!.row ],
+            content: null,
+            embeds: [ embed.embed ],
+            components: [ embed.row ],
         });
     }
 }

@@ -1,3 +1,4 @@
+import { APIButtonComponentWithCustomId } from "discord.js";
 import SeriesHelper from "../../src/helpers/SeriesHelper";
 import { CoreClient } from "../../src/client/client";
 import Inventory from "../../src/database/entities/app/Inventory";
@@ -157,6 +158,118 @@ describe("GenerateSeriesListPage", () => {
 
         // Assert
         expect(result).toBeNull();
+    });
+
+    test("GIVEN unclaimed filter, EXPECT only series with missing cards", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card2", Quantity: 1 },
+            { CardNumber: "card3", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 1 },
+            { CardNumber: "card5", Quantity: 1 },
+        ]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId", true);
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Series (Unclaimed)");
+        expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
+        expect(result!.embed.data.description).not.toContain("Series 1");
+        expect(result!.embed.data.description).not.toContain("Series 2");
+        expect(result!.row.components).toHaveLength(3);
+        const buttons = result!.row.toJSON().components as APIButtonComponentWithCustomId[];
+        expect(buttons[2].label).toBe("Back");
+    });
+
+    test("GIVEN unclaimed filter and quantity zero inventory, EXPECT series still treated as unclaimed", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card6", Quantity: 0 },
+        ]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId", true);
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
+    });
+
+    test("GIVEN unclaimed filter with all series complete, EXPECT null returned", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card2", Quantity: 1 },
+            { CardNumber: "card3", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 1 },
+            { CardNumber: "card5", Quantity: 1 },
+            { CardNumber: "card6", Quantity: 1 },
+        ]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId", true);
+
+        // Assert
+        expect(result).toBeNull();
+    });
+
+    test("GIVEN unfiltered list, EXPECT Unclaimed button present", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.row.components).toHaveLength(3);
+        const buttons = result!.row.toJSON().components as APIButtonComponentWithCustomId[];
+        expect(buttons[2].label).toBe("Unclaimed");
+        expect(buttons[2].custom_id).toBe("series list 0 1 0");
+    });
+
+    test("GIVEN unclaimed filter with return page, EXPECT Back button restores return page", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId", true, 2);
+
+        // Assert
+        expect(result).not.toBeNull();
+        const buttons = result!.row.toJSON().components as APIButtonComponentWithCustomId[];
+        expect(buttons[2].label).toBe("Back");
+        expect(buttons[2].custom_id).toBe("series list 2 0");
+        expect(buttons[0].custom_id).toBe("series list -1 1 2");
+        expect(buttons[1].custom_id).toBe("series list 1 1 2");
+    });
+
+    test("GIVEN unclaimed filter across multiple pages, EXPECT pagination over filtered series", async () => {
+        // Arrange - 20 incomplete series
+        const manySeries = [];
+        for (let i = 1; i <= 20; i++) {
+            manySeries.push({
+                id: i,
+                name: `Series ${i}`,
+                cards: [
+                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` },
+                ],
+            });
+        }
+        CoreClient.Cards = manySeries;
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(1, "userId", true, 0);
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.description).toContain("[16] Series 16 (0/1)");
+        expect(result!.embed.data.description).toContain("[20] Series 20 (0/1)");
+        expect(result!.embed.data.footer!.text).toContain("Unclaimed");
     });
 });
 

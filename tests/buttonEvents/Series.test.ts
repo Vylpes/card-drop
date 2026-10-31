@@ -69,8 +69,9 @@ describe("execute", () => {
 
         // Assert
         expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledTimes(1);
-        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(3, "userId");
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(3, "userId", false, 0);
         expect(interaction.update).toHaveBeenCalledWith({
+            content: null,
             embeds: [{ type: "Embed" }],
             components: [{ type: "Row" }],
         });
@@ -85,7 +86,7 @@ describe("execute", () => {
         await event.execute(interaction as unknown as ButtonInteraction);
 
         // Assert
-        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(0, "userId");
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(0, "userId", false, 0);
     });
 
     test("GIVEN list customId with page 1, EXPECT correct page to be requested", async () => {
@@ -97,7 +98,48 @@ describe("execute", () => {
         await event.execute(interaction as unknown as ButtonInteraction);
 
         // Assert
-        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(1, "userId");
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(1, "userId", false, 0);
+    });
+
+    test("GIVEN list customId with unclaimed filter, EXPECT helper called with unclaimedOnly true", async () => {
+        // Arrange
+        interaction.customId = "series list 0 1 2";
+
+        // Act
+        const event = new Series();
+        await event.execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(0, "userId", true, 2);
+    });
+
+    test("GIVEN list Back button customId, EXPECT helper called without filter at return page", async () => {
+        // Arrange
+        interaction.customId = "series list 2 0";
+
+        // Act
+        const event = new Series();
+        await event.execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(2, "userId", false, 0);
+    });
+
+    test("GIVEN list customId with no matching series, EXPECT friendly message", async () => {
+        // Arrange
+        interaction.customId = "series list 0 1 0";
+        (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockResolvedValue(null);
+
+        // Act
+        const event = new Series();
+        await event.execute(interaction as unknown as ButtonInteraction);
+
+        // Assert
+        expect(interaction.update).toHaveBeenCalledWith({
+            content: "No series with unclaimed cards found.",
+            embeds: [],
+            components: [],
+        });
     });
 
     test("GIVEN view subaction, EXPECT interaction to be updated", async () => {
