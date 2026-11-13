@@ -287,6 +287,7 @@ describe("GenerateSeriesViewPage", () => {
         ];
 
         (ImageHelper.GenerateCardImageGrid as jest.Mock).mockResolvedValue(Buffer.from("test"));
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
     });
 
     test("GIVEN valid series and page, EXPECT series view page generated", async () => {
@@ -295,7 +296,7 @@ describe("GenerateSeriesViewPage", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result!.embed.data.title).toBe("Test Series");
+        expect(result!.embed.data.title).toBe("Test Series — 0% complete");
         expect(result!.embed.data.description).toContain("[card1] Card 1 (Bronze)");
         expect(result!.embed.data.description).toContain("[card2] Card 2 (Silver)");
     });
@@ -306,5 +307,98 @@ describe("GenerateSeriesViewPage", () => {
 
         // Assert
         expect(result).toBeNull();
+    });
+
+    test("GIVEN no claims, EXPECT view title shows 0% complete", async () => {
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([]);
+
+        const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
+
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Test Series — 0% complete");
+    });
+
+    test("GIVEN partial series claims, EXPECT view title shows rounded percent", async () => {
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 2 },
+        ]);
+
+        const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
+
+        expect(result).not.toBeNull();
+        // 1/2 → 50%
+        expect(result!.embed.data.title).toBe("Test Series — 50% complete");
+    });
+
+    test("GIVEN all series cards claimed, EXPECT view title shows 100% complete", async () => {
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card2", Quantity: 3 },
+        ]);
+
+        const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
+
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Test Series — 100% complete");
+    });
+
+    test("GIVEN quantity-zero inventory rows, EXPECT they do not count toward completion", async () => {
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 0 },
+            { CardNumber: "card2", Quantity: 0 },
+        ]);
+
+        const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
+
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Test Series — 0% complete");
+    });
+
+    test("GIVEN pagination within series, EXPECT title progress stays identical across pages", async () => {
+        const cards = [];
+        for (let i = 1; i <= 12; i++) {
+            cards.push({
+                id: `card${i}`,
+                name: `Card ${i}`,
+                type: CardRarity.Bronze,
+                path: `/path/card${i}.jpg`,
+            });
+        }
+        CoreClient.Cards = [
+            {
+                id: 1,
+                name: "Paged Series",
+                cards,
+            },
+        ];
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card2", Quantity: 1 },
+            { CardNumber: "card3", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 1 },
+        ]);
+
+        const page0 = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
+        const page1 = await SeriesHelper.GenerateSeriesViewPage(1, 1, "userId");
+
+        expect(page0).not.toBeNull();
+        expect(page1).not.toBeNull();
+        // 4/12 → 33%
+        expect(page0!.embed.data.title).toBe("Paged Series — 33% complete");
+        expect(page1!.embed.data.title).toBe(page0!.embed.data.title);
+        expect(page0!.embed.data.description).toContain("[card1]");
+        expect(page0!.embed.data.description).not.toContain("[card10]");
+        expect(page1!.embed.data.description).toContain("[card10]");
+    });
+});
+
+describe("SeriesCompletionPercent", () => {
+    test("GIVEN empty card list, EXPECT 0", () => {
+        expect(SeriesHelper.SeriesCompletionPercent([], new Set(["card1"]))).toBe(0);
+    });
+
+    test("GIVEN two of three claimed, EXPECT 67", () => {
+        const cards = [{ id: "a" }, { id: "b" }, { id: "c" }];
+        expect(SeriesHelper.SeriesCompletionPercent(cards, new Set(["a", "c"]))).toBe(67);
     });
 });
