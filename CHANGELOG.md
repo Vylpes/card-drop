@@ -6,6 +6,7 @@
 - `/inventory` can be sorted by card id, name, or type (#278)
 - `/give card` accepts an optional `quantity` to grant multiple copies at once (#359)
 - `/series list` supports an `unclaimed` filter (slash option and Unclaimed/Back buttons) to show only series with cards you still need (#426)
+- `/series view` embed title shows per-series completion percentage (e.g. `Series · 67% complete`) (#540)
 
 ### Improvements
 - `/series view` has an optional parameter to disable the colour filter for better performance (#355)

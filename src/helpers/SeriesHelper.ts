@@ -7,6 +7,32 @@ import ImageHelper from "./ImageHelper";
 import Inventory from "../database/entities/app/Inventory";
 
 export default class SeriesHelper {
+    /** Card numbers the user owns at least one of (Quantity > 0). */
+    public static ClaimedCardIdsFromInventory(userInventory: Inventory[]): Set<string> {
+        return new Set(
+            userInventory
+                .filter(inv => inv.Quantity > 0)
+                .map(inv => inv.CardNumber));
+    }
+
+    /**
+     * Per-series completion percent matching `/series list` (owned/total) lines:
+     * owned = unique series cards present in claimed set; total = series.cards.length.
+     * total = 0 → 0%.
+     */
+    public static SeriesCompletionPercent(
+        seriesCards: { id: string }[],
+        claimedCardIds: Set<string>,
+    ): number {
+        const total = seriesCards.length;
+        if (total === 0) {
+            return 0;
+        }
+
+        const owned = seriesCards.filter(c => claimedCardIds.has(c.id)).length;
+        return Math.round(100 * owned / total);
+    }
+
     public static async GenerateSeriesViewPage(seriesId: number, page: number, userId: string, disableColourFilter: boolean = false): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder>, image: AttachmentBuilder } | null> {
 
         const itemsPerPage = 9;
@@ -25,6 +51,10 @@ export default class SeriesHelper {
             return null;
         }
 
+        const userInventory = await Inventory.FetchAllByUserId(userId);
+        const claimedCardIds = SeriesHelper.ClaimedCardIdsFromInventory(userInventory);
+        const completionPercent = SeriesHelper.SeriesCompletionPercent(series.cards, claimedCardIds);
+
         const cardsOnPage = series.cards.splice(page * itemsPerPage, itemsPerPage);
 
         const description = cardsOnPage
@@ -32,7 +62,7 @@ export default class SeriesHelper {
             .join("\n");
 
         const embed = new EmbedBuilder()
-            .setTitle(series.name)
+            .setTitle(`${series.name} · ${completionPercent}% complete`)
             .setColor(EmbedColours.Ok)
             .setDescription(description)
             .setFooter({ text: `${series.id} · ${totalCards} cards · Page ${page + 1} of ${totalPages}` })
@@ -61,10 +91,7 @@ export default class SeriesHelper {
         const itemsPerPage = 15;
 
         const userInventory = await Inventory.FetchAllByUserId(userId);
-        const claimedCardIds = new Set(
-            userInventory
-                .filter(inv => inv.Quantity > 0)
-                .map(inv => inv.CardNumber));
+        const claimedCardIds = SeriesHelper.ClaimedCardIdsFromInventory(userInventory);
 
         let series = cloneDeep(CoreClient.Cards)
             .sort((a, b) => a.id - b.id);
