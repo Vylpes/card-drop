@@ -296,7 +296,7 @@ describe("GenerateSeriesViewPage", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result!.embed.data.title).toBe("Test Series — 0% complete");
+        expect(result!.embed.data.title).toBe("Test Series · 0% complete");
         expect(result!.embed.data.description).toContain("[card1] Card 1 (Bronze)");
         expect(result!.embed.data.description).toContain("[card2] Card 2 (Silver)");
     });
@@ -315,7 +315,7 @@ describe("GenerateSeriesViewPage", () => {
         const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
 
         expect(result).not.toBeNull();
-        expect(result!.embed.data.title).toBe("Test Series — 0% complete");
+        expect(result!.embed.data.title).toBe("Test Series · 0% complete");
     });
 
     test("GIVEN partial series claims, EXPECT view title shows rounded percent", async () => {
@@ -327,7 +327,7 @@ describe("GenerateSeriesViewPage", () => {
 
         expect(result).not.toBeNull();
         // 1/2 → 50%
-        expect(result!.embed.data.title).toBe("Test Series — 50% complete");
+        expect(result!.embed.data.title).toBe("Test Series · 50% complete");
     });
 
     test("GIVEN all series cards claimed, EXPECT view title shows 100% complete", async () => {
@@ -339,7 +339,7 @@ describe("GenerateSeriesViewPage", () => {
         const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
 
         expect(result).not.toBeNull();
-        expect(result!.embed.data.title).toBe("Test Series — 100% complete");
+        expect(result!.embed.data.title).toBe("Test Series · 100% complete");
     });
 
     test("GIVEN quantity-zero inventory rows, EXPECT they do not count toward completion", async () => {
@@ -351,7 +351,7 @@ describe("GenerateSeriesViewPage", () => {
         const result = await SeriesHelper.GenerateSeriesViewPage(1, 0, "userId");
 
         expect(result).not.toBeNull();
-        expect(result!.embed.data.title).toBe("Test Series — 0% complete");
+        expect(result!.embed.data.title).toBe("Test Series · 0% complete");
     });
 
     test("GIVEN pagination within series, EXPECT title progress stays identical across pages", async () => {
@@ -384,7 +384,7 @@ describe("GenerateSeriesViewPage", () => {
         expect(page0).not.toBeNull();
         expect(page1).not.toBeNull();
         // 4/12 → 33%
-        expect(page0!.embed.data.title).toBe("Paged Series — 33% complete");
+        expect(page0!.embed.data.title).toBe("Paged Series · 33% complete");
         expect(page1!.embed.data.title).toBe(page0!.embed.data.title);
         expect(page0!.embed.data.description).toContain("[card1]");
         expect(page0!.embed.data.description).not.toContain("[card10]");
