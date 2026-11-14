@@ -62,7 +62,7 @@ export default class SeriesHelper {
             .join("\n");
 
         const embed = new EmbedBuilder()
-            .setTitle(`${series.name} — ${completionPercent}% complete`)
+            .setTitle(`${series.name} · ${completionPercent}% complete`)
             .setColor(EmbedColours.Ok)
             .setDescription(description)
             .setFooter({ text: `${series.id} · ${totalCards} cards · Page ${page + 1} of ${totalPages}` })
