@@ -33,6 +33,27 @@ export default class SeriesHelper {
         return Math.round(100 * owned / total);
     }
 
+    /**
+     * Catalog-wide completion for `/series list`: aggregate the same per-series
+     * (owned/total) semantics across every series in CoreClient.Cards.
+     * total = 0 → 0%.
+     */
+    public static CatalogCompletion(
+        allSeries: { cards: { id: string }[] }[],
+        claimedCardIds: Set<string>,
+    ): { owned: number; total: number; percent: number } {
+        let owned = 0;
+        let total = 0;
+
+        for (const series of allSeries) {
+            total += series.cards.length;
+            owned += series.cards.filter(c => claimedCardIds.has(c.id)).length;
+        }
+
+        const percent = total === 0 ? 0 : Math.round(100 * owned / total);
+        return { owned, total, percent };
+    }
+
     public static async GenerateSeriesViewPage(seriesId: number, page: number, userId: string, disableColourFilter: boolean = false): Promise<{ embed: EmbedBuilder, row: ActionRowBuilder<ButtonBuilder>, image: AttachmentBuilder } | null> {
 
         const itemsPerPage = 9;
@@ -93,8 +114,11 @@ export default class SeriesHelper {
         const userInventory = await Inventory.FetchAllByUserId(userId);
         const claimedCardIds = SeriesHelper.ClaimedCardIdsFromInventory(userInventory);
 
-        let series = cloneDeep(CoreClient.Cards)
+        const allSeries = cloneDeep(CoreClient.Cards)
             .sort((a, b) => a.id - b.id);
+        const catalog = SeriesHelper.CatalogCompletion(allSeries, claimedCardIds);
+
+        let series = allSeries;
 
         if (unclaimedOnly) {
             series = series.filter(s => s.cards.some(c => !claimedCardIds.has(c.id)));
@@ -118,12 +142,13 @@ export default class SeriesHelper {
             .join("\n");
 
         const filterSuffix = unclaimedOnly ? " · Unclaimed" : "";
+        const titleBase = unclaimedOnly ? "Series (Unclaimed)" : "Series";
 
         const embed = new EmbedBuilder()
-            .setTitle(unclaimedOnly ? "Series (Unclaimed)" : "Series")
+            .setTitle(`${titleBase} · ${catalog.percent}% complete`)
             .setColor(EmbedColours.Ok)
             .setDescription(description)
-            .setFooter({ text: `${totalSeries} series · Page ${page + 1} of ${totalPages}${filterSuffix}` });
+            .setFooter({ text: `${catalog.owned}/${catalog.total} cards · ${totalSeries} series · Page ${page + 1} of ${totalPages}${filterSuffix}` });
 
         const flag = unclaimedOnly ? 1 : 0;
         const listCustomId = (targetPage: number) =>
