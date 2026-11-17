@@ -48,6 +48,8 @@ describe("GenerateSeriesListPage", () => {
 
         // Assert
         expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Series · 0% complete");
+        expect(result!.embed.data.footer!.text).toContain("0/6 cards");
         expect(result!.embed.data.description).toContain("[1] Series 1 (0/3)");
         expect(result!.embed.data.description).toContain("[2] Series 2 (0/2)");
         expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
@@ -66,6 +68,9 @@ describe("GenerateSeriesListPage", () => {
 
         // Assert
         expect(result).not.toBeNull();
+        // 3 of 6 cards claimed → 50%
+        expect(result!.embed.data.title).toBe("Series · 50% complete");
+        expect(result!.embed.data.footer!.text).toContain("3/6 cards");
         expect(result!.embed.data.description).toContain("[1] Series 1 (2/3)");
         expect(result!.embed.data.description).toContain("[2] Series 2 (1/2)");
         expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
@@ -86,9 +91,50 @@ describe("GenerateSeriesListPage", () => {
 
         // Assert
         expect(result).not.toBeNull();
+        // 5 of 6 cards claimed → 83%
+        expect(result!.embed.data.title).toBe("Series · 83% complete");
+        expect(result!.embed.data.footer!.text).toContain("5/6 cards");
         expect(result!.embed.data.description).toContain("[1] Series 1 (3/3)");
         expect(result!.embed.data.description).toContain("[2] Series 2 (2/2)");
         expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
+    });
+
+    test("GIVEN user owns every card in the catalog, EXPECT 100% complete", async () => {
+        // Arrange
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card2", Quantity: 1 },
+            { CardNumber: "card3", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 1 },
+            { CardNumber: "card5", Quantity: 1 },
+            { CardNumber: "card6", Quantity: 1 },
+        ]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Series · 100% complete");
+        expect(result!.embed.data.footer!.text).toContain("6/6 cards");
+    });
+
+    test("GIVEN empty card catalog, EXPECT 0% without division errors", async () => {
+        // Arrange
+        CoreClient.Cards = [
+            { id: 1, name: "Empty", cards: [] },
+        ];
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "orphan", Quantity: 1 },
+        ]);
+
+        // Act
+        const result = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+
+        // Assert
+        expect(result).not.toBeNull();
+        expect(result!.embed.data.title).toBe("Series · 0% complete");
+        expect(result!.embed.data.footer!.text).toContain("0/0 cards");
     });
 
     test("GIVEN multiple pages of series, EXPECT pagination to work correctly", async () => {
@@ -175,7 +221,9 @@ describe("GenerateSeriesListPage", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result!.embed.data.title).toBe("Series (Unclaimed)");
+        // Global stats stay catalog-wide (5/6), not filtered-list-only
+        expect(result!.embed.data.title).toBe("Series (Unclaimed) · 83% complete");
+        expect(result!.embed.data.footer!.text).toContain("5/6 cards");
         expect(result!.embed.data.description).toContain("[3] Series 3 (0/1)");
         expect(result!.embed.data.description).not.toContain("Series 1");
         expect(result!.embed.data.description).not.toContain("Series 2");
@@ -270,6 +318,42 @@ describe("GenerateSeriesListPage", () => {
         expect(result!.embed.data.description).toContain("[16] Series 16 (0/1)");
         expect(result!.embed.data.description).toContain("[20] Series 20 (0/1)");
         expect(result!.embed.data.footer!.text).toContain("Unclaimed");
+    });
+
+    test("GIVEN pagination, EXPECT global completion identical on every page", async () => {
+        // Arrange - 20 series, claim 5 cards → 25%
+        const manySeries = [];
+        for (let i = 1; i <= 20; i++) {
+            manySeries.push({
+                id: i,
+                name: `Series ${i}`,
+                cards: [
+                    { id: `card${i}`, name: `Card ${i}`, type: CardRarity.Bronze, path: `path${i}` },
+                ],
+            });
+        }
+        CoreClient.Cards = manySeries;
+        (Inventory.FetchAllByUserId as jest.Mock).mockResolvedValue([
+            { CardNumber: "card1", Quantity: 1 },
+            { CardNumber: "card2", Quantity: 1 },
+            { CardNumber: "card3", Quantity: 1 },
+            { CardNumber: "card4", Quantity: 1 },
+            { CardNumber: "card5", Quantity: 1 },
+        ]);
+
+        // Act
+        const page0 = await SeriesHelper.GenerateSeriesListPage(0, "userId");
+        const page1 = await SeriesHelper.GenerateSeriesListPage(1, "userId");
+
+        // Assert
+        expect(page0).not.toBeNull();
+        expect(page1).not.toBeNull();
+        expect(page0!.embed.data.title).toBe("Series · 25% complete");
+        expect(page1!.embed.data.title).toBe("Series · 25% complete");
+        expect(page0!.embed.data.footer!.text).toContain("5/20 cards");
+        expect(page1!.embed.data.footer!.text).toContain("5/20 cards");
+        expect(page0!.embed.data.footer!.text).toContain("Page 1 of 2");
+        expect(page1!.embed.data.footer!.text).toContain("Page 2 of 2");
     });
 });
 
@@ -400,5 +484,27 @@ describe("SeriesCompletionPercent", () => {
     test("GIVEN two of three claimed, EXPECT 67", () => {
         const cards = [{ id: "a" }, { id: "b" }, { id: "c" }];
         expect(SeriesHelper.SeriesCompletionPercent(cards, new Set(["a", "c"]))).toBe(67);
+    });
+});
+
+describe("CatalogCompletion", () => {
+    test("GIVEN empty catalog, EXPECT 0 owned/total/percent", () => {
+        expect(SeriesHelper.CatalogCompletion([], new Set(["a"]))).toEqual({
+            owned: 0,
+            total: 0,
+            percent: 0,
+        });
+    });
+
+    test("GIVEN partial claims across series, EXPECT aggregated owned/total/percent", () => {
+        const series = [
+            { cards: [{ id: "a" }, { id: "b" }, { id: "c" }] },
+            { cards: [{ id: "d" }, { id: "e" }] },
+        ];
+        expect(SeriesHelper.CatalogCompletion(series, new Set(["a", "e"]))).toEqual({
+            owned: 2,
+            total: 5,
+            percent: 40,
+        });
     });
 });
