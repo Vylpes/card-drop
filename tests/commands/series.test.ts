@@ -13,6 +13,7 @@ type SeriesCommandInteraction = ChatInputCommandInteractionMock & {
     options: ChatInputCommandInteractionMock["options"] & {
         get: jest.Mock,
         getBoolean: jest.Mock,
+        getString: jest.Mock,
     }
 };
 
@@ -21,6 +22,7 @@ function createInteraction(subcommand: string): SeriesCommandInteraction {
 
     interaction.options.get = jest.fn().mockReturnValue({ value: "1" });
     interaction.options.getBoolean = jest.fn().mockReturnValue(false);
+    interaction.options.getString = jest.fn().mockReturnValue(null);
 
     return interaction;
 }
@@ -57,7 +59,20 @@ describe("execute", () => {
 
             // Assert
             expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledTimes(1);
-            expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(0, "userId");
+            expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(0, "userId", false);
+        });
+
+        test("GIVEN list subcommand with filter unclaimed, EXPECT helper called with unclaimedOnly true", async () => {
+            // Arrange
+            interaction.options.getString.mockReturnValue("unclaimed");
+
+            // Act
+            const series = new Series();
+            await series.execute(interaction as unknown as ChatInputCommandInteraction);
+
+            // Assert
+            expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledTimes(1);
+            expect(SeriesHelper.GenerateSeriesListPage).toHaveBeenCalledWith(0, "userId", true);
         });
 
         test("GIVEN list subcommand, EXPECT reply to be sent", async () => {
@@ -71,6 +86,19 @@ describe("execute", () => {
                 embeds: [{ type: "Embed" }],
                 components: [{ type: "Row" }],
             });
+        });
+
+        test("GIVEN list subcommand with no matching series, EXPECT friendly message", async () => {
+            // Arrange
+            interaction.options.getString.mockReturnValue("unclaimed");
+            (SeriesHelper.GenerateSeriesListPage as jest.Mock).mockResolvedValue(null);
+
+            // Act
+            const series = new Series();
+            await series.execute(interaction as unknown as ChatInputCommandInteraction);
+
+            // Assert
+            expect(interaction.reply).toHaveBeenCalledWith("No series with unclaimed cards found.");
         });
     });
 

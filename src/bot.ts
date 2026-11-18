@@ -5,7 +5,7 @@ import Registry from "./registry";
 import { existsSync } from "fs";
 import { ExecException, exec } from "child_process";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const requiredConfigs: string[] = [
     "BOT_TOKEN",
