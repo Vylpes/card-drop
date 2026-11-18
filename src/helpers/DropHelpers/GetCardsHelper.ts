@@ -28,7 +28,7 @@ export default class GetCardsHelper {
         let silverChance = CardRarityChances.Silver;
         let goldChance = CardRarityChances.Gold;
         let mangaChance = CardRarityChances.Manga;
-        const legendaryChance = CardRarityChances.Legendary;
+        let legendaryChance = CardRarityChances.Legendary;
 
         if (userId) {
             const hasGoldEffect = await EffectHelper.HasEffect(userId, "goldchanceup");
@@ -44,6 +44,7 @@ export default class GetCardsHelper {
                 silverChance -= chancePerOther;
                 goldChance = boostedChance;
                 mangaChance -= chancePerOther;
+                legendaryChance -= chancePerOther;
             } else if (hasLegendaryEffect) {
                 const boostedChance = legendaryChance * 2;
                 const chanceToRemove = boostedChance - legendaryChance;
@@ -53,6 +54,7 @@ export default class GetCardsHelper {
                 silverChance -= chancePerOther;
                 goldChance -= chancePerOther;
                 mangaChance -= chancePerOther;
+                legendaryChance = boostedChance;
             } else if (hasMangaEffect) {
                 const boostedChance = mangaChance * 2;
                 const chanceToRemove = boostedChance - mangaChance;
@@ -62,6 +64,7 @@ export default class GetCardsHelper {
                 silverChance -= chancePerOther;
                 goldChance -= chancePerOther;
                 mangaChance = boostedChance;
+                legendaryChance -= chancePerOther;
             }
         }
 
@@ -73,11 +76,13 @@ export default class GetCardsHelper {
         const silverThreshold = bronzeThreshold + silverChance;
         const goldThreshold = silverThreshold + goldChance;
         const mangaThreshold = goldThreshold + mangaChance;
+        const legendaryThreshold = mangaThreshold + legendaryChance;
 
         if (randomRarity < bronzeThreshold) cardRarity = CardRarity.Bronze;
         else if (randomRarity < silverThreshold) cardRarity = CardRarity.Silver;
         else if (randomRarity < goldThreshold) cardRarity = CardRarity.Gold;
         else if (randomRarity < mangaThreshold) cardRarity = CardRarity.Manga;
+        else if (randomRarity < legendaryThreshold) cardRarity = CardRarity.Legendary;
         else cardRarity = CardRarity.Legendary;
 
         const randomCard = this.GetRandomCardByRarity(cardRarity);
