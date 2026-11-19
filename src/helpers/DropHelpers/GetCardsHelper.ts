@@ -76,11 +76,13 @@ export default class GetCardsHelper {
         const silverThreshold = bronzeThreshold + silverChance;
         const goldThreshold = silverThreshold + goldChance;
         const mangaThreshold = goldThreshold + mangaChance;
+        const legendaryThreshold = mangaThreshold + legendaryChance;
 
         if (randomRarity < bronzeThreshold) cardRarity = CardRarity.Bronze;
         else if (randomRarity < silverThreshold) cardRarity = CardRarity.Silver;
         else if (randomRarity < goldThreshold) cardRarity = CardRarity.Gold;
         else if (randomRarity < mangaThreshold) cardRarity = CardRarity.Manga;
+        else if (randomRarity < legendaryThreshold) cardRarity = CardRarity.Legendary;
         else cardRarity = CardRarity.Legendary;
 
         const randomCard = this.GetRandomCardByRarity(cardRarity);
