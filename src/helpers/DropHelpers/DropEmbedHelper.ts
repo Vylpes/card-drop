@@ -5,7 +5,7 @@ import { CardRarityToColour, CardRarityToString } from "../../constants/CardRari
 import StringTools from "../StringTools";
 
 export default class DropEmbedHelper {
-    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string, currency?: number): EmbedBuilder {
+    public static GenerateDropEmbed(drop: DropResult, quantityClaimed: number, imageFileName: string, claimedBy?: string, currency?: number, droppedBy?: string): EmbedBuilder {
         AppLogger.LogSilly("CardDropHelperMetadata/GenerateDropEmbed", `Parameters: drop=${drop.card.id}, quantityClaimed=${quantityClaimed}, imageFileName=${imageFileName}`);
 
         const description = drop.card.subseries ?? drop.series.name;
@@ -48,6 +48,14 @@ export default class DropEmbedHelper {
                 {
                     name: "Claimed by",
                     value: claimedBy,
+                    inline: true,
+                }
+            ]);
+        } else if (droppedBy != null) {
+            embed.addFields([
+                {
+                    name: "Dropped by",
+                    value: droppedBy,
                     inline: true,
                 }
             ]);

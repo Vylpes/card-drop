@@ -10,6 +10,7 @@
 - `/series list` embed shows global catalog completion percentage and owned/total card counts (#539)
 
 ### Improvements
+- Claimable `/drop` and reroll embeds show `Dropped by` until claimed, then switch to `Claimed by` (#397)
 - `/series view` has an optional parameter to disable the colour filter for better performance (#355)
 - Removed the obsolete `version` tag from Docker Compose (#441)
 - Stage CI now runs on push to `main` (#476)

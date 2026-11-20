@@ -15,6 +15,7 @@ export default function GenerateCommandInteractionMock(options?: {
         },
         user: {
             id: "userId",
+            username: "userName",
         },
     };
 }
