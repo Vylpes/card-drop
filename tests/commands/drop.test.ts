@@ -96,7 +96,7 @@ describe("execute", () => {
 
         test("EXPECT DropEmbedHelper.GenerateDropEmbed to be called", () => {
             expect(DropEmbedHelper.GenerateDropEmbed).toHaveBeenCalledTimes(1);
-            expect(DropEmbedHelper.GenerateDropEmbed).toHaveBeenCalledWith(randomCard, 1, "", undefined, 500);
+            expect(DropEmbedHelper.GenerateDropEmbed).toHaveBeenCalledWith(randomCard, 1, "", undefined, 500, "userName");
         });
 
         test("EXPECT DropEmbedHelper.GenerateDropButtons to be called", () => {

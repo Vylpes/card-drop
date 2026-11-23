@@ -84,7 +84,7 @@ export default class Drop extends Command {
             const inventory = await Inventory.FetchOneByCardNumberAndUserId(interaction.user.id, randomCard.card.id);
             const quantityClaimed = inventory ? inventory.Quantity : 0;
 
-            const embed = DropEmbedHelper.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency);
+            const embed = DropEmbedHelper.GenerateDropEmbed(randomCard, quantityClaimed, imageFileName, undefined, user.Currency, interaction.user.username);
 
             const claimId = v4();
 

@@ -30,5 +30,6 @@ export type ChatInputCommandInteraction = {
     },
     user: {
         id: string,
+        username?: string,
     },
 }
