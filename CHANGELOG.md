@@ -15,6 +15,7 @@
 - Removed the obsolete `version` tag from Docker Compose (#441)
 - Stage CI now runs on push to `main` (#476)
 - Dependency updates and security patches (#531)
+- Upgrade `@types/uuid` from v10 to v11 (#561)
 - Upgrade release helper `np` to v12 (`yarn release` still uses `--no-publish`; requires Node.js 22+) (#558)
 - Added Forgejo issue templates (#484)
 
